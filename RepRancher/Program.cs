@@ -15,22 +15,22 @@ namespace RepRancher
     {
         static void Main(string[] args)
         {
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://localhost.:8332");
-            webRequest.Credentials = new NetworkCredential("user", "pwd");
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://localhost:9999");
+            //webRequest.Credentials = new NetworkCredential("user", "pwd");
             /// important, otherwise the service can't desirialse your request properly
             webRequest.ContentType = "application/json-rpc";
-             webRequest.Method = "POST";
+            webRequest.Method = "POST";
  
-            JObject joe = new JObject();
-            joe.Add(new JProperty("jsonrpc", "1.0"));
-            joe.Add(new JProperty("id", "1"));
-            joe.Add(new JProperty("method", Method));
+            JObject rpcCall = new JObject();
+            rpcCall.Add(new JProperty("jsonrpc", "2.0"));
+            rpcCall.Add(new JProperty("id", "1"));
+            rpcCall.Add(new JProperty("method", "hello"));
 
             Dictionary<int, string> Params = new Dictionary<int,string>();
             // params is a collection values which the method requires..
             if (Params.Keys.Count == 0)
             {
-                joe.Add(new JProperty("params", new JArray()));
+                rpcCall.Add(new JProperty("params", new JArray()));
             }
             else
             {
@@ -41,18 +41,26 @@ namespace RepRancher
                 // add the params
                 props.Add(Params[i]);
                 }
-                joe.Add(new JProperty("params", props));
+                rpcCall.Add(new JProperty("params", props));
             }
  
             // serialize json for the request
-            string s = JsonConvert.SerializeObject(joe);
+            string s = JsonConvert.SerializeObject(rpcCall);
             byte[] byteArray = Encoding.UTF8.GetBytes(s);
             webRequest.ContentLength = byteArray.Length;
             Stream dataStream = webRequest.GetRequestStream();
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
- 
-            WebResponse webResponse = webRequest.GetResponse();
+            try
+            {
+                WebResponse webResponse = webRequest.GetResponse(); 
+                System.Console.WriteLine(webResponse.ToString());
+            }
+            catch (Exception e)
+            {
+                    Console.WriteLine("Start Error:");
+                    Console.WriteLine(e.StackTrace);
+            }       
         }
     }
 }
