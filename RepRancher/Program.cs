@@ -13,20 +13,17 @@ namespace RepRancher
 {
     class Program
     {
+
+
         static void Main(string[] args)
         {
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("http://localhost:9999");
-            //webRequest.Credentials = new NetworkCredential("user", "pwd");
-            /// important, otherwise the service can't desirialse your request properly
-            webRequest.ContentType = "application/json-rpc";
-            webRequest.Method = "POST";
- 
+
             JObject rpcCall = new JObject();
             rpcCall.Add(new JProperty("jsonrpc", "2.0"));
             rpcCall.Add(new JProperty("id", "1"));
             rpcCall.Add(new JProperty("method", "hello"));
 
-            Dictionary<int, string> Params = new Dictionary<int,string>();
+            Dictionary<int, string> Params = new Dictionary<int, string>();
             // params is a collection values which the method requires..
             if (Params.Keys.Count == 0)
             {
@@ -38,29 +35,35 @@ namespace RepRancher
                 // add the props in the reverse order!
                 for (int i = Params.Keys.Count - 1; i >= 0; i--)
                 {
-                // add the params
-                props.Add(Params[i]);
+                    // add the params
+                    props.Add(Params[i]);
                 }
                 rpcCall.Add(new JProperty("params", props));
             }
- 
+
             // serialize json for the request
             string s = JsonConvert.SerializeObject(rpcCall);
-            byte[] byteArray = Encoding.UTF8.GetBytes(s);
-            webRequest.ContentLength = byteArray.Length;
-            Stream dataStream = webRequest.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
+
+            CookieContainer CookieContainer = new CookieContainer();
+            HttpWebRequest HttpRequest = WebRequest.CreateHttp("http://localhost:9999");
+            HttpRequest.ContentType = "text/json";
+            HttpRequest.Method = "POST";
+            HttpRequest.CookieContainer = CookieContainer;
+            HttpWebResponse HttpResponse;
             try
             {
-                WebResponse webResponse = webRequest.GetResponse(); 
-                System.Console.WriteLine(webResponse.ToString());
+                HttpResponse = (HttpWebResponse)HttpRequest.GetResponse();
             }
-            catch (Exception e)
+            catch (WebException error)
             {
-                    Console.WriteLine("Start Error:");
-                    Console.WriteLine(e.StackTrace);
-            }       
+                HttpResponse = (HttpWebResponse)error.Response;
+            }
+            string Reply;
+            using (var streamReader = new StreamReader(HttpResponse.GetResponseStream()))
+            {
+               Reply = streamReader.ReadToEnd();
+            }
+            Console.WriteLine(Reply);
         }
     }
 }
