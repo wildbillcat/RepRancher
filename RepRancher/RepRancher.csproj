@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Conveyor_JSONRPC_API">
+      <HintPath>..\packages\Conveyor_JSONRPC_API.dll</HintPath>
+    </Reference>
     <Reference Include="JsonRequest, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\Development\csharp\JsonRequest\JsonRequest.dll</HintPath>

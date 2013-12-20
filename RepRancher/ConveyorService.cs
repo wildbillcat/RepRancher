@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Conveyor_JSONRPC_API;
 
 namespace RepRancher
 {
@@ -45,8 +46,8 @@ namespace RepRancher
                 byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
                 int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
                 string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-                JsonRpcResult Result = JsonConvert.DeserializeObject<JsonRpcResult>(Reply);
-                Console.WriteLine(Result.result);
+                
+                Console.WriteLine();
                 
             }
         }
