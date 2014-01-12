@@ -122,10 +122,11 @@ namespace Conveyor_JSONRPC_API
             public string port_name { get; set; }
             public int id { get; set; }
             public string name { get; set; } //name of the Print Job
-            public jobstate state { get; set; }
+            public jobstate? state { get; set; }
             public string driver_name { get; set; }
             public jobstep progress { get; set; }
-            public jobconclusion conclusion { get; set; }
+            public string type { get; set; }
+            public jobconclusion? conclusion { get; set; }
         }
 
         /*
@@ -141,8 +142,6 @@ namespace Conveyor_JSONRPC_API
          */
         public enum jobconclusion
         {
-            //[StringValue(null)] 
-            NULL, 
             //[StringValue("ENDED")] 
             ENDED,
             //[StringValue("FAILED")]
@@ -215,10 +214,7 @@ namespace Conveyor_JSONRPC_API
          */
         public enum jobstepname
         {
-            //[StringValue("slicing")] 
-            slicing, 
-            //[StringValue("printing")] 
-            printing
+            verify, slice, print
         }
 
         /*
@@ -928,7 +924,7 @@ namespace Conveyor_JSONRPC_API
                 }
 
             }
-            catch (Exception e) { }
+            catch { }
             return JsonReplyType.Invalid;
         }
 

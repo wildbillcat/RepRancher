@@ -32,7 +32,7 @@ namespace RepRancher
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
             ears = new ConveyorListenerService(tcpClient, dataStream, ConveyorReplyMutex);
-            t1 = new Thread(new ThreadStart(ears.ThreadRun));
+            t1 = new Thread(new ThreadStart(ears.ListenerThreadRun));
             t1.Start();
         }
     }
@@ -41,7 +41,21 @@ namespace RepRancher
     {
         TcpClient tcpClient;
         Stream dataStream;
+
+        /*
+         * Used to hold all input recieved from Conveyor Service
+         */
         string repliesFromConveyor;
+
+        /*
+         *  ListenerThreadRun sets to true after appending string with new input
+         *  ProcessorThreadRun sets to false after repliesFromConveyor < 2 or if a complete JSON object is not detected in the current string.
+         */
+        bool contentAvailable;
+
+        /*
+         * This Mutex controls access to both repliesFromConveyor and contentAvailable
+         */
         public Mutex ConveyorReplyMutex;
 
         public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, Mutex conveyorReplyMutex)
@@ -51,14 +65,14 @@ namespace RepRancher
             ConveyorReplyMutex = conveyorReplyMutex;
         }
 
-        public void ThreadRun()
+        public void ListenerThreadRun()
         {
             FileStream ostrm;
             StreamWriter writer;
             TextWriter oldOut = Console.Out;
             try
             {
-                ostrm = new FileStream("./Redirect.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                ostrm = new FileStream("./ErrorLog.txt", FileMode.OpenOrCreate, FileAccess.Write);
                 writer = new StreamWriter(ostrm);
             }
             catch (Exception e)
@@ -77,6 +91,7 @@ namespace RepRancher
 
                 //Lock the Replies
                 //ConveyorReplyMutex.
+
                 
                 //Attach new input to current string
                 repliesFromConveyor = string.Concat(repliesFromConveyor, Reply);
@@ -181,7 +196,6 @@ namespace RepRancher
                 {
                     job AddedJob = ClientAPI.JobAdded(JSON);
                     Console.WriteLine("Job Name : " + AddedJob.name);
-                    Console.WriteLine("Progress : " + AddedJob.progress.progress);
                     Console.WriteLine("Machine Name: " + AddedJob.machine_name);
                     Console.WriteLine();
                 }
