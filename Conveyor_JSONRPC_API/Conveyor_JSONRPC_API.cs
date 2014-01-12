@@ -942,6 +942,8 @@ namespace Conveyor_JSONRPC_API
         public static int GetResultID(string JSON)
         {
             JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            
+            //JObject Params = JReply.SelectToken();
             int ResultID = JReply.Value<int>("id");
             return ResultID;
         }

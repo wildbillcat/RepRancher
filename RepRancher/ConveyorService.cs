@@ -53,6 +53,22 @@ namespace RepRancher
 
         public void ThreadRun()
         {
+            FileStream ostrm;
+            StreamWriter writer;
+            TextWriter oldOut = Console.Out;
+            try
+            {
+                ostrm = new FileStream("./Redirect.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                writer = new StreamWriter(ostrm);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot open Redirect.txt for writing");
+                Console.WriteLine(e.Message);
+                return;
+            }
+            Console.SetOut(writer);
+
             while (true)
             {
                 byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
@@ -157,7 +173,7 @@ namespace RepRancher
         {
             //Determine Message Type:
             JsonReplyType Reply = ConveyorJsonReplyParser.ReplyType(JSON);
-            if (Reply != JsonReplyType.Method)
+            if (Reply == JsonReplyType.Method)
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
                 Console.WriteLine("Detected Method : " + MethodName);
@@ -218,20 +234,20 @@ namespace RepRancher
                     //should write to a central log file.
                 }
             }
-            else if (Reply != JsonReplyType.Result)
+            else if (Reply == JsonReplyType.Result)
             {
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
                 Console.WriteLine("Recieved Response to Command : ", MethodID);
                 Console.WriteLine();
             }
-            else if (Reply != JsonReplyType.Error)
+            else if (Reply == JsonReplyType.Error)
             {
                 JsonError<string> Error = JsonConvert.DeserializeObject<JsonError<string>>(JSON);
                 Console.WriteLine("Error");
                 Console.WriteLine(Error.error.message);
                 Console.WriteLine();
             } 
-            else if (Reply != JsonReplyType.Invalid)
+            else if (Reply == JsonReplyType.Invalid)
             {
                 Console.WriteLine("Invalid JSON Detected:");
                 Console.WriteLine(JSON);
