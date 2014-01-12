@@ -19,19 +19,19 @@ namespace RepRancher
         IPEndPoint ipEndPoint;
         TcpClient tcpClient;
         Stream dataStream;
-        //List<string> repliesFromConveyor;
         Thread t1;
         ConveyorListenerService ears;
-        public static Mutex gM1;
+        public static Mutex ConveyorReplyMutex;
+
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
-            gM1 = new Mutex(true, "ConveyorReplyList");
+            ConveyorReplyMutex = new Mutex(true, "ConveyorReplyMutex");
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
             tcpClient = new TcpClient();
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ears = new ConveyorListenerService(tcpClient, dataStream);
+            ears = new ConveyorListenerService(tcpClient, dataStream, ConveyorReplyMutex);
             t1 = new Thread(new ThreadStart(ears.ThreadRun));
             t1.Start();
         }
@@ -41,11 +41,14 @@ namespace RepRancher
     {
         TcpClient tcpClient;
         Stream dataStream;
+        string repliesFromConveyor;
+        public Mutex ConveyorReplyMutex;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream)
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, Mutex conveyorReplyMutex)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
+            ConveyorReplyMutex = conveyorReplyMutex;
         }
 
         public void ThreadRun()
@@ -55,11 +58,102 @@ namespace RepRancher
                 byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
                 int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
                 string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-                ProcessJSONMessageAsync(Reply);
+
+                //Lock the Replies
+                //ConveyorReplyMutex.
+                
+                //Attach new input to current string
+                repliesFromConveyor = string.Concat(repliesFromConveyor, Reply);
+
+                //Check to see if there is a command
+                string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
+                if (command.Length == 1)
+                {
+                    repliesFromConveyor = command[0];
+                }
+                else
+                {
+                    repliesFromConveyor = command[0];
+                    try
+                    {
+                        if (ProcessJSONMessage(command[1]))
+                        {
+                            System.Console.WriteLine("Successfully Processed Object");
+                        }
+                        else
+                        {
+                            System.Console.WriteLine("It's all gone wrong");
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        System.Console.WriteLine("It's all gone very wrong! See:");
+                        System.Console.WriteLine(e.Message);
+                    }
+                    
+                }
+
+                //Unlock the Replies
+
+                //ProcessJSONMessage(Reply);
             }
         }
 
-        public static bool ProcessJSONMessageAsync(string JSON)
+        //String[0] = New JSON string
+        //String[1] = JSON Object
+        public string[] ContainsCompleteJSONObject(string JSON)
+        {
+            System.Console.WriteLine("Analyzing the following String:");
+            System.Console.WriteLine(JSON);
+            int Bracket = 0;
+            bool BracketFound = false;
+            for(int i = 0; i < JSON.Length; i++){
+                if(JSON[i] == '{'){
+                    BracketFound = true;
+                    Bracket = i;
+                    System.Console.WriteLine("Bracket found at character: " + Bracket);
+                    break;
+                }
+            }
+
+            if(BracketFound){
+                BracketFound = false;
+            }else{
+                //Bracket wasn't found, return
+                return new string[] {JSON};
+            }
+
+            if(Bracket > 0){
+                System.Console.WriteLine("Shedding the Following:");
+                System.Console.WriteLine(JSON.Substring(0,Bracket));
+                JSON = JSON.Substring(Bracket+1);
+            }
+            
+            Bracket = 1;
+            for(int i = 1; i < JSON.Length; i++){
+                char C = JSON[i];
+                if(C == '{'){
+                    Bracket++;
+                }else if(C == '}'){
+                    Bracket--;
+                }
+                if(Bracket == 0){
+                    BracketFound = true;
+                    Bracket = i;
+                    break;
+                }
+            }
+            
+            if(BracketFound){
+                string JSONObject = JSON.Substring(0, Bracket);
+                JSON = JSON.Substring(Bracket+1);
+                return new string[] { JSON, JSONObject };
+            }
+            //If execution gets this far, object is incomplete, just return JSON
+            return new string[] { JSON };
+        }
+
+        public static bool ProcessJSONMessage(string JSON)
         {
             //Determine Message Type:
             JsonReplyType Reply = ConveyorJsonReplyParser.ReplyType(JSON);
