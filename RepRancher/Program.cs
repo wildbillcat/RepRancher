@@ -24,7 +24,6 @@ namespace RepRancher
             while (true)
             {
                 Console.ReadLine();
-                Console.WriteLine();
                 Console.WriteLine("Sorry I don't understand anything yet! But I am good at watching.");
                 Console.WriteLine("Do things with Makerware and I'll try and make sense of it all.");
                 Console.WriteLine("Anything I can't figure out I'll add to my error log, which can then be used by the developer to improve me!");
