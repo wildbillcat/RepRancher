@@ -54,47 +54,11 @@ namespace Conveyor_JSONRPC_API
             public int vid { get; set; }
             public int pid { get; set; }
             public string label { get; set; }
-            public IDictionary<string, string[]> driver_profiles { get; set; }
+            public Dictionary<string, string[]> driver_profiles { get; set; }
             public string iserial { get; set; }
             public string path { get; set; }
             public string type { get; set; }
         }
-
-       
-        /*
-         *  archive-level :: (string)
-         *  
-         * An archive level.
-         * Two archive levels are defined:
-         * 
-         * null
-         * "all"
-         */
-        public enum archivelevel
-        {
-            //[StringValue(null)]
-            NULL,
-            //[StringValue("all")]
-            all
-        }
-
-        /*
-         *  connection-status :: (string)
-         *  
-         * The connection status.
-         * There are two connection statuses defined:
-         * 
-         * "connected"
-         * "notConnected"
-         *
-         * Removed from relivancy, and just used string so that new additions to potential values could be handled.
-        public enum connectionstatus
-        {
-            //[StringValue("connected")]
-            CONNECTED,
-            //[StringValue("notConnected")]
-            DISCONNECTED
-        }*/
 
         /*
          *  job
@@ -127,7 +91,7 @@ namespace Conveyor_JSONRPC_API
             public string driver_name { get; set; }
             public jobstep progress { get; set; }
             public string type { get; set; }
-            public jobconclusion? conclusion { get; set; }
+            public string conclusion { get; set; }
         }
 
         /*
@@ -170,72 +134,6 @@ namespace Conveyor_JSONRPC_API
             public string message { get; set; }
         }
 
-
-        /*
-         *  job-conclusion :: (string)
-         *  
-         * How drpcid the job conclude?
-         * four conclusions are defined:
-         * 
-         * null (meaning not concluded)
-         * "ENDED"
-         * "FAILED"
-         * "CANCELED"
-         */
-        public enum jobconclusion
-        {
-            //[StringValue("ENDED")] 
-            ENDED,
-            //[StringValue("FAILED")]
-            FAILED,
-            //[StringValue("CANCELED")] 
-            CANCELED
-        }
-
-        /*
-         *  job-rpcid :: (number)
-         *  
-         * A job rpcidentifier.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class jobrpcid : int
-        {
-            //public int value { get; set; }
-        }
-         */
-
-        /*
-         *  job-name :: (string)
-         *  
-         * A job name, human-readable.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class jobname : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
-         * job-state :: (string)
-         * 
-         * A job's state.
-         * There are three states defined:
-         * 
-         * "PENDING"
-         * "RUNNING"
-         * "STOPPED"
-         */
-        public enum jobstate
-        {
-            //[StringValue("PENDING")] 
-            PENDING, 
-            //[StringValue("RUNNING")] 
-            RUNNING,
-            //[StringValue("STOPPED")] 
-            STOPPED
-        }
-
         /*
          *  job-step
          *  
@@ -248,55 +146,6 @@ namespace Conveyor_JSONRPC_API
             public string name { get; set; }
             public int progress { get; set; }
         }
-
-        /*
-         *  job-step-name :: (string)
-         *  
-         * The name of a job step, e.g "slicing", "printing".
-         * This enum became dated, with an unknown and arbitrary number of job steps
-        public enum jobstepname
-        {
-            verify, slice, print, print-to-file
-        }*/
-
-        /*
-         *  material-name :: (string)
-         *  
-         * A material name.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class materialname : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
-         *  preprocessors
-         *  
-         * [ (preprocessor-name)
-         * , ...
-         * ]
-         */
-        /*
-         *Class is redundant representation of an array object
-         *
-     public class preprocessors
-     {
-         public string[] values { get; set; }
-     }*/
-
-        /*
-         *  preprocessor-name :: (string)
-         *  
-         * A preprocessor name.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class preprocessorname : string
-        {
-            //public string value { get; set; }
-        }
-         */
 
         /*
          *  printer
@@ -335,67 +184,6 @@ namespace Conveyor_JSONRPC_API
         }
 
         /*
-         * printer-unique-name :: (string)
-         * 
-         * A unique name to rpcidentify a unique printer.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class printeruniquename : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
-         * profile-name :: (string)
-         * 
-         * A profile name.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class profilename : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
-         *  rate :: (number)
-         *  
-         * A travel rate.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class rate : double
-        {
-            //public double value { get; set; }
-        }
-         */
-
-        /*
-         * slicer-name :: (string)
-         * 
-         * A slicer name.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class slicername : string
-        {
-            //public string value { get; set; }
-        }
-         */
-    //
-        
-        /*
-         * extruder-name :: (string)
-         * 
-         * An extruder name.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class extrudername : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
          *  slicer-settings :: (string)
          *  
          * A slicer settings object.
@@ -429,30 +217,6 @@ namespace Conveyor_JSONRPC_API
         }
 
         /*
-         *  temperature :: (number)
-         *  
-         * A temperature.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class temperature : double
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
-         *   tool-name :: (string)
-         *   
-         * The name of a tool or heated build platform on the printer. These are ordinarily numbers represented as strings.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class toolname : string
-        {
-            //public string value { get; set; }
-        }
-         */
-
-        /*
          *   tool-temperatures :: (string)
          *   
          * A list of temperatures for all toolheads and heated build platforms on the printer.
@@ -471,8 +235,8 @@ namespace Conveyor_JSONRPC_API
          */
         public class tooltemperatures
         {
-            public tool[] tools { get; set; }
-            public tool[] heated_platforms { get; set; }
+            public object tools { get; set; }
+            public object heated_platforms { get; set; }
         }
 
         /*
@@ -485,6 +249,7 @@ namespace Conveyor_JSONRPC_API
          */
         public class tool
         {
+            
             public string toolname { get; set; }
             public double temperature { get; set; }
         }

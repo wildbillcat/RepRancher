@@ -22,7 +22,15 @@ namespace RepRancher
         Thread t1;
         Thread t2;
         ConveyorListenerService ConveyorListenerServer;
-        System.Timers.Timer ErrorFlush = new System.Timers.Timer(10000);
+        System.Timers.Timer ErrorFlush;
+
+        /*
+         * This is a list of the commands queued for printing.
+         */
+        Queue<string> commandQueue;
+
+        //int rpcid, string methodName
+        Dictionary<int, string> MethodHistory;
 
         /*
          * FileStream to Associated Conveyor Error Log
@@ -73,6 +81,31 @@ namespace RepRancher
         {
             errorLog.Flush();
         }
+    }
+
+    class ConveyorCommandService
+    {
+        /*
+         * This TCP Client is the connection to the Conveyor Service that is being Monitored
+         */
+        TcpClient tcpClient;
+
+        /*
+         * This is the TCP connection that the listener reads and Parses
+         */
+        Stream dataStream;
+
+        /*
+         * This is a list of the commands queued for printing.
+         */
+        Queue<string> commandQueue;
+
+        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream)
+        {
+            tcpClient = TcpClient;
+            dataStream = DataStream;
+        }
+
     }
 
     class ConveyorListenerService
@@ -311,7 +344,7 @@ namespace RepRancher
                     Console.WriteLine("Display Name : " + ChangedPrinter.displayName);
                     Console.WriteLine("Name : " + ChangedPrinter.name);
                     Console.WriteLine("Unique Name : " + ChangedPrinter.uniqueName);
-                    Console.WriteLine("Temperature : " + ChangedPrinter.temperature);
+                    Console.WriteLine("Temperature : " + ChangedPrinter.temperature.tools.ToString());
                     Console.WriteLine();
 
                 }
