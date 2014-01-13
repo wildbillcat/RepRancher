@@ -25,7 +25,10 @@ namespace RepRancher
             {
                 Console.ReadLine();
                 Console.WriteLine();
-                Console.WriteLine("Sorry I don't understand anything yet, and am single threaded");
+                Console.WriteLine("Sorry I don't understand anything yet! But I am good at watching.");
+                Console.WriteLine("Do things with Makerware and I'll try and make sense of it all.");
+                Console.WriteLine("Anything I can't figure out I'll add to my error log, which can then be used by the developer to improve me!");
+                Console.WriteLine("Note: I overwrite my error log each time I am launched, so be sure to save it in the event I crash!");
                 Console.WriteLine();
             }
             
