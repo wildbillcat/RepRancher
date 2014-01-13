@@ -86,14 +86,15 @@ namespace Conveyor_JSONRPC_API
          * 
          * "connected"
          * "notConnected"
-         */
+         *
+         * Removed from relivancy, and just used string so that new additions to potential values could be handled.
         public enum connectionstatus
         {
             //[StringValue("connected")]
             CONNECTED,
             //[StringValue("notConnected")]
             DISCONNECTED
-        }
+        }*/
 
         /*
          *  job
@@ -122,7 +123,7 @@ namespace Conveyor_JSONRPC_API
             public string port_name { get; set; }
             public int id { get; set; }
             public string name { get; set; } //name of the Print Job
-            public jobstate? state { get; set; }
+            public string state { get; set; }
             public string driver_name { get; set; }
             public jobstep progress { get; set; }
             public string type { get; set; }
@@ -319,9 +320,9 @@ namespace Conveyor_JSONRPC_API
             public string printerType { get; set; }
             public string profile_name { get; set; }
             public bool hasHeatedPlatform { get; set; }
-            public string toolhead_target_temperature { get; set; }
+            public string[] toolhead_target_temperature { get; set; } //Not sure if Null toolhead targets are acceptable.
             public int[] build_volume { get; set; }
-            public connectionstatus state { get; set; }
+            public string state { get; set; }
             public string driver_name { get; set; }
             public string port_name { get; set; }
             public tooltemperatures temperature { get; set; }
