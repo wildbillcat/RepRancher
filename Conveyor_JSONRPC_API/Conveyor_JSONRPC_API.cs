@@ -117,7 +117,7 @@ namespace Conveyor_JSONRPC_API
         public class job
         {
             public string machine_name { get; set; }
-            public string failure { get; set; }
+            public JobFailure failure { get; set; }
             public string profile_name { get; set; }
             public string port_name { get; set; }
             public int id { get; set; }
@@ -128,6 +128,47 @@ namespace Conveyor_JSONRPC_API
             public string type { get; set; }
             public jobconclusion? conclusion { get; set; }
         }
+
+        /*
+         * failure 
+         * "failure": {
+         * "exception": {
+         * "winerror": "None", 
+         * "name": "UnspecifiedAxisLocationError", 
+         * "errno": "None", 
+         * "args": "()", 
+         * "strerror": "None", 
+         * "filename": "None", 
+         * "message": "UnspecifiedAxis: X\nCommand: G1 Z155 F900\nLineNumber: 16322"
+         * }}         * 
+         */
+        public class JobFailure
+        {
+            public JobException exception { get; set; }
+        }
+
+        /*
+         * exception 
+         * "exception": {
+         * "winerror": "None", 
+         * "name": "UnspecifiedAxisLocationError", 
+         * "errno": "None", 
+         * "args": "()", 
+         * "strerror": "None", 
+         * "filename": "None", 
+         * "message": "UnspecifiedAxis: X\nCommand: G1 Z155 F900\nLineNumber: 16322"
+         * }
+         */
+        public class JobException{
+            public string winerror { get; set; }
+            public string name { get; set; }
+            public string errno { get; set; }
+            public object args { get; set; }
+            public string strerror { get; set; }
+            public string filename { get; set; }
+            public string message { get; set; }
+        }
+
 
         /*
          *  job-conclusion :: (string)
@@ -203,7 +244,7 @@ namespace Conveyor_JSONRPC_API
          */
         public class jobstep
         {
-            public jobstepname name { get; set; }
+            public string name { get; set; }
             public int progress { get; set; }
         }
 
@@ -211,11 +252,11 @@ namespace Conveyor_JSONRPC_API
          *  job-step-name :: (string)
          *  
          * The name of a job step, e.g "slicing", "printing".
-         */
+         * This enum became dated, with an unknown and arbitrary number of job steps
         public enum jobstepname
         {
-            verify, slice, print
-        }
+            verify, slice, print, print-to-file
+        }*/
 
         /*
          *  material-name :: (string)

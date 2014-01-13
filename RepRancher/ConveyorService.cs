@@ -22,7 +22,7 @@ namespace RepRancher
         Thread t1;
         Thread t2;
         ConveyorListenerService ConveyorListenerServer;
-
+        System.Timers.Timer ErrorFlush = new System.Timers.Timer(10000);
 
         /*
          * FileStream to Associated Conveyor Error Log
@@ -38,19 +38,25 @@ namespace RepRancher
         public ConveyorService(string IPaddress, int PortNumber)
         {
             
-           /* try
+            try
             {
-                ostrm = new FileStream("./error.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
                 errorLog = new StreamWriter(ostrm);
                 System.Console.SetError(errorLog);
                 Console.WriteLine("Opened Connection to Error Log");
+                Console.WriteLine();
+                Console.Error.WriteLine("Opening Test Message for Log");
+                errorLog.Flush();
+                ErrorFlush = new System.Timers.Timer(2000);
+                ErrorFlush.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
+                ErrorFlush.Enabled = true;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Cannot open ./error.txt for writing! This session will not have any error logs!");
                 Console.WriteLine(e.Message);
                 return;
-            }*/
+            }
 
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
             tcpClient = new TcpClient();
@@ -61,6 +67,11 @@ namespace RepRancher
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
             t1.Start();
             t2.Start();
+        }
+
+        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            errorLog.Flush();
         }
     }
 
@@ -159,7 +170,7 @@ namespace RepRancher
                         {
                             if (ProcessJSONMessage(command[1]))
                             {
-                                System.Console.Error.WriteLine("Successfully Processed Object");
+                                //System.Console.Error.WriteLine("Successfully Processed Object");
                             }
                             else
                             {
@@ -169,8 +180,12 @@ namespace RepRancher
                         catch (Exception e)
                         {
                             System.Console.Error.WriteLine("It's all gone very wrong! Please check log");
+                            System.Console.Error.WriteLine("Error Message:");
                             System.Console.Error.WriteLine(e.Message);
+                            System.Console.Error.WriteLine("Stack Trace:");
                             System.Console.Error.WriteLine(e.StackTrace);
+                            System.Console.Error.WriteLine("JSON Object:");
+                            System.Console.Error.WriteLine(command[1]);
                         }
                     } 
                 }
