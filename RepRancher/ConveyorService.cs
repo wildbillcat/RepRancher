@@ -226,13 +226,27 @@ namespace RepRancher
             {
                 if (previousParseFailure)
                 {
-
+                    int NewStart = Bracket+1;
+                    Bracket = 0;
+                    for (int i = 0; i < JSON.Length; i++)
+                    {
+                        char C = JSON[i];
+                        if (C == '{')
+                        {
+                            Bracket++;
+                            if (Bracket == NewStart)
+                            {
+                                JSON = JSON.Substring(i);
+                                break;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    
+                    previousParseFailure = true;
                 }
-                previousParseFailure = true;
+                
             }
             //If execution gets this far, object is incomplete, just return JSON
             return new string[] { JSON };
