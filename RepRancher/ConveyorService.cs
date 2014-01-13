@@ -118,12 +118,16 @@ namespace RepRancher
 
                 //Lock the Replies to append
                 ConveyorReplyMutex.WaitOne();
+                //System.Console.WriteLine("Listener Lock to append Replies");
                 //Attach new input to current string
                 repliesFromConveyor = string.Concat(repliesFromConveyor, Reply);
+                //System.Console.WriteLine("Reply:");
+                //System.Console.WriteLine(Reply);
                 //Mark content as being available
                 contentAvailable = true;
                 //Release the Replies
                 ConveyorReplyMutex.ReleaseMutex();
+                //System.Console.WriteLine("Listener Unlock the Replies:");
             }
         }
 
@@ -135,11 +139,14 @@ namespace RepRancher
                 if(contentAvailable || ProcessStalls > 5){
                     ProcessStalls = 0;
                     contentAvailable = true;
+                    //System.Console.WriteLine("Processor Waiting to review Replies:");
                     //Lock the repliesFronConveyor string for analyzation
                     ConveyorReplyMutex.WaitOne();
                     //Check to see if there is a command
+                    //System.Console.WriteLine("Processor determining if there is a Complete JSON object");
                     string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
-                    
+                    repliesFromConveyor = command[0];
+
                     if (command.Length == 1)
                     {
                         contentAvailable = false;
@@ -148,7 +155,6 @@ namespace RepRancher
                     else
                     {
                         ConveyorReplyMutex.ReleaseMutex();
-                        repliesFromConveyor = command[1];
                         try
                         {
                             if (ProcessJSONMessage(command[1]))
