@@ -20,26 +20,60 @@ namespace RepRancher
         TcpClient tcpClient;
         Stream dataStream;
         Thread t1;
-        ConveyorListenerService ears;
-        public static Mutex ConveyorReplyMutex;
+        Thread t2;
+        ConveyorListenerService ConveyorListenerServer;
+
+
+        /*
+         * FileStream to Associated Conveyor Error Log
+         */
+        FileStream ostrm;
+
+        /*
+         * StreamWriter used to communicate log errors to the file.
+         */
+        StreamWriter errorLog;
 
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
-            ConveyorReplyMutex = new Mutex(true, "ConveyorReplyMutex");
+            
+           /* try
+            {
+                ostrm = new FileStream("./error.txt", FileMode.OpenOrCreate, FileAccess.Write);
+                errorLog = new StreamWriter(ostrm);
+                System.Console.SetError(errorLog);
+                Console.WriteLine("Opened Connection to Error Log");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot open ./error.txt for writing! This session will not have any error logs!");
+                Console.WriteLine(e.Message);
+                return;
+            }*/
+
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
             tcpClient = new TcpClient();
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ears = new ConveyorListenerService(tcpClient, dataStream, ConveyorReplyMutex);
-            t1 = new Thread(new ThreadStart(ears.ListenerThreadRun));
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream);
+            t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
+            t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
             t1.Start();
+            t2.Start();
         }
     }
 
     class ConveyorListenerService
     {
+        /*
+         * This TCP Client is the connection to the Conveyor Service that is being Monitored
+         */
         TcpClient tcpClient;
+
+        /*
+         * This is the TCP connection that the listener reads and Parses
+         */
         Stream dataStream;
 
         /*
@@ -58,75 +92,87 @@ namespace RepRancher
          */
         public Mutex ConveyorReplyMutex;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, Mutex conveyorReplyMutex)
+        /*
+         * Tracks if parsing has failed due to incomplete command?
+         */
+        public bool previousParseFailure; 
+
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
-            ConveyorReplyMutex = conveyorReplyMutex;
+            ConveyorReplyMutex = new Mutex();
+            repliesFromConveyor = "";
+            previousParseFailure = false;
+            //System.Console.Error.WriteLine();
         }
 
         public void ListenerThreadRun()
         {
-            FileStream ostrm;
-            StreamWriter writer;
-            TextWriter oldOut = Console.Out;
-            try
-            {
-                ostrm = new FileStream("./ErrorLog.txt", FileMode.OpenOrCreate, FileAccess.Write);
-                writer = new StreamWriter(ostrm);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Cannot open Redirect.txt for writing");
-                Console.WriteLine(e.Message);
-                return;
-            }
-            Console.SetOut(writer);
-
+            
             while (true)
             {
                 byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
                 int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
                 string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
 
-                //Lock the Replies
-                //ConveyorReplyMutex.
-
-                
+                //Lock the Replies to append
+                ConveyorReplyMutex.WaitOne();
                 //Attach new input to current string
                 repliesFromConveyor = string.Concat(repliesFromConveyor, Reply);
+                //Mark content as being available
+                contentAvailable = true;
+                //Release the Replies
+                ConveyorReplyMutex.ReleaseMutex();
+            }
+        }
 
-                //Check to see if there is a command
-                string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
-                if (command.Length == 1)
-                {
-                    repliesFromConveyor = command[0];
+        public void ProcessorThreadRun()
+        {
+            int ProcessStalls = 0;
+            while (true)
+            {
+                if(contentAvailable || ProcessStalls > 5){
+                    ProcessStalls = 0;
+                    contentAvailable = true;
+                    //Lock the repliesFronConveyor string for analyzation
+                    ConveyorReplyMutex.WaitOne();
+                    //Check to see if there is a command
+                    string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
+                    
+                    if (command.Length == 1)
+                    {
+                        contentAvailable = false;
+                        ConveyorReplyMutex.ReleaseMutex();
+                    }
+                    else
+                    {
+                        ConveyorReplyMutex.ReleaseMutex();
+                        repliesFromConveyor = command[1];
+                        try
+                        {
+                            if (ProcessJSONMessage(command[1]))
+                            {
+                                System.Console.Error.WriteLine("Successfully Processed Object");
+                            }
+                            else
+                            {
+                                System.Console.Error.WriteLine("Something went Wrong, Please check log");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Console.Error.WriteLine("It's all gone very wrong! Please check log");
+                            System.Console.Error.WriteLine(e.Message);
+                            System.Console.Error.WriteLine(e.StackTrace);
+                        }
+                    } 
                 }
                 else
                 {
-                    repliesFromConveyor = command[0];
-                    try
-                    {
-                        if (ProcessJSONMessage(command[1]))
-                        {
-                            System.Console.WriteLine("Successfully Processed Object");
-                        }
-                        else
-                        {
-                            System.Console.WriteLine("It's all gone wrong");
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        System.Console.WriteLine("It's all gone very wrong! See:");
-                        System.Console.WriteLine(e.Message);
-                    }
-                    
+                    Thread.Sleep(1000);//Sleep for 1 second
                 }
-
-                //Unlock the Replies
-
-                //ProcessJSONMessage(Reply);
+                ProcessStalls++;
             }
         }
 
@@ -134,15 +180,12 @@ namespace RepRancher
         //String[1] = JSON Object
         public string[] ContainsCompleteJSONObject(string JSON)
         {
-            System.Console.WriteLine("Analyzing the following String:");
-            System.Console.WriteLine(JSON);
             int Bracket = 0;
             bool BracketFound = false;
             for(int i = 0; i < JSON.Length; i++){
                 if(JSON[i] == '{'){
                     BracketFound = true;
                     Bracket = i;
-                    System.Console.WriteLine("Bracket found at character: " + Bracket);
                     break;
                 }
             }
@@ -155,8 +198,6 @@ namespace RepRancher
             }
 
             if(Bracket > 0){
-                System.Console.WriteLine("Shedding the Following:");
-                System.Console.WriteLine(JSON.Substring(0,Bracket));
                 JSON = JSON.Substring(Bracket+1);
             }
             
@@ -176,9 +217,22 @@ namespace RepRancher
             }
             
             if(BracketFound){
+                previousParseFailure = false;
                 string JSONObject = JSON.Substring(0, Bracket);
                 JSON = JSON.Substring(Bracket+1);
                 return new string[] { JSON, JSONObject };
+            }
+            else
+            {
+                if (previousParseFailure)
+                {
+
+                }
+                else
+                {
+                    
+                }
+                previousParseFailure = true;
             }
             //If execution gets this far, object is incomplete, just return JSON
             return new string[] { JSON };
@@ -274,7 +328,7 @@ namespace RepRancher
                 Console.WriteLine();
                 return false;
             }
-            Console.WriteLine(JSON);
+            //Console.WriteLine(JSON);
             return true;
         }
     }
