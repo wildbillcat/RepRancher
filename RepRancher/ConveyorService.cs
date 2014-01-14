@@ -111,12 +111,18 @@ namespace RepRancher
          */
         ConcurrentDictionary<int, string> methodHistory;
 
+        /*
+         * This is an int used to track the replies from conveyor and pair them to methods that were called.
+         */
+        int rpcid;
+
         public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string> History)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
             commandQueue = Commands;
             methodHistory = History;
+            rpcid = 9000;
         }
 
         public void CommandThreadRun()
@@ -126,9 +132,20 @@ namespace RepRancher
                 //check with makerfarm and see if there are any assigned jobs
 
                 //process commands in the queue:
-                commandQueue.
+                string command;
+                while (commandQueue.TryDequeue(out command))
+                {
+
+                }
+                {
+
+                }
             }
         }
+
+    }
+
+    class CommandTracker{
 
     }
 
