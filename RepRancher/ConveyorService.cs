@@ -46,9 +46,15 @@ namespace RepRancher
          */
         StreamWriter errorLog;
 
+        /*
+         * This contains and controls the current RPCID used by the Threads
+         */
+        ConcurrentRPCID rpcid;
+
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
+            rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
             methodHistory = new ConcurrentDictionary<int, string>();
             try
@@ -82,6 +88,31 @@ namespace RepRancher
             t2.Start();
         }
 
+        /*
+         * Returns a string of help data giving the user a list of what commands are available, and what they accomplish
+         */
+        public string help()
+        {
+            StringBuilder message = new StringBuilder();
+
+            return message.ToString();
+        }
+
+        public int PeekRPCID()
+        {
+            return rpcid.PeekRPCID();
+        }
+
+        public int FetchRPCID()
+        {
+            return rpcid.FetchRPCID();
+        }
+
+        public void InvokeCommand(string command)
+        {
+
+        }
+
         private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             errorLog.Flush();
@@ -105,6 +136,15 @@ namespace RepRancher
         {
             RPCLock.WaitOne();
             int ret = RPCID;
+            RPCLock.ReleaseMutex();
+            return ret;
+        }
+
+        public int FetchRPCID()
+        {
+            RPCLock.WaitOne();
+            int ret = RPCID;
+            RPCID++;
             RPCLock.ReleaseMutex();
             return ret;
         }
@@ -137,15 +177,15 @@ namespace RepRancher
         /*
          * This is an int used to track the replies from conveyor and pair them to methods that were called.
          */
-        int rpcid;
+        ConcurrentRPCID rpcid;
 
-        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string> History)
+        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string> History, ConcurrentRPCID RpcId)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
             commandQueue = Commands;
             methodHistory = History;
-            rpcid = 9000;
+            rpcid = RpcId;
         }
 
         public void CommandThreadRun()
@@ -158,11 +198,11 @@ namespace RepRancher
                 string command;
                 while (commandQueue.TryDequeue(out command))
                 {
-
-                }
-                {
-
-                }
+                    byte[] bytesToWrite = Encoding.ASCII.GetBytes(command);
+                    dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
+                    dataStream.Flush();
+                }              
+                
             }
         }
 
