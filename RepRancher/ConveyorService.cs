@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,10 +28,13 @@ namespace RepRancher
         /*
          * This is a list of the commands queued for printing.
          */
-        Queue<string> commandQueue;
+        ConcurrentQueue<string> commandQueue;
 
-        //int rpcid, string methodName
-        Dictionary<int, string> MethodHistory;
+        /*
+         * int rpcid, 
+         * string methodName
+         */
+        ConcurrentDictionary<int, string> methodHistory;
 
         /*
          * FileStream to Associated Conveyor Error Log
@@ -45,7 +49,8 @@ namespace RepRancher
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
-            
+            commandQueue = new ConcurrentQueue<string>();
+            methodHistory = new ConcurrentDictionary<int, string>();
             try
             {
                 ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
@@ -96,14 +101,33 @@ namespace RepRancher
         Stream dataStream;
 
         /*
-         * This is a list of the commands queued for printing.
-         */
-        Queue<string> commandQueue;
+        * This is a list of the commands queued for printing.
+        */
+        ConcurrentQueue<string> commandQueue;
 
-        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream)
+        /*
+         * int rpcid, 
+         * string methodName
+         */
+        ConcurrentDictionary<int, string> methodHistory;
+
+        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string> History)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
+            commandQueue = Commands;
+            methodHistory = History;
+        }
+
+        public void CommandThreadRun()
+        {
+            while (true)
+            {
+                //check with makerfarm and see if there are any assigned jobs
+
+                //process commands in the queue:
+                commandQueue.
+            }
         }
 
     }
