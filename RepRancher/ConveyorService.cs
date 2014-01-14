@@ -88,6 +88,29 @@ namespace RepRancher
         }
     }
 
+    class ConcurrentRPCID{
+
+        int RPCID;
+        Mutex RPCLock;
+
+        public ConcurrentRPCID() : this(9000){
+        }
+
+        public ConcurrentRPCID(int startingRpcID){
+            RPCID = startingRpcID;
+            RPCLock = new Mutex();
+        }
+
+        public int PeekRPCID()
+        {
+            RPCLock.WaitOne();
+            int ret = RPCID;
+            RPCLock.ReleaseMutex();
+            return ret;
+        }
+
+    }
+
     class ConveyorCommandService
     {
         /*
