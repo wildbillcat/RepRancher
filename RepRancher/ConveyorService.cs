@@ -22,7 +22,9 @@ namespace RepRancher
         Stream dataStream;
         Thread t1;
         Thread t2;
+        Thread t3;
         ConveyorListenerService ConveyorListenerServer;
+        ConveyorCommandService ConveyorCommandServer;
         System.Timers.Timer ErrorFlush;
 
         /*
@@ -34,7 +36,7 @@ namespace RepRancher
          * int rpcid, 
          * string methodName
          */
-        ConcurrentDictionary<int, string> methodHistory;
+        ConcurrentDictionary<int, string[]> methodHistory;
 
         /*
          * FileStream to Associated Conveyor Error Log
@@ -56,7 +58,7 @@ namespace RepRancher
         {
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
-            methodHistory = new ConcurrentDictionary<int, string>();
+            methodHistory = new ConcurrentDictionary<int, string[]>();
             try
             {
                 ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
@@ -82,35 +84,64 @@ namespace RepRancher
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
             ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream);
+            ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
+            t3 = new Thread(new ThreadStart(ConveyorCommandServer.CommandThreadRun));
             t1.Start();
             t2.Start();
+            t3.Start();
         }
 
         /*
-         * Returns a string of help data giving the user a list of what commands are available, and what they accomplish
+         * Used to parse and run commands from users and webservers.
          */
-        public string help()
+        public string InvokeCommand(string command)
         {
-            StringBuilder message = new StringBuilder();
+            string[] Command = command.Split(' ');
+            string outPut = "";
+            int rpcID = 0;
+            if (Command[0].Equals("help"))
+            {
+                //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
+                return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command" +
+                    "\n \n \n Available Commands: \n \n getprinters \n";
+            } if (Command[0].Equals("getprinters"))
+            {
+                if (Command.Length > 1)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(rpcID);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }/*
+            else if (Command[0].Equals("help"))
+            {
 
-            return message.ToString();
-        }
+            }
+            else if (Command[0].Equals("help"))
+            {
 
-        public int PeekRPCID()
-        {
-            return rpcid.PeekRPCID();
-        }
+            }*/
+            else
+            {
+                //if this is returned, no method is run due to found invalidity
+                return "Invalid Command: " + Command[0] + "\n Type help for information on available commands";
+            }
 
-        public int FetchRPCID()
-        {
-            return rpcid.FetchRPCID();
-        }
-
-        public void InvokeCommand(string command)
-        {
-
+            //Should only get here if a valid command was issued, add command to history and queue it up.
+            if (!methodHistory.TryAdd(rpcID, Command))
+            {
+                return "This Command has previously been issued!";
+            }
+            commandQueue.Enqueue(command);
+            return outPut; //Command queued up and added to the issue history!
         }
 
         private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
@@ -172,14 +203,14 @@ namespace RepRancher
          * int rpcid, 
          * string methodName
          */
-        ConcurrentDictionary<int, string> methodHistory;
+        ConcurrentDictionary<int, string[]> methodHistory;
 
         /*
          * This is an int used to track the replies from conveyor and pair them to methods that were called.
          */
         ConcurrentRPCID rpcid;
 
-        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string> History, ConcurrentRPCID RpcId)
+        public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string[]> History, ConcurrentRPCID RpcId)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -205,10 +236,6 @@ namespace RepRancher
                 
             }
         }
-
-    }
-
-    class CommandTracker{
 
     }
 
@@ -252,7 +279,6 @@ namespace RepRancher
             ConveyorReplyMutex = new Mutex();
             repliesFromConveyor = "";
             previousParseFailure = false;
-            //System.Console.Error.WriteLine();
         }
 
         public void ListenerThreadRun()
@@ -266,16 +292,14 @@ namespace RepRancher
 
                 //Lock the Replies to append
                 ConveyorReplyMutex.WaitOne();
-                //System.Console.WriteLine("Listener Lock to append Replies");
+
                 //Attach new input to current string
                 repliesFromConveyor = string.Concat(repliesFromConveyor, Reply);
-                //System.Console.WriteLine("Reply:");
-                //System.Console.WriteLine(Reply);
+
                 //Mark content as being available
                 contentAvailable = true;
                 //Release the Replies
                 ConveyorReplyMutex.ReleaseMutex();
-                //System.Console.WriteLine("Listener Unlock the Replies:");
             }
         }
 
@@ -477,7 +501,7 @@ namespace RepRancher
             else if (Reply == JsonReplyType.Result)
             {
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
-                Console.WriteLine("Recieved Response to Command : ", MethodID);
+                Console.WriteLine("Recieved Response to Command : " + MethodID);
                 Console.WriteLine();
             }
             else if (Reply == JsonReplyType.Error)
