@@ -434,7 +434,7 @@ namespace RepRancher
             return new string[] { JSON };
         }
 
-        public static bool ProcessJSONMessage(string JSON)
+        public bool ProcessJSONMessage(string JSON)
         {
             //Determine Message Type:
             JsonReplyType Reply = ConveyorJsonReplyParser.ReplyType(JSON);
