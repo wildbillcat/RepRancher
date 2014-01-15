@@ -27,6 +27,7 @@ namespace RepRancher
         ConveyorCommandService ConveyorCommandServer;
         System.Timers.Timer ErrorFlush;
 
+       
         /*
          * This is a list of the commands queued for printing.
          */
@@ -83,7 +84,7 @@ namespace RepRancher
             tcpClient = new TcpClient();
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream);
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
@@ -242,6 +243,11 @@ namespace RepRancher
     class ConveyorListenerService
     {
         /*
+         * This contains the history of all commands issued by reprancher this session
+         */
+        ConcurrentDictionary<int, string[]> methodHistory;
+
+        /*
          * This TCP Client is the connection to the Conveyor Service that is being Monitored
          */
         TcpClient tcpClient;
@@ -270,15 +276,16 @@ namespace RepRancher
         /*
          * Tracks if parsing has failed due to incomplete command?
          */
-        public bool previousParseFailure; 
+        public bool previousParseFailure;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream)
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
             ConveyorReplyMutex = new Mutex();
             repliesFromConveyor = "";
             previousParseFailure = false;
+            methodHistory = MethodHistory;
         }
 
         public void ListenerThreadRun()
@@ -352,6 +359,7 @@ namespace RepRancher
                 }
                 else
                 {
+                    //no replies to queue up, lets take a look.
                     Thread.Sleep(1000);//Sleep for 1 second
                 }
                 ProcessStalls++;
@@ -500,8 +508,31 @@ namespace RepRancher
             }
             else if (Reply == JsonReplyType.Result)
             {
+                //Fetch methodID in order to figure out what kind of reply to expect
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
                 Console.WriteLine("Recieved Response to Command : " + MethodID);
+                string[] method;
+                if (methodHistory.TryGetValue(MethodID, out method))
+                {
+                    //This looks up the method originally called in order to put the Reply into context.
+                    if (method[0].Equals("getprinters"))
+                    {
+                        JsonRpcResult<printer[]> printers = JsonConvert.DeserializeObject<JsonRpcResult<printer[]>>(JSON);
+                        Console.WriteLine("Command of " + method[0] + "with rpcid " + MethodID + " with result:");
+                        foreach(printer p in printers.result){
+                            Console.WriteLine("UniqueName : " + p.uniqueName + "\n State : " + p.state);
+                            Console.WriteLine();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("RepRancher did not issue a method with this RPC id!");
+                }
                 Console.WriteLine();
             }
             else if (Reply == JsonReplyType.Error)
