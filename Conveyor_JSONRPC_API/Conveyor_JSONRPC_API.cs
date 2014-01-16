@@ -514,6 +514,21 @@ namespace Conveyor_JSONRPC_API
         }
 
         /*
+         * getprinters
+         * This parses the return of the GetPrintersMethod
+         */
+        public static printer[] GetPrinters(string JSON)
+        {
+            JsonSerializerSettings val = new JsonSerializerSettings();
+            val.Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+            {
+                args.ErrorContext.Handled = true;
+            };
+            JsonRpcResult<printer[]> printers = JsonConvert.DeserializeObject<JsonRpcResult<printer[]>>(JSON, val);
+            return printers.result;
+        }
+
+        /*
          * getjob
          * This method returns the details for a job.
          * params
@@ -549,6 +564,22 @@ namespace Conveyor_JSONRPC_API
         public static string GetJobs(int rpcid)
         {
             return BuildRPCString(rpcid, "getjobs");
+        }
+
+        /*
+         * getjobs
+         * 
+         * This method parses the return of getjobs
+         */
+        public static job[] GetJobs(string JSON)
+        {
+            JsonSerializerSettings val = new JsonSerializerSettings();
+            val.Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
+            {
+                args.ErrorContext.Handled = true;
+            };
+            JsonRpcResult<job[]> jobs = JsonConvert.DeserializeObject<JsonRpcResult<job[]>>(JSON, val);
+            return jobs.result;
         }
 
         /*
