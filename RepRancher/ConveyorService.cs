@@ -106,7 +106,7 @@ namespace RepRancher
             {
                 //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
                 return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command" +
-                    "\n \n \n Available Commands: \n \n getprinters \n";
+                    "\n \n \n Available Commands: \n \n getprinters \n getjobs \n";
             } if (Command[0].Equals("getprinters"))
             {
                 if (Command.Length > 1)
