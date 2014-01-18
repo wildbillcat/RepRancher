@@ -17,14 +17,41 @@ namespace RepRancher
 {
     class ConveyorService
     {
+        /*
+         * This is the IP Address of the Conveyor Service
+         */
         IPEndPoint ipEndPoint;
+
+        /*
+         * This is the TCP Client used to connect to the Conveyor Service
+         */
         TcpClient tcpClient;
+
+        /*
+         * This is the Data Stream where data is written to and read from Conveyor
+         */
         Stream dataStream;
+
+        /*
+         * These threads are ised to run the ConveyorListenerServer and ConveyorCommandServer
+         */
         Thread t1;
         Thread t2;
         Thread t3;
+
+        /*
+         * This Class runs on two threads, one of which continually listens to Conveyor looking for input and the other parses and processes the Data Recieved.
+         */
         ConveyorListenerService ConveyorListenerServer;
+
+        /*
+         * This Class runs on a thread to process commands recieved from the user and from MakerFarm.
+         */
         ConveyorCommandService ConveyorCommandServer;
+
+        /*
+         * This Timer is used to flush errors to the text file in a timely manner, to make sure that a crash doesnt get missed.
+         */
         System.Timers.Timer ErrorFlush;
 
        
@@ -54,9 +81,28 @@ namespace RepRancher
          */
         ConcurrentRPCID rpcid;
 
+        /*
+         * This is a list of the current ports known to be attached to the Conveyor Service
+         */
+        List<port> CurrentPorts;
+
+        /*
+         * This is a list of the current printers known to the Conveyor Service
+         */
+        List<printer> CurrentPrinters;
+
+        /*
+         * This is a list of jobs known to the Conveyor Service
+         */
+        List<job> CurrentJobs;
+
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
+            CurrentPorts = new List<port>();
+            CurrentPrinters = new List<printer>();
+            CurrentJobs = new List<job>();
+
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
             methodHistory = new ConcurrentDictionary<int, string[]>();

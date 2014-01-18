@@ -23,10 +23,25 @@ namespace RepRancher
             ConveyorService Conveyor = new ConveyorService("127.0.0.1", 9999);
             while (true)
             {
-                Console.WriteLine();
-                Console.WriteLine("RepRancher! Enter Command:");
-                string command = Console.ReadLine();
-                Console.WriteLine(Conveyor.InvokeCommand(command));
+                try
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("RepRancher! Enter Command:");
+                    string command = Console.ReadLine();
+                    if (command.Equals("exit"))
+                    {
+                        break;
+                    }
+                    Console.WriteLine(Conveyor.InvokeCommand(command));
+                }
+                catch
+                {
+                    Console.WriteLine("Oh my! It seems that something might have happened to the Conveyor Service! Please restart it, make sure all is well, and then press enter to restart RepRancher.");
+                    Console.ReadLine();
+                    //This is presently wasteful, will have to look into disposing of the old Conveyor service.
+                    Conveyor = new ConveyorService("127.0.0.1", 9999);
+                }
+                
             }
             
         }

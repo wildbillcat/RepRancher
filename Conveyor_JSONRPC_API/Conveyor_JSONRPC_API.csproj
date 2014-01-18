@@ -59,13 +59,13 @@
     <Content Include="JSON Example Replies\2.4.1\Client\PortAttached.js" />
     <Content Include="JSON Example Replies\2.4.1\Client\PortDetached.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\01 makerware connect.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\02 makerware print file from gcode.txt" />
-    <Content Include="JSON Example Replies\2.4.1\Server\03 makerware cancel print.txt" />
+    <Content Include="JSON Example Replies\2.4.1\Server\02 makerware print file from gcode.js" />
+    <Content Include="JSON Example Replies\2.4.1\Server\03 makerware cancel print..js" />
     <Content Include="JSON Example Replies\2.4.1\Server\Connect.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetJobs.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetPorts.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetPrinters.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\HarHar.txt" />
+    <Content Include="JSON Example Replies\2.4.1\Server\Pause.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
