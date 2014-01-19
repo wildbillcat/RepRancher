@@ -54,6 +54,10 @@ namespace RepRancher
          */
         System.Timers.Timer ErrorFlush;
 
+        /*
+         * This Timer is used to send a simple hello command, to test that conveyor is still running.
+         */
+        System.Timers.Timer KeepAlive;
        
         /*
          * This is a list of the commands queued for printing.
@@ -138,6 +142,49 @@ namespace RepRancher
             t1.Start();
             t2.Start();
             t3.Start();
+            KeepAlive = new System.Timers.Timer(10000);
+            KeepAlive.Elapsed += new System.Timers.ElapsedEventHandler(KeepAliveEvent);
+            KeepAlive.Enabled = true;
+        }
+
+        public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            InvokeCommand("hello");
+        }
+
+        public bool Valid()
+        {
+            return t1.IsAlive && t2.IsAlive && t3.IsAlive;
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("Ending Keep Alive Timer");
+            KeepAlive.Stop();
+            KeepAlive.Enabled = false;
+            Console.WriteLine("Telling Listener Service to close up shop.");
+            ConveyorListenerServer.TriggerDispose();
+            Console.WriteLine("Telling Conveyor Hello-Goodbye.");
+            InvokeCommand("hello");
+            Console.WriteLine("Joining First Thread.");
+            t1.Join();
+            Console.WriteLine("Joining Second Thread.");
+            t2.Join();
+            Console.WriteLine("Telling Listener Service to close up shop.");
+            ConveyorCommandServer.TriggerDispose();            
+            Console.WriteLine("Joining Third Thread.");
+            t3.Join();
+            Console.WriteLine("Closing Data Stream.");
+            dataStream.Close();
+            Console.WriteLine("Closing TCP Connection.");
+            tcpClient.Close();
+            Console.WriteLine("Ending the Error Log Timer.");
+            ErrorFlush.Stop();
+            ErrorFlush.Enabled = false;
+            Console.WriteLine("Closing Error Log Stream.");
+            errorLog.Close();
+            Console.WriteLine("Closing Error Log File Connection.");
+            ostrm.Close();
         }
 
         /*
@@ -150,9 +197,42 @@ namespace RepRancher
             int rpcID = 0;
             if (Command[0].Equals("help"))
             {
-                //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
-                return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command" +
-                    "\n \n \n Available Commands: \n \n getprinters \n getjobs \n";
+                if (Command.Length > 1)
+                {
+                    if(Command[1].Equals("getjobs")){
+                        return "The getjobs command does not use any parameters. It returns an array of job objects of any jobs that conveyor has dealt with this session.";
+                    }else if(Command[1].Equals("getprinters")){
+                        return "The getprinters command does not use any parameters. It return an array of printer objects of any printer conveyor is currently watching.";
+                    }else if(Command[1].Equals("getports")){
+                        return "The getports command does not use any parameters. It returns an array of port objects that conveyor currently sees. Connecting to these objects then allows for the use of affiliated printers.";
+                    }else if(Command[1].Equals("connect")){
+                        return "The connect command requires the following parameters: \n " + 
+                            "-port_name [portname] ie. -portname COM3:9153:45077 \n " + 
+                            "The following parameters are optional: \n " + 
+                            "-driver_name [drivername] ie. -driver_name s3g \n " + 
+                            "-machine_name [machinename] ie. -machine_name 23C1:B015:7523733353635171E0D1 \n " + 
+                            "-persistent [boolean] ie. -persistent false \n " + 
+                            "-profile_name [profilename] ie. -profile_name Replicator2";
+                    }else if(Command[1].Equals("hello")){{
+                        return "The hello command does not use any parameters. It returns a world reply if successfull, and should be called to the conveyor service first before any other command.";
+                    }
+                    }else if(Command[1].Equals("restart")){
+                        return "The restart command does not use any parameters. It disposes of the current connection to the conveyor service and reconnects using a new set of threads.";
+                    }else if(Command[1].Equals("exit")){
+                        return "The exit command does not use any parameters. It closes the connection to conveyor and cause RepRancher to exit.";
+                    }else if(Command[1].Equals("getjobs")){
+
+                    }
+                    
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }else{
+                    //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
+                    return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command \n \n" +
+                        "Commands Specific to RepRancher: \n exit \n restart" +
+                    "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n";
+                }
+                
             } if (Command[0].Equals("getprinters"))
             {
                 if (Command.Length > 1)
@@ -182,11 +262,87 @@ namespace RepRancher
                     command = Conveyor_JSONRPC_API.ServerAPI.GetJobs(rpcID);
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
                 }
-            }/*
-            else if (Command[0].Equals("help"))
+            }
+            else if (Command[0].Equals("getports"))
             {
+                if (Command.Length > 1)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
+            else if (Command[0].Equals("connect"))
+            {
+                string port_name = null;
+                string driver_name = null;
+                string machine_name = null;
+                bool persistent = false;
+                string profile_name = null;
 
-            }*/
+                if (Command.Length < 3 || Command.Length > 10)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";                    
+                }
+                else
+                {
+                    for(int i = 0; i < Command.Length; i++){
+                        string cmd = Command[i];
+                        if(cmd.Equals("-port_name")){
+                            port_name = Command[i++];
+                        }else if(cmd.Equals("-driver_name")){
+                            driver_name = Command[i++];
+                        }else if(cmd.Equals("-machine_name")){
+                            machine_name = Command[i++];
+                        }else if(cmd.Equals("-persistent")){
+                            persistent = bool.Parse(Command[i++]);
+                        }else if(cmd.Equals("-profile_name")){
+                            profile_name = Command[i++];
+                        }
+                    }
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.Connect(rpcID, driver_name, machine_name, persistent, port_name, profile_name);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
+            else if (Command[0].Equals("hello"))//
+            {
+                if (Command.Length > 1)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.Hello(rpcID);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
+            else if (Command[0].Equals("durp"))//
+            {
+                if (Command.Length > 1)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
             else
             {
                 //if this is returned, no method is run due to found invalidity
@@ -268,6 +424,16 @@ namespace RepRancher
          */
         ConcurrentRPCID rpcid;
 
+        /*
+         * Mutex Protects the dispose variable
+         */
+        Mutex DisposeMutex;
+
+        /*
+         * Determines if the thread should end.
+         */
+        bool Dispose;
+
         public ConveyorCommandService(TcpClient TcpClient, Stream DataStream, ConcurrentQueue<string> Commands, ConcurrentDictionary<int, string[]> History, ConcurrentRPCID RpcId)
         {
             tcpClient = TcpClient;
@@ -275,24 +441,48 @@ namespace RepRancher
             commandQueue = Commands;
             methodHistory = History;
             rpcid = RpcId;
+            DisposeMutex = new Mutex();
+            Dispose = false;
         }
 
         public void CommandThreadRun()
         {
             while (true)
             {
+                DisposeMutex.WaitOne();
+                if (Dispose)
+                {
+                    DisposeMutex.ReleaseMutex();
+                    Console.WriteLine("Command thread returning.");
+                    return;
+                }
+                DisposeMutex.ReleaseMutex();
                 //check with makerfarm and see if there are any assigned jobs
 
                 //process commands in the queue:
                 string command;
                 while (commandQueue.TryDequeue(out command))
                 {
-                    byte[] bytesToWrite = Encoding.ASCII.GetBytes(command);
-                    dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
-                    dataStream.Flush();
-                }              
-                
+                    try
+                    {
+                        byte[] bytesToWrite = Encoding.ASCII.GetBytes(command);
+                        dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
+                        dataStream.Flush();
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Command thread returning.");
+                        return;
+                    }
+                }  
             }
+        }
+
+        public void TriggerDispose()
+        {
+            DisposeMutex.WaitOne();
+            Dispose = true;
+            DisposeMutex.ReleaseMutex();
         }
 
     }

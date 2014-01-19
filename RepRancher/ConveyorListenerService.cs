@@ -18,6 +18,16 @@ namespace RepRancher
     class ConveyorListenerService
     {
         /*
+         * This semaphore is used to control read access to the dispose variable, used to trigger the end of the threads
+         */
+         Semaphore Running;
+
+        /*
+         * This variable triggers a the disposal of the threads on this object
+         */
+         bool Dispose;
+
+        /*
          * This contains the history of all commands issued by reprancher this session
          */
         ConcurrentDictionary<int, string[]> methodHistory;
@@ -61,6 +71,16 @@ namespace RepRancher
             repliesFromConveyor = "";
             previousParseFailure = false;
             methodHistory = MethodHistory;
+            Running = new Semaphore(2, 2);
+            Dispose = false;
+        }
+
+        public void TriggerDispose()
+        {
+            Running.WaitOne();
+            Running.WaitOne();
+            Dispose = true;
+            Running.Release(2);
         }
 
         public void ListenerThreadRun()
@@ -68,9 +88,28 @@ namespace RepRancher
 
             while (true)
             {
-                byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
-                int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
-                string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                Running.WaitOne();
+                if (Dispose)
+                {
+                    Running.Release();
+                    Console.WriteLine("Listener thread returning.");
+                    return;
+                }
+                Running.Release();
+                string Reply = "";
+                try
+                {
+                    byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
+                    int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
+                    Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                }
+                catch
+                {
+                    Running.WaitOne();
+                    Running.WaitOne();
+                    Dispose = true;
+                    Running.Release(2);
+                }
 
                 //Lock the Replies to append
                 ConveyorReplyMutex.WaitOne();
@@ -80,6 +119,7 @@ namespace RepRancher
 
                 //Mark content as being available
                 contentAvailable = true;
+
                 //Release the Replies
                 ConveyorReplyMutex.ReleaseMutex();
             }
@@ -90,6 +130,14 @@ namespace RepRancher
             int ProcessStalls = 0;
             while (true)
             {
+                Running.WaitOne();
+                if (Dispose)
+                {
+                    Running.Release();
+                    Console.WriteLine("Processor thread returning.");
+                    return;
+                }
+                Running.Release();
                 if (contentAvailable || ProcessStalls > 5)
                 {
                     ProcessStalls = 0;

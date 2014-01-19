@@ -30,12 +30,29 @@ namespace RepRancher
                     string command = Console.ReadLine();
                     if (command.Equals("exit"))
                     {
-                        break;
+                        Conveyor.Dispose();
+                        return;
                     }
-                    Console.WriteLine(Conveyor.InvokeCommand(command));
+                    else if (command.Equals("restart"))
+                    {
+                        Conveyor.Dispose();
+                        Conveyor = new ConveyorService("127.0.0.1", 9999);
+                    }
+                    else
+                    {
+                        if (Conveyor.Valid())
+                        {
+                            Console.WriteLine(Conveyor.InvokeCommand(command));
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
                 }
                 catch
                 {
+                    Conveyor.Dispose();
                     Console.WriteLine("Oh my! It seems that something might have happened to the Conveyor Service! Please restart it, make sure all is well, and then press enter to restart RepRancher.");
                     Console.ReadLine();
                     //This is presently wasteful, will have to look into disposing of the old Conveyor service.
