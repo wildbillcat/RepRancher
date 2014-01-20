@@ -58,9 +58,7 @@ namespace RepRancher
                     //This is presently wasteful, will have to look into disposing of the old Conveyor service.
                     Conveyor = new ConveyorService("127.0.0.1", 9999);
                 }
-                
             }
-            
         }
     }
 }

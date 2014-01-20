@@ -187,33 +187,65 @@ namespace Conveyor_JSONRPC_API
          *  slicer-settings :: (string)
          *  
          * A slicer settings object.
-         * 
-         * { 'slicer':               (slicer-name)
-         * , 'extruder':             (extruder-name)
-         * , 'raft':                 (bool)
-         * , 'support':              (bool)
-         * , 'infill':               (number)
-         * , 'layer_height':         (number)
-         * , 'shells':               (number)
-         * , 'extruder_temperature': (temperature)
-         * , 'platform_temperature': (temperature)
-         * , 'print_speed':          (rate)
-         * , 'travel_speed':         (rate)
+         * {
+         * "default_raft_extruder":0,
+         * "default_support_extruder":0,
+         * "do_auto_raft":true,
+         * "do_auto_support":false,
+         * "extruder":"0",
+         * "extruder_temperatures":[230,230],
+         * "heat_platform":false,
+         * "infill":0.10,
+         * "layer_height":0.20,
+         * "path":null,
+         * "platform_temperature":110,
+         * "print_speed":90,
+         * "raft":true,
+         * "shells":2,
+         * "slicer":"MIRACLEGRUE",
+         * "support":false,
+         * "travel_speed":150
          * }
          */
         public class slicersettings
         {
-            public string slicer { get; set; }
+            public int default_raft_extruder { get; set; }
+            public int default_support_extruder { get; set; }
+            public bool do_auto_raft { get; set; }
+            public bool do_auto_support { get; set; }
             public string extruder { get; set; }
-            public bool raft { get; set; }
-            public bool support { get; set; }
+            public int[] extruder_temperatures { get; set; }
+            public bool heat_platform { get; set; }
             public double infill { get; set; }
             public double layer_height { get; set; }
-            public double shells { get; set; }
-            public double extruder_temperature { get; set; }
-            public double platform_temperature { get; set; }
-            public double print_speed { get; set; }
-            public double travel_speed { get; set; }
+            public string path { get; set; } //
+            public int platform_temperature { get; set; }
+            public int print_speed { get; set; }
+            public bool raft { get; set; }
+            public int shells { get; set; }
+            public string slicer { get; set; }
+            public bool support { get; set; }
+            public int travel_speed { get; set; }
+           
+            public slicersettings()
+            {
+                default_raft_extruder = 0;
+                do_auto_raft = true;
+                do_auto_support = false;
+                extruder = "0";
+                extruder_temperatures = new int[]{230, 230};
+                heat_platform = false;
+                infill = 0.1;
+                layer_height = 0.2;
+                path = null;
+                platform_temperature = 110;
+                print_speed = 90;
+                raft = true;
+                shells = 2;
+                slicer = "MIRACLEGRUE";
+                support = false;
+                travel_speed = 150;
+            }
         }
 
         /*
@@ -391,25 +423,29 @@ namespace Conveyor_JSONRPC_API
          * print
          * This method creates and starts a print job.
          * params
-         * { 
-         * "uniquename":      (printer-unique-name)            
-         * , "inputpath":       (absolute-file-path)            
-         * , "preprocessor":    (preprocessors)            
-         * , "skip_start_end":  (bool)            
-         * , "archive_lvl":     (archive-level)            
-         * , "archive_dir:"     (absolute-directory-path)            
-         * , "slicer_settings": (slicer-settings)            
-         * , "material":        (material-name)            
+         * {
+         * "gcode_processor_names":null,
+         * "has_start_end":true,
+         * "input_file":"C:/Users/Rob/AppData/Local/Temp/conveyor-ui-{46224d0f-264c-41cf-abff-6b7443314f21}/Mr_Jaws_2.3.0.gcode",
+         * "machine_name":"23C1:B015:7523733353635171A221",
+         * "material_name":["PLA","PLA"],
+         * "slicer_name":"miraclegrue",
+         * "slicer_settings": 
          * }
          * result
          * (job)
          */
-        public static string Print(int rpcid)
+        public static string Print(int rpcid, string[] gcode_processor_names, bool has_start_end, string input_file, string machine_name, string[] material_name, string slicer_name, slicersettings slicer_settings)
         {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "print");
+            List<JProperty> Params = new List<JProperty>();
+            Params.Add(new JProperty("gcode_processor_names", gcode_processor_names));
+            Params.Add(new JProperty("has_start_end", has_start_end));
+            Params.Add(new JProperty("input_file", input_file));
+            Params.Add(new JProperty("machine_name", machine_name));
+            Params.Add(new JProperty("material_name", material_name));
+            Params.Add(new JProperty("slicer_name", slicer_name));
+            Params.Add(new JProperty("slicer_settings", slicer_settings));
+            return BuildRPCString(rpcid, "print", Params);
         }
 
         /*

@@ -88,24 +88,24 @@ namespace RepRancher
         /*
          * This is a list of the current ports known to be attached to the Conveyor Service
          */
-        List<port> CurrentPorts;
+        BlockingCollection<port> CurrentPorts;
 
         /*
          * This is a list of the current printers known to the Conveyor Service
          */
-        List<printer> CurrentPrinters;
+        BlockingCollection<printer> CurrentPrinters;
 
         /*
          * This is a list of jobs known to the Conveyor Service
          */
-        List<job> CurrentJobs;
+        BlockingCollection<job> CurrentJobs;
 
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
-            CurrentPorts = new List<port>();
-            CurrentPrinters = new List<printer>();
-            CurrentJobs = new List<job>();
+            CurrentPorts = new BlockingCollection<port>();
+            CurrentPrinters = new BlockingCollection<printer>();
+            CurrentJobs = new BlockingCollection<job>();
 
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
@@ -220,31 +220,182 @@ namespace RepRancher
                         return "The restart command does not use any parameters. It disposes of the current connection to the conveyor service and reconnects using a new set of threads.";
                     }else if(Command[1].Equals("exit")){
                         return "The exit command does not use any parameters. It closes the connection to conveyor and cause RepRancher to exit.";
-                    }else if(Command[1].Equals("getjobs")){
-
+                    }else if (Command[1].Equals("print")){
+                        return "The connect command requires the following parameters: \n " +
+                            "-input_file [portname] ie. -portname COM3:9153:45077 \n " +
+                            "-machine_name [machinename] ie. -machine_name 23C1:B015:7523733353635171A221 \n \n" +
+                            "The following parameters are optional: \n " +
+                            "-gcode_processor_names [gcodeprocessornames] ie. -gcode_processor_names not,sure,of,options \n " +
+                            "-has_start_end [boolean] ie. -has_start_end true \n " +
+                            "-material_name [materialnames] ie. -material_name false PLA,PLA \n " +
+                            "-slicer_name [slicername] ie. -slicer_name miraclegrue \n \n" +
+                            "The following parameters can be used to modify the slicer settings: \n " +
+                            "-default_raft_extruder [defaultraftextruder] ie. -default_raft_extruder 0 \n " + 
+                            "-default_support_extruder [defaultsupportextruder] ie. -default_support_extruder 0 \n " +
+                            "-do_auto_raft [boolean] ie. -do_auto_raft true  \n " +
+                            "-do_auto_support [boolean] ie. -do_auto_support false  \n " +
+                            "-extruder [extruder] ie. -extruder 0  \n " +
+                            "-extruder_temperatures [extrudertemperatures] ie. -extruder_temperatures 230,230  \n " +
+                            "-heat_platform [boolean] ie. -heat_platform false  \n " +
+                            "-infill [infill] ie. -infill 0.1  \n " +
+                            "-layer_height [layerheight] ie. -layer_height .2  \n " +
+                            "-path [path] ie. -path C:\\SkienforgeProfile \n " +
+                            "-platform_temperature [platformtemperature] ie. -platform_temperature 110  \n " +
+                            "-print_speed [printspeed] ie. -print_speed 90  \n " +
+                            "-raft [boolean] ie. -raft true  \n " +
+                            "-shells [shells] ie. -shells 2  \n " +
+                            "-slicer [slicer] ie. -slicer MIRACLEGRUE  \n " +
+                            "-support [boolean] ie. -support false  \n " +
+                            "-travel_speed [travel_speed] ie. -travel_speed 150  \n ";
                     }
-                    
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
                 }else{
                     //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
                     return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command \n \n" +
                         "Commands Specific to RepRancher: \n exit \n restart" +
-                    "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n";
+                    "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n print \n";
                 }
-                
-            } if (Command[0].Equals("getprinters"))
+
+            } if (Command[0].Equals("print"))
             {
-                if (Command.Length > 1)
+                if (Command.Length < 2)
                 {
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
                 }
                 else
                 {
+                    string[] gcode_processor_names = null;
+                    bool has_start_end = true;
+                    string input_file = ""; //Required
+                    string machine_name = ""; //Required
+                    string[] material_name = new string[] {"PLA","PLA"};
+                    string slicer_name = "miraclegrue";
+                    slicersettings slicer_settings = new slicersettings();
+                    for (int i = 0; i < Command.Length; i++)
+                    {
+                        string cmd = Command[i];
+                        if (cmd.Equals("-gcode_processor_names"))
+                        {
+                            gcode_processor_names = Command[i++].Split(',');
+                        }
+                        else if (cmd.Equals("-has_start_end"))
+                        {
+                            has_start_end = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-input_file"))
+                        {
+                            input_file = Command[i++];
+                        }
+                        else if (cmd.Equals("-machine_name"))
+                        {
+                            machine_name = Command[i++];
+                        }
+                        else if (cmd.Equals("-material_name"))
+                        {
+                            material_name = Command[i++].Split(',');
+                        }
+                        else if (cmd.Equals("-slicer_name"))
+                        {
+                            slicer_name = Command[i++];
+                        }
+                        else if (cmd.Equals("-default_raft_extruder"))
+                        {
+                            slicer_settings.default_raft_extruder = int.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-default_support_extruder"))
+                        {
+                            slicer_settings.default_support_extruder = int.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-do_auto_raft"))
+                        {
+                            slicer_settings.do_auto_raft = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-do_auto_support"))
+                        {
+                            slicer_settings.do_auto_support = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-extruder"))
+                        {
+                            slicer_settings.extruder = Command[i++];
+                        }
+                        else if (cmd.Equals("-extruder_temperatures"))
+                        {
+                            List<int> temps = new List<int>();
+                            foreach (string s in Command[i++].Split(','))
+                            {
+                                temps.Add(int.Parse(s));
+                            }
+                            slicer_settings.extruder_temperatures = temps.ToArray();
+                        }
+                        else if (cmd.Equals("-heat_platform"))
+                        {
+                            slicer_settings.heat_platform = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-infill"))
+                        {
+                            slicer_settings.infill = double.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-layer_height"))
+                        {
+                            slicer_settings.layer_height = double.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-path"))
+                        {
+                            slicer_settings.path = Command[i++];
+                        }
+                        else if (cmd.Equals("-platform_temperature"))
+                        {
+                            slicer_settings.platform_temperature = int.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-print_speed"))
+                        {
+                            slicer_settings.print_speed = int.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-raft"))
+                        {
+                            slicer_settings.raft = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-shells"))
+                        {
+                            slicer_settings.shells = int.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-slicer"))
+                        {
+                            slicer_settings.slicer = Command[i++];
+                        }
+                        else if (cmd.Equals("-support"))
+                        {
+                            slicer_settings.support = bool.Parse(Command[i++]);
+                        }
+                        else if (cmd.Equals("-travel_speed"))
+                        {
+                            slicer_settings.travel_speed = int.Parse(Command[i++]);
+                        }
+                    }
+                    if (!System.IO.File.Exists(input_file))
+                    {
+                        return "The File you wanted printed does not appear to exist. File: \n" + input_file;
+                    }
+                    printer selectedPrinter = null;
+                    foreach(printer p in CurrentPrinters){
+                        if (p.name.Equals(machine_name))
+                        {
+                            selectedPrinter = p;
+                        }
+                    }
+                    if (selectedPrinter == null)
+                    {
+                        return "The Printer you wanted does not appear to exist. File: \n" + machine_name;
+                    }
+                    if (!selectedPrinter.state.Equals("IDLE"))
+                    {
+                        return "The Printer you wanted is currently unavailable. State: " + selectedPrinter.state;
+                    }
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(rpcID);
+                    command = Conveyor_JSONRPC_API.ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
                 }
             }
@@ -275,6 +426,21 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
+                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
+            else if (Command[0].Equals("getprinters"))
+            {
+                if (Command.Length > 1)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    //Valid Command
+                    rpcID = rpcid.FetchRPCID();
+                    command = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(rpcID);
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
                 }
             }
