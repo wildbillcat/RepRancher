@@ -63,7 +63,22 @@ namespace RepRancher
          */
         public bool previousParseFailure;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory)
+        /*
+         * This is a list of the current ports known to be attached to the Conveyor Service
+         */
+        ConcurrentDictionary<string, port> CurrentPorts;
+
+        /*
+         * This is a list of the current printers known to the Conveyor Service
+         */
+        ConcurrentDictionary<string, printer> CurrentPrinters;
+
+        /*
+         * This is a list of jobs known to the Conveyor Service
+         */
+        ConcurrentDictionary<int, job> CurrentJobs;
+
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -73,6 +88,10 @@ namespace RepRancher
             methodHistory = MethodHistory;
             Running = new Semaphore(2, 2);
             Dispose = false;
+            CurrentPorts = currentPorts;
+            CurrentPrinters = currentPrinters;
+            CurrentJobs = currentJobs;
+
         }
 
         public void TriggerDispose()
@@ -285,94 +304,196 @@ namespace RepRancher
             if (Reply == JsonReplyType.Method)
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
-                Console.WriteLine("Detected Method : " + MethodName);
+                Console.Error.WriteLine("Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
-                    job AddedJob = ClientAPI.JobAdded(JSON);
-                    Console.WriteLine("Job Name : " + AddedJob.name);
-                    Console.WriteLine("Machine Name: " + AddedJob.machine_name);
-                    Console.WriteLine();
+                    job AddedJob = ClientAPI.GetParams<job>(JSON);
+                    CurrentJobs.AddOrUpdate(AddedJob.id, AddedJob, (key, existingVal) =>
+                    {
+                        existingVal.failure = AddedJob.failure;
+                        existingVal.state = AddedJob.state;
+                        existingVal.progress = AddedJob.progress;
+                        existingVal.type = AddedJob.type;
+                        existingVal.conclusion = AddedJob.conclusion;
+                        return existingVal;
+                    });
                 }
                 else if (MethodName.Equals(ClientAPI.jobchanged))
                 {
-                    job ChangedJob = ClientAPI.JobChanged(JSON);
-                    Console.WriteLine("Job Name : " + ChangedJob.name);
-                    Console.WriteLine("Progress : " + ChangedJob.progress.progress);
-                    Console.WriteLine("Machine Name: " + ChangedJob.machine_name);
-                    Console.WriteLine();
+                    job ChangedJob = ClientAPI.GetParams<job>(JSON);
+                    CurrentJobs.AddOrUpdate(ChangedJob.id, ChangedJob, (key, existingVal) =>
+                    {
+                        existingVal.failure = ChangedJob.failure;
+                        existingVal.state = ChangedJob.state;
+                        existingVal.progress = ChangedJob.progress;
+                        existingVal.type = ChangedJob.type;
+                        existingVal.conclusion = ChangedJob.conclusion;
+                        return existingVal;
+                    });
                 }
                 else if (MethodName.Equals(ClientAPI.machine_state_changed))
                 {
-                    printer ChangedPrinter = ClientAPI.Machine_State_changed(JSON);
-                    Console.WriteLine("Display Name : " + ChangedPrinter.displayName);
-                    Console.WriteLine("Name : " + ChangedPrinter.name);
-                    Console.WriteLine("Unique Name : " + ChangedPrinter.uniqueName);
-                    Console.WriteLine("Temperature : " + ChangedPrinter.state);
-                    Console.WriteLine();
+                    printer ChangedPrinter = ClientAPI.GetParams<printer>(JSON);
+                    CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
+                    {
+                        // The only updatable fields are the temerature array and lastQueryDate.
+
+                        existingVal.temperature = ChangedPrinter.temperature;
+                        existingVal.displayName = ChangedPrinter.displayName;
+                        return existingVal;
+                    });
                 }
                 else if (MethodName.Equals(ClientAPI.machine_temperature_changed))
                 {
-                    printer ChangedPrinter = ClientAPI.Machine_Temperature_Changed(JSON);
-                    Console.WriteLine("Display Name : " + ChangedPrinter.displayName);
-                    Console.WriteLine("Name : " + ChangedPrinter.name);
-                    Console.WriteLine("Unique Name : " + ChangedPrinter.uniqueName);
-                    Console.WriteLine("Temperature : " + ChangedPrinter.temperature.tools.ToString());
-                    Console.WriteLine();
-
+                    printer ChangedPrinter = ClientAPI.GetParams<printer>(JSON);
+                    CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
+                    {
+                        existingVal.temperature = ChangedPrinter.temperature;
+                        existingVal.displayName = ChangedPrinter.displayName;
+                        return existingVal;
+                    });
                 }
                 else if (MethodName.Equals(ClientAPI.port_attached))
                 {
-                    port AttachedPort = ClientAPI.Port_Attached(JSON);
-                    Console.WriteLine("Name : " + AttachedPort.name);
-                    Console.WriteLine("Type : " + AttachedPort.type);
-                    Console.WriteLine("Pid : " + AttachedPort.pid);
-                    Console.WriteLine("Vid : " + AttachedPort.vid);
-                    Console.WriteLine();
+                    port AttachedPort = ClientAPI.GetParams<port>(JSON);
+                    CurrentPorts.AddOrUpdate(AttachedPort.name, AttachedPort, (key, existingVal) =>
+                    {
+                        // The only updatable fields are the temerature array and lastQueryDate.
+                        existingVal.label = AttachedPort.label;
+                        existingVal.driver_profiles = AttachedPort.driver_profiles;
+                        existingVal.iserial = AttachedPort.iserial;
+                        existingVal.type = AttachedPort.type;
+                        return existingVal;
+                    });
                 }
                 else if (MethodName.Equals(ClientAPI.port_detached))
                 {
-                    string DetachedPortName = ClientAPI.Port_Detached(JSON);
-                    Console.WriteLine(DetachedPortName);
-                    Console.WriteLine();
+                    string DetachedPortName = ClientAPI.GetParams<string>(JSON);
+                    port RemovedPort; //Presently not used
+                    CurrentPorts.TryRemove(DetachedPortName, out RemovedPort);
                 }
                 else
                 {
-                    Console.WriteLine("This Method is not known! Take note!");
-                    Console.WriteLine();
-                    //should write to a central log file.
+                    Console.Error.WriteLine("This Method \""+ MethodName + "\"is not known! Take note!");
+                    Console.Error.WriteLine(JSON);
+                    Console.Error.WriteLine();
                 }
             }
             else if (Reply == JsonReplyType.Result)
             {
                 //Fetch methodID in order to figure out what kind of reply to expect
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
-                Console.WriteLine("Recieved Response to Command : " + MethodID);
+                //Console.WriteLine("Recieved Response to Command : " + MethodID);
                 string[] method;
                 if (methodHistory.TryGetValue(MethodID, out method))
                 {
                     //This looks up the method originally called in order to put the Reply into context.
                     if (method[0].Equals("getprinters"))
                     {
-
-                        printer[] printers = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(JSON);
-                        Console.WriteLine("Command of " + method[0] + "with rpcid " + MethodID + " with result:");
+                        printer[] printers = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer[]>(JSON);
+                        //Console.WriteLine("Command of " + method[0] + "with rpcid " + MethodID + " with result:");
                         foreach (printer p in printers)
                         {
                             Console.WriteLine("UniqueName : " + p.uniqueName + "\n State : " + p.state);
+                            CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
+                            {
+                                existingVal.displayName = p.displayName;
+                                existingVal.printerType = p.printerType;
+                                existingVal.profile_name = p.profile_name;
+                                existingVal.hasHeatedPlatform = p.hasHeatedPlatform;
+                                existingVal.toolhead_target_temperature = p.toolhead_target_temperature;
+                                existingVal.build_volume = p.build_volume;
+                                existingVal.state = p.state;
+                                existingVal.driver_name = p.driver_name;
+                                existingVal.temperature = p.temperature;
+                                existingVal.canPrintToFile = p.canPrintToFile;
+                                existingVal.machineNames = p.machineNames;
+                                existingVal.numberOfToolheads = p.numberOfToolheads;
+                                existingVal.firmware_version = p.firmware_version;
+                                existingVal.canPrint = p.canPrint;
+                                return existingVal;
+                            });
                             Console.WriteLine();
                         }
                     }
                     else if (method[0].Equals("getjobs"))
                     {
-                        job[] jobs = Conveyor_JSONRPC_API.ServerAPI.GetJobs(JSON);
+                        job[] jobs = Conveyor_JSONRPC_API.ServerAPI.GetResult<job[]>(JSON);
                         foreach (job j in jobs)
                         {
-                            Console.WriteLine("Job ID: " + j.id);
-                            Console.WriteLine("Job Name: " + j.name);
-                            Console.WriteLine("Job Type: " + j.type);
-                            Console.WriteLine("Job State: " + j.state);
-                            Console.WriteLine("Job Assigned Machine: " + j.state);
+                            CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
+                            {
+                                existingVal.failure = j.failure;
+                                existingVal.state = j.state;
+                                existingVal.progress = j.progress;
+                                existingVal.type = j.type;
+                                existingVal.conclusion = j.conclusion;
+                                return existingVal;
+                            });
                         }
+                    }
+                    else if (method[0].Equals("getports"))
+                    {
+                        port[] ports = Conveyor_JSONRPC_API.ServerAPI.GetResult<port[]>(JSON);
+                        foreach (port p in ports)
+                        {
+                            CurrentPorts.AddOrUpdate(p.name, p, (key, existingVal) =>
+                            {
+                                existingVal.label = p.label;
+                                existingVal.driver_profiles = p.driver_profiles;
+                                existingVal.iserial = p.iserial;
+                                existingVal.type = p.type;
+                                return existingVal;
+                            });
+                        }
+                    }
+                    else if (method[0].Equals("connect"))
+                    {
+                        printer p = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer>(JSON);
+                        CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
+                        {
+                            existingVal.displayName = p.displayName;
+                            existingVal.printerType = p.printerType;
+                            existingVal.profile_name = p.profile_name;
+                            existingVal.hasHeatedPlatform = p.hasHeatedPlatform;
+                            existingVal.toolhead_target_temperature = p.toolhead_target_temperature;
+                            existingVal.build_volume = p.build_volume;
+                            existingVal.state = p.state;
+                            existingVal.driver_name = p.driver_name;
+                            existingVal.temperature = p.temperature;
+                            existingVal.canPrintToFile = p.canPrintToFile;
+                            existingVal.machineNames = p.machineNames;
+                            existingVal.numberOfToolheads = p.numberOfToolheads;
+                            existingVal.firmware_version = p.firmware_version;
+                            existingVal.canPrint = p.canPrint;
+                            return existingVal;
+                        });
+                    }
+                    else if (method[0].Equals("hello"))
+                    {
+                        string reply = Conveyor_JSONRPC_API.ServerAPI.GetResult<string>(JSON);
+                        if (reply.Equals("world"))
+                        {
+                            //Recieved a reply! Good to start
+                        }
+                    }
+                    else if (method[0].Equals("print"))
+                    {
+                        job j = Conveyor_JSONRPC_API.ServerAPI.GetResult<job>(JSON);
+                        CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
+                        {
+                            existingVal.machine_name = j.machine_name;
+                            existingVal.failure = j.failure;
+                            existingVal.profile_name = j.profile_name;
+                            existingVal.port_name = j.port_name;
+                            existingVal.name = j.name;
+                            existingVal.state = j.state;
+                            existingVal.driver_name = j.driver_name;
+                            existingVal.progress = j.progress;
+                            existingVal.type = j.type;
+                            existingVal.conclusion = j.conclusion;
+                            return existingVal;
+                        });
                     }
                     else
                     {

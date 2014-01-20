@@ -88,24 +88,24 @@ namespace RepRancher
         /*
          * This is a list of the current ports known to be attached to the Conveyor Service
          */
-        BlockingCollection<port> CurrentPorts;
+        ConcurrentDictionary<string, port> CurrentPorts;
 
         /*
          * This is a list of the current printers known to the Conveyor Service
          */
-        BlockingCollection<printer> CurrentPrinters;
+        ConcurrentDictionary<string, printer> CurrentPrinters;
 
         /*
          * This is a list of jobs known to the Conveyor Service
          */
-        BlockingCollection<job> CurrentJobs;
+        ConcurrentDictionary<int, job> CurrentJobs;
 
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
-            CurrentPorts = new BlockingCollection<port>();
-            CurrentPrinters = new BlockingCollection<printer>();
-            CurrentJobs = new BlockingCollection<job>();
+            CurrentPorts = new ConcurrentDictionary<string, port>();
+            CurrentPrinters = new ConcurrentDictionary<string, printer>();
+            CurrentJobs = new ConcurrentDictionary<int, job>();
 
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
@@ -134,7 +134,7 @@ namespace RepRancher
             tcpClient = new TcpClient();
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory);
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
@@ -379,13 +379,9 @@ namespace RepRancher
                         return "The File you wanted printed does not appear to exist. File: \n" + input_file;
                     }
                     printer selectedPrinter = null;
-                    foreach(printer p in CurrentPrinters){
-                        if (p.name.Equals(machine_name))
-                        {
-                            selectedPrinter = p;
-                        }
-                    }
-                    if (selectedPrinter == null)
+                    bool existingPrinter = CurrentPrinters.TryGetValue(machine_name, out selectedPrinter);
+
+                    if (existingPrinter)
                     {
                         return "The Printer you wanted does not appear to exist. File: \n" + machine_name;
                     }

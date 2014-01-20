@@ -150,16 +150,27 @@ namespace Conveyor_JSONRPC_API
         /*
          *  printer
          *  
-         * { "profilename":       (profile-name)
-         * , "displayname":       (string)
-         * , "uniquename":        (printer-unique-name)
-         * , "printertype":       (string)
-         * , "canprint":          (bool)
-         * , "canprinttofile":    (bool)
-         * , "hasheatedplatform": (bool)
-         * , "numberoftoolheads": (number)
-         * , "connectionstatus":  (connection-status)
-         * , "temperature":       (tool-temperatures)
+         * { 
+         * "displayName": "The Replicator 2X", 
+         * "name": "The Replicator 2X", 
+         * "printerType": "The Replicator 2X", 
+         * "profile_name": "Replicator2X", 
+         * "hasHeatedPlatform": true, 
+         * "toolhead_target_temperature": null, 
+         * "build_volume": [246, 152, 155], 
+         * "state": "DISCONNECTED", 
+         * "driver_name": "s3g", "port_name": null, 
+         * "temperature": 
+         * {
+         * "heated_platforms": {}, 
+         * "tools": {}
+         * }, 
+         * "uniqueName": "The Replicator 2X", 
+         * "canPrintToFile": null, 
+         * "machineNames": ["TheReplicator2X"], 
+         * "numberOfToolheads": 2, 
+         * "firmware_version": null, 
+         * "canPrint": false
          * }
          */
         public class printer
@@ -180,7 +191,7 @@ namespace Conveyor_JSONRPC_API
             public string[] machineNames { get; set; }
             public int numberOfToolheads { get; set; }
             public string firmware_version { get; set; }
-            public bool canprint { get; set; }
+            public bool canPrint { get; set; }
         }
 
         /*
@@ -267,8 +278,8 @@ namespace Conveyor_JSONRPC_API
          */
         public class tooltemperatures
         {
-            public object tools { get; set; }
-            public object heated_platforms { get; set; }
+            public Dictionary<string, int> tools { get; set; }
+            public int[] heated_platforms { get; set; }
         }
 
         /*
@@ -300,6 +311,14 @@ namespace Conveyor_JSONRPC_API
         public static string jobchanged = "jobchanged";
         public static string port_detached = "port_detached";
         public static string port_attached = "port_attached";
+
+        public static T GetParams<T>(string JSON)
+        {
+            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            JToken jParams = JReply["params"];
+            T Params = jParams.ToObject<T>();
+            return Params;
+        }
 
         /*
          * machine_temperature_changed
@@ -555,13 +574,10 @@ namespace Conveyor_JSONRPC_API
          */
         public static printer[] GetPrinters(string JSON)
         {
-            JsonSerializerSettings val = new JsonSerializerSettings();
-            val.Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-            {
-                args.ErrorContext.Handled = true;
-            };
-            JsonRpcResult<printer[]> printers = JsonConvert.DeserializeObject<JsonRpcResult<printer[]>>(JSON, val);
-            return printers.result;
+            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            string Result = JReply.GetValue("result").ToString();
+            printer[] printers = JsonConvert.DeserializeObject<printer[]>(Result);
+            return printers;
         }
 
         /*
@@ -609,13 +625,10 @@ namespace Conveyor_JSONRPC_API
          */
         public static job[] GetJobs(string JSON)
         {
-            JsonSerializerSettings val = new JsonSerializerSettings();
-            val.Error = delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args)
-            {
-                args.ErrorContext.Handled = true;
-            };
-            JsonRpcResult<job[]> jobs = JsonConvert.DeserializeObject<JsonRpcResult<job[]>>(JSON, val);
-            return jobs.result;
+            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            string Result = JReply.GetValue("result").ToString();
+            job[] jobs = JsonConvert.DeserializeObject<job[]>(Result);
+            return jobs;
         }
 
         /*
@@ -637,6 +650,19 @@ namespace Conveyor_JSONRPC_API
         public static string GetPorts(int rpcid)
         {
             return BuildRPCString(rpcid, "getports");
+        }
+
+        /*
+         * getports
+         * 
+         * This method parses the return of getports
+         */
+        public static port[] GetPorts(string JSON)
+        {
+            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            string Result = JReply.GetValue("result").ToString();
+            port[] ports = JsonConvert.DeserializeObject<port[]>(Result);
+            return ports;
         }
 
         /*
@@ -725,6 +751,22 @@ namespace Conveyor_JSONRPC_API
 
             // serialize json for the request
             return JsonConvert.SerializeObject(rpcCall);
+        }
+
+        /*
+         * getmany
+         * Used to Parse the Results of the Following:
+         * getports - port[]
+         * getjobs - job[]
+         * getprinters - printer[]
+         * 
+         */
+        public static T GetResult<T>(string JSON)
+        {
+            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
+            string Result = JsonConvert.SerializeObject(JReply.GetValue("result"));
+            T result = JsonConvert.DeserializeObject<T>(Result);
+            return result;
         }
     }
 
