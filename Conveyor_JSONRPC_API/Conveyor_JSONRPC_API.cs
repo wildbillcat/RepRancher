@@ -279,22 +279,7 @@ namespace Conveyor_JSONRPC_API
         public class tooltemperatures
         {
             public Dictionary<string, int> tools { get; set; }
-            public int[] heated_platforms { get; set; }
-        }
-
-        /*
-         *  tool :: (tool)
-         *  
-         * implicit class created to account for object in tooltemperatures object.
-         * 
-         * { 'toolname':               (tool-name)
-         * , 'temperature':             (temperature)}
-         */
-        public class tool
-        {
-            
-            public string toolname { get; set; }
-            public double temperature { get; set; }
+            public object heated_platforms { get; set; }
         }
     }
 
@@ -312,6 +297,7 @@ namespace Conveyor_JSONRPC_API
         public static string port_detached = "port_detached";
         public static string port_attached = "port_attached";
 
+        //This Generic Method is used to Parse Method Parameters recieved from conveyor
         public static T GetParams<T>(string JSON)
         {
             JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
@@ -319,100 +305,6 @@ namespace Conveyor_JSONRPC_API
             T Params = jParams.ToObject<T>();
             return Params;
         }
-
-        /*
-         * machine_temperature_changed
-         * 
-         * The server invokes this method whenever a machine temperature changes.
-         * 
-         * params
-         * 
-         * (job)
-         */
-        public static printer Machine_Temperature_Changed(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            printer PRINTER = jParams.ToObject<printer>();
-            return PRINTER;
-        }
-
-        /*
-         * machine_state_changed
-         * 
-         * The server invokes this method whenever a machine state changes.
-         * 
-         * params
-         * 
-         * (job)
-         */
-        public static printer Machine_State_changed(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            printer PRINTER = jParams.ToObject<printer>();
-            return PRINTER;
-        }
-
-        /*
-         * jobadded
-         * 
-         * The server invokes this method whenever a new job is added.
-         * 
-         * params
-         * 
-         * (job)
-         */
-        public static job JobAdded(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            job JOB = jParams.ToObject<job>();
-            return JOB;
-        }
-
-        /*
-         * jobchanged
-         * The server invokes this method whenever a job changes.
-         * params
-         * (job)
-         */
-        public static job JobChanged(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            job JOB = jParams.ToObject<job>();
-            return JOB;
-        }
-
-        /*
-         * port_attached
-         * The server invokes this method after a job finishes.
-         * params
-         * (job)
-         */
-        public static port Port_Attached(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            port PORT = jParams.ToObject<port>();
-            return PORT;
-        }
-
-        /*
-         * jobremoved
-         * The server invokes this method after a job finishes.
-         * params
-         * (job)
-         */
-        public static string Port_Detached(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            JToken jParams = JReply["params"];
-            string PORT_NAME = jParams.Value<string>("port_name");
-            return PORT_NAME;
-        }
-
     }
 
     /*
@@ -569,18 +461,6 @@ namespace Conveyor_JSONRPC_API
         }
 
         /*
-         * getprinters
-         * This parses the return of the GetPrintersMethod
-         */
-        public static printer[] GetPrinters(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            string Result = JReply.GetValue("result").ToString();
-            printer[] printers = JsonConvert.DeserializeObject<printer[]>(Result);
-            return printers;
-        }
-
-        /*
          * getjob
          * This method returns the details for a job.
          * params
@@ -619,19 +499,6 @@ namespace Conveyor_JSONRPC_API
         }
 
         /*
-         * getjobs
-         * 
-         * This method parses the return of getjobs
-         */
-        public static job[] GetJobs(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            string Result = JReply.GetValue("result").ToString();
-            job[] jobs = JsonConvert.DeserializeObject<job[]>(Result);
-            return jobs;
-        }
-
-        /*
          * getports
          * 
          * This method returns the list of jobs.
@@ -650,19 +517,6 @@ namespace Conveyor_JSONRPC_API
         public static string GetPorts(int rpcid)
         {
             return BuildRPCString(rpcid, "getports");
-        }
-
-        /*
-         * getports
-         * 
-         * This method parses the return of getports
-         */
-        public static port[] GetPorts(string JSON)
-        {
-            JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            string Result = JReply.GetValue("result").ToString();
-            port[] ports = JsonConvert.DeserializeObject<port[]>(Result);
-            return ports;
         }
 
         /*
@@ -764,8 +618,10 @@ namespace Conveyor_JSONRPC_API
         public static T GetResult<T>(string JSON)
         {
             JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
-            string Result = JsonConvert.SerializeObject(JReply.GetValue("result"));
-            T result = JsonConvert.DeserializeObject<T>(Result);
+            //string Result = JsonConvert.SerializeObject(JReply.GetValue("result"));
+            //T result = JsonConvert.DeserializeObject<T>(Result);
+            JToken jResult = JReply["result"];
+            T result = jResult.ToObject<T>();
             return result;
         }
     }
