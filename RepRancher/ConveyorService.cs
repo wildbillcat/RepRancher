@@ -131,7 +131,7 @@ namespace RepRancher
             }
 
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
-            tcpClient = new TcpClient();
+            tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
             ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs);
@@ -149,6 +149,10 @@ namespace RepRancher
 
         public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
         {
+            //update 
+
+            //Detect 
+
             InvokeCommand("hello");
         }
 
