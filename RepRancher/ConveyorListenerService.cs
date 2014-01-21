@@ -504,7 +504,7 @@ namespace RepRancher
                 {
                     Console.WriteLine("RepRancher did not issue a method with this RPC id!");
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
             }
             else if (Reply == JsonReplyType.Error)
             {

@@ -226,7 +226,7 @@ namespace RepRancher
                         return "The exit command does not use any parameters. It closes the connection to conveyor and cause RepRancher to exit.";
                     }else if (Command[1].Equals("print")){
                         return "The connect command requires the following parameters: \n " +
-                            "-input_file [portname] ie. -portname COM3:9153:45077 \n " +
+                            "-input_file [filename] ie. -input_file C:\\printfile.gcode \n " +
                             "-machine_name [machinename] ie. -machine_name 23C1:B015:7523733353635171A221 \n \n" +
                             "The following parameters are optional: \n " +
                             "-gcode_processor_names [gcodeprocessornames] ie. -gcode_processor_names not,sure,of,options \n " +
