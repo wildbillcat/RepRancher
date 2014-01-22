@@ -263,7 +263,7 @@ namespace RepRancher
 
             } if (Command[0].Equals("print"))
             {
-                if (Command.Length < 2)
+                if (Command.Length < 5)
                 {
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
@@ -277,57 +277,69 @@ namespace RepRancher
                     string[] material_name = new string[] {"PLA","PLA"};
                     string slicer_name = "miraclegrue";
                     slicersettings slicer_settings = new slicersettings();
-                    for (int i = 0; i < Command.Length; i++)
+                    for (int i = 1; i < Command.Length; i++)
                     {
                         string cmd = Command[i];
                         if (cmd.Equals("-gcode_processor_names"))
                         {
-                            gcode_processor_names = Command[i++].Split(',');
+                            i++;
+                            gcode_processor_names = Command[i].Split(',');
                         }
                         else if (cmd.Equals("-has_start_end"))
                         {
-                            has_start_end = bool.Parse(Command[i++]);
+                            i++;
+                            has_start_end = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-input_file"))
                         {
-                            input_file = Command[i++];
+                            i++;
+                            input_file = Command[i];
                         }
                         else if (cmd.Equals("-machine_name"))
                         {
-                            machine_name = Command[i++];
+                            i++;
+                            machine_name = Command[i];
                         }
                         else if (cmd.Equals("-material_name"))
                         {
-                            material_name = Command[i++].Split(',');
+                            i++;
+                            material_name = Command[i].Split(',');
                         }
                         else if (cmd.Equals("-slicer_name"))
                         {
-                            slicer_name = Command[i++];
+                            i++;
+                            slicer_name = Command[i];
                         }
                         else if (cmd.Equals("-default_raft_extruder"))
                         {
-                            slicer_settings.default_raft_extruder = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.default_raft_extruder = int.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-default_support_extruder"))
                         {
-                            slicer_settings.default_support_extruder = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.default_support_extruder = int.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-do_auto_raft"))
                         {
-                            slicer_settings.do_auto_raft = bool.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.do_auto_raft = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-do_auto_support"))
                         {
-                            slicer_settings.do_auto_support = bool.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.do_auto_support = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-extruder"))
                         {
-                            slicer_settings.extruder = Command[i++];
+                            i++;
+                            slicer_settings.extruder = Command[i];
                         }
                         else if (cmd.Equals("-extruder_temperatures"))
                         {
+                            i++;
                             List<int> temps = new List<int>();
-                            foreach (string s in Command[i++].Split(','))
+                            foreach (string s in Command[i].Split(','))
                             {
                                 temps.Add(int.Parse(s));
                             }
@@ -335,47 +347,58 @@ namespace RepRancher
                         }
                         else if (cmd.Equals("-heat_platform"))
                         {
-                            slicer_settings.heat_platform = bool.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.heat_platform = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-infill"))
                         {
-                            slicer_settings.infill = double.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.infill = double.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-layer_height"))
                         {
-                            slicer_settings.layer_height = double.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.layer_height = double.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-path"))
                         {
-                            slicer_settings.path = Command[i++];
+                            i++;
+                            slicer_settings.path = Command[i];
                         }
                         else if (cmd.Equals("-platform_temperature"))
                         {
-                            slicer_settings.platform_temperature = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.platform_temperature = int.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-print_speed"))
                         {
-                            slicer_settings.print_speed = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.print_speed = int.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-raft"))
                         {
-                            slicer_settings.raft = bool.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.raft = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-shells"))
                         {
-                            slicer_settings.shells = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.shells = int.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-slicer"))
                         {
-                            slicer_settings.slicer = Command[i++];
+                            i++;
+                            slicer_settings.slicer = Command[i];
                         }
                         else if (cmd.Equals("-support"))
                         {
-                            slicer_settings.support = bool.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.support = bool.Parse(Command[i]);
                         }
                         else if (cmd.Equals("-travel_speed"))
                         {
-                            slicer_settings.travel_speed = int.Parse(Command[i++]);
+                            i++;
+                            slicer_settings.travel_speed = int.Parse(Command[i]);
                         }
                     }
                     if (!System.IO.File.Exists(input_file))
@@ -507,6 +530,60 @@ namespace RepRancher
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                }
+            }
+            else if (Command[0].Equals("list"))
+            {
+                if (Command.Length != 2)
+                {
+                    //Command has invalid number of parameters. Return
+                    return "Command has an invalid number of parameters";
+                }
+                else
+                {
+                    string output = "";
+                    if (Command[1].Equals("jobs"))
+                    {
+                        foreach (int i in CurrentJobs.Keys)
+                        {
+                            output = string.Concat(output, "Name: ", CurrentJobs[i].name, "\n", "Job Id: ", CurrentJobs[i].id, "\n", "State: ", CurrentJobs[i].state, "\n", "Progress: ");
+                            if (CurrentJobs[i].progress != null)
+                            {
+                                 output = string.Concat(output, CurrentJobs[i].state, "\n\n");
+                            }
+                            else
+                            {
+                                output = string.Concat(output, " null \n\n");
+                            }
+                        }
+                    }
+                    else if (Command[1].Equals("printers"))
+                    {
+                        foreach (string i in CurrentPrinters.Keys)
+                        {
+                            output = string.Concat(output, "Name: ", CurrentPrinters[i].name, "\n", "PrinterType: ", CurrentPrinters[i].printerType, "\n", "State: ", CurrentPrinters[i].state, "\n");
+                            if (CurrentPrinters[i].temperature != null && CurrentPrinters[i].temperature.tools != null)
+                            {
+                                foreach (string Tool in CurrentPrinters[i].temperature.tools.Keys)
+                                {
+                                    output = string.Concat(output, "Toolhead ", Tool, " : ", CurrentPrinters[i].temperature.tools[Tool], "\n");
+                                }
+                            }
+                            output = string.Concat(output, "Can Print : ", CurrentPrinters[i].canPrint.ToString(), "\n\n");
+                        }
+                    }
+                    else if (Command[1].Equals("ports"))
+                    {
+                        foreach (string i in CurrentPorts.Keys)
+                        {
+                            output = string.Concat(output, "Name: ", CurrentPorts[i].name, "\n", "iserial: ", CurrentPorts[i].iserial, "\n", "Type: ", CurrentPorts[i].type, "\n\n");
+                        }
+                    }
+                    else
+                    {
+                        output = "Invalid Parameter: " + Command[1];
+                    }
+                    return output;
                 }
             }
             else
