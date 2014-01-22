@@ -252,12 +252,16 @@ namespace RepRancher
                             "-support [boolean] ie. -support false  \n " +
                             "-travel_speed [travel_speed] ie. -travel_speed 150  \n ";
                     }
+                    else if (Command[1].Equals("list"))
+                    {
+                        return "The list command takes one of the following parameters, returning information about the specified type. \n jobs ie. list jobs \n printers ie. list printers \n ports ie. list ports \n";
+                    }
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
                 }else{
                     //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
                     return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command \n \n" +
-                        "Commands Specific to RepRancher: \n exit \n restart" +
+                        "Commands Specific to RepRancher: \n exit \n restart \n list" +
                     "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n print \n";
                 }
 

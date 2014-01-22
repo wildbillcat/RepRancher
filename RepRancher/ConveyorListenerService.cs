@@ -390,11 +390,9 @@ namespace RepRancher
                     //This looks up the method originally called in order to put the Reply into context.
                     if (method[0].Equals("getprinters"))
                     {
-                        printer[] printers = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer[]>(JSON);
-                        //Console.WriteLine("Command of " + method[0] + "with rpcid " + MethodID + " with result:");
+                        printer[] printers = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer[]>(JSON);                        
                         foreach (printer p in printers)
                         {
-                            Console.WriteLine("UniqueName : " + p.uniqueName + "\n State : " + p.state);
                             CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
                             {
                                 existingVal.displayName = p.displayName;
@@ -413,7 +411,6 @@ namespace RepRancher
                                 existingVal.canPrint = p.canPrint;
                                 return existingVal;
                             });
-                            Console.WriteLine();
                         }
                     }
                     else if (method[0].Equals("getjobs"))
@@ -504,7 +501,6 @@ namespace RepRancher
                 {
                     Console.WriteLine("RepRancher did not issue a method with this RPC id!");
                 }
-                //Console.WriteLine();
             }
             else if (Reply == JsonReplyType.Error)
             {
