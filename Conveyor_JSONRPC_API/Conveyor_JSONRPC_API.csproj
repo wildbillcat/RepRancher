@@ -63,6 +63,9 @@
     <Content Include="JSON Example Replies\2.4.1\Server\03 makerware cancel print..js" />
     <Content Include="JSON Example Replies\2.4.1\Server\05 read eeprom.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\06 write eeprom - machine name = test.js" />
+    <Content Include="JSON Example Replies\2.4.1\Server\09 without preview.js" />
+    <Content Include="JSON Example Replies\2.4.1\Server\10 with preview.js" />
+    <Content Include="JSON Example Replies\2.4.1\Server\11 firmware upgrade.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\Connect.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetJobs.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetPorts.js" />

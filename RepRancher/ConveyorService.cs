@@ -412,7 +412,7 @@ namespace RepRancher
                     printer selectedPrinter = null;
                     bool existingPrinter = CurrentPrinters.TryGetValue(machine_name, out selectedPrinter);
 
-                    if (existingPrinter)
+                    if (!existingPrinter)
                     {
                         return "The Printer you wanted does not appear to exist. File: \n" + machine_name;
                     }

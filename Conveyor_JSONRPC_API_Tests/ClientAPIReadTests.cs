@@ -1,32 +1,13 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Text;
 using Conveyor_JSONRPC_API;
 using Conveyor_JSONRPC_API.Types;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace Conveyor_JSONRPC_API_Tests
 {
     [TestClass]
-    class ClientAPIReadTests
+    public class ClientAPIReadTests
     {
-        IPEndPoint ipEndPoint;
-        TcpClient tcpClient;
-        Stream dataStream;
-        int rpcid;
-
-        public ClientAPIReadTests()
-        {
-            ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9999);
-            tcpClient = new TcpClient();
-            tcpClient.Connect(ipEndPoint);
-            dataStream = tcpClient.GetStream();
-            rpcid = 0;
-        }
 
         [TestMethod]
         public void ReadJobAdded()
@@ -86,8 +67,8 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReadPortRemoved()
         {
-            string JSON = "";
-            port Port = ClientAPI.GetParams<port>(JSON);
+            string JSON = "{\"params\": { \"port_name\": \"COM3:9153:45077\"}, \"jsonrpc\": \"2.0\", \"method\": \"port_detached\"}";
+            detachment Port = ClientAPI.GetParams<detachment>(JSON);
             if (Port == null)
             {
                 Assert.Fail();

@@ -11,29 +11,11 @@ namespace Conveyor_JSONRPC_API
 {
     namespace Types
     {
-        /*
-         *  absolute-directory-path :: (string)
-         *  
-         *  An absolute directory path.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class absolutedirectorypath : String
-        {
 
-        }
-         */
-
-        /*
-         *  absolute-file-path :: (string)
-         *  
-         *  An absolute file path.
-         */
-        /* Commented out since API Class is indistingishable from a native type
-        public class absolutefilepath : string
+        public class detachment
         {
-            public string value { get; set; }
+            public string port_name { get; set; }
         }
-         */
 
         /*
          * {

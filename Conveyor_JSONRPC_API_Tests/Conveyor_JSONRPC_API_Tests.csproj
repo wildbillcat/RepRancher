@@ -51,9 +51,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ClientAPIReadTests.cs" />
     <Compile Include="ServerAPIReadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ClientAPIReadTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conveyor_JSONRPC_API\Conveyor_JSONRPC_API.csproj">
