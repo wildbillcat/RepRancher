@@ -256,6 +256,11 @@ namespace RepRancher
                     {
                         return "The list command takes one of the following parameters, returning information about the specified type. \n jobs ie. list jobs \n printers ie. list printers \n ports ie. list ports \n";
                     }
+                    else if (Command[1].Equals("canceljob"))
+                    {
+                        return "The canceljob command requires the following parameter: \n" + 
+                            "-jobid [id] ie. -jobid 1 \n";
+                    }
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
                 }else{
@@ -521,9 +526,9 @@ namespace RepRancher
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
                 }
             }
-            else if (Command[0].Equals("durp"))//
+            else if (Command[0].Equals("canceljob"))//
             {
-                if (Command.Length > 1)
+                if (Command.Length != 3)
                 {
                     //Command has invalid number of parameters. Return
                     return "Command has an invalid number of parameters";
@@ -532,7 +537,14 @@ namespace RepRancher
                 {
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
+                    try
+                    {
+                        command = Conveyor_JSONRPC_API.ServerAPI.CancelJob(rpcID, int.Parse(Command[2]));
+                    }
+                    catch
+                    {
+                        return "Invalid job id";
+                    }
                     outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
                 }
             }
