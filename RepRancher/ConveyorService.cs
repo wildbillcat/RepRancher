@@ -161,6 +161,26 @@ namespace RepRancher
             return t1.IsAlive && t2.IsAlive && t3.IsAlive;
         }
 
+        public void Startup()
+        {
+            //List Ports
+            InvokeCommand("getports");
+            //Wait for Ports
+            while (true)
+            {
+                System.Threading.Thread.Sleep(500);
+                //Check if reply recieved
+            }
+
+            //Connect to each port
+
+            //List Printers
+
+            //List Jobs
+
+            //return
+        }
+
         public void Dispose()
         {
             Console.WriteLine("Ending Keep Alive Timer");
