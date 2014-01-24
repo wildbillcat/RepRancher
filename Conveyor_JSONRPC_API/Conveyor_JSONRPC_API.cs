@@ -337,7 +337,25 @@ namespace Conveyor_JSONRPC_API
             Params.Add(new JProperty("machine_name", machine_name));
             Params.Add(new JProperty("material_name", material_name));
             Params.Add(new JProperty("slicer_name", slicer_name));
-            Params.Add(new JProperty("slicer_settings", slicer_settings));
+            JObject Slicer = new JObject();
+            Slicer.Add("default_raft_extruder", slicer_settings.default_raft_extruder);
+            Slicer.Add("default_support_extruder", slicer_settings.default_support_extruder);
+            Slicer.Add("do_auto_raft", slicer_settings.do_auto_raft);
+            Slicer.Add("do_auto_support", slicer_settings.do_auto_support);
+            Slicer.Add("extruder", slicer_settings.extruder);
+            Slicer.Add("extruder_temperatures", new JArray(slicer_settings.extruder_temperatures));
+            Slicer.Add("heat_platform", slicer_settings.heat_platform);
+            Slicer.Add("infill", slicer_settings.infill);
+            Slicer.Add("layer_height", slicer_settings.layer_height);
+            Slicer.Add("path", slicer_settings.path);
+            Slicer.Add("platform_temperature", slicer_settings.platform_temperature);
+            Slicer.Add("print_speed", slicer_settings.print_speed);
+            Slicer.Add("raft", slicer_settings.raft);
+            Slicer.Add("shells", slicer_settings.shells);
+            Slicer.Add("slicer", slicer_settings.slicer);
+            Slicer.Add("support", slicer_settings.support);
+            Slicer.Add("travel_speed", slicer_settings.travel_speed);
+            Params.Add(new JProperty("slicer_settings", Slicer));
             return BuildRPCString(rpcid, "print", Params);
         }
 
@@ -575,9 +593,9 @@ namespace Conveyor_JSONRPC_API
             }
             else
             {
-                JArray props = new JArray();
+                JObject props = new JObject();
                 // add the props in the reverse order!
-                foreach (string param in Params)
+                foreach (JProperty param in Params)
                 {
                     // add the params
                     props.Add(param);
