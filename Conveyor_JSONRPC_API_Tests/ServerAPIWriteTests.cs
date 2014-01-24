@@ -86,6 +86,13 @@ namespace Conveyor_JSONRPC_API_Tests
             Console.WriteLine(result);
         }
 
-
+        [TestMethod]
+        public void CancelJob()
+        {
+            rpcid++;
+            int JobId = 1;
+            string result = ServerAPI.CancelJob(rpcid, JobId);
+            Console.WriteLine(result);
+        }
     }
 }
