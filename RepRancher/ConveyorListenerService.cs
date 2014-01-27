@@ -33,6 +33,11 @@ namespace RepRancher
         ConcurrentDictionary<int, string[]> methodHistory;
 
         /*
+         * This contains the aknowledgement notice of all commands issued by reprancher this session
+         */
+        ConcurrentDictionary<int, bool> methodReplyRecieved;
+
+        /*
          * This TCP Client is the connection to the Conveyor Service that is being Monitored
          */
         TcpClient tcpClient;
@@ -78,7 +83,7 @@ namespace RepRancher
          */
         ConcurrentDictionary<int, job> CurrentJobs;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs)
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -86,6 +91,7 @@ namespace RepRancher
             repliesFromConveyor = "";
             previousParseFailure = false;
             methodHistory = MethodHistory;
+            methodReplyRecieved = MethodReplyRecieved;
             Running = new Semaphore(2, 2);
             Dispose = false;
             CurrentPorts = currentPorts;
@@ -496,6 +502,7 @@ namespace RepRancher
                     {
                         Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]);
                     }
+                    methodReplyRecieved.TryUpdate(MethodID, true, false);
                 }
                 else
                 {

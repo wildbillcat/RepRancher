@@ -71,6 +71,12 @@ namespace RepRancher
         ConcurrentDictionary<int, string[]> methodHistory;
 
         /*
+         * int rpcid, 
+         * string methodName
+         */
+        ConcurrentDictionary<int, bool> methodReplyRecieved;
+
+        /*
          * FileStream to Associated Conveyor Error Log
          */
         FileStream ostrm;
@@ -110,6 +116,7 @@ namespace RepRancher
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
             methodHistory = new ConcurrentDictionary<int, string[]>();
+            methodReplyRecieved = new ConcurrentDictionary<int, bool>();
             try
             {
                 ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
@@ -164,21 +171,87 @@ namespace RepRancher
         public void Startup()
         {
             //List Ports
-            InvokeCommand("getports");
+            System.Console.WriteLine("Getting Ports");
+            int CommandID = int.Parse(InvokeCommand("getports"));
+            bool MethodReception = false;
             //Wait for Ports
-            while (true)
+
+            MethodReception = false;
+            CommandID = int.Parse(InvokeCommand("getports"));
+            
+            while (!MethodReception)
             {
+                System.Console.WriteLine("Waiting for Ports");
                 System.Threading.Thread.Sleep(500);
+                methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                 //Check if reply recieved
             }
-
-            //Connect to each port
-
+            System.Console.WriteLine("Ports Recieved");
             //List Printers
+            System.Console.WriteLine("Getting Printers");
+            MethodReception = false;
+            CommandID = int.Parse(InvokeCommand("getprinters"));
+            //Wait for Printers
+            while (!MethodReception)
+            {
+                System.Console.WriteLine("Waiting for Printers");
+                System.Threading.Thread.Sleep(500);
+                methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                //Check if reply recieved
+            }
+            System.Console.WriteLine("Printers Recieved");
 
             //List Jobs
+            System.Console.WriteLine("Getting Jobs");
+            MethodReception = false;
+            CommandID = int.Parse(InvokeCommand("getjobs"));
+            //Wait for Printers
+            while (!MethodReception)
+            {
+                System.Console.WriteLine("Waiting for Jobs");
+                System.Threading.Thread.Sleep(500);
+                methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                //Check if reply recieved
+            }
+            System.Console.WriteLine("Jobs Recieved");
 
-            //return
+            System.Console.WriteLine("Preparing to Connect");
+            foreach(string key in CurrentPorts.Keys){
+                port P = null;
+                if(CurrentPorts.TryGetValue(key, out P)){
+                    //Port Found, Test if it is attached to printer. if not, connect
+                    bool PortAttached = false;
+                    System.Console.WriteLine("Checking if Port is Attached to a Printer");
+                    foreach (string pkey in CurrentPrinters.Keys)
+                    {
+                        printer p = null;
+                        if (CurrentPrinters.TryGetValue(pkey, out p))
+                        {
+                            if (P.name.Equals(p.port_name))
+                            {
+                                PortAttached = true;
+                                System.Console.WriteLine("Port is attached to a printer");
+                                //Port exists and is attached to a printer
+                            }
+                        }
+                    }
+                    if (!PortAttached)
+                    {
+                        System.Console.WriteLine("Port was not attached to a printer, Connecting");
+                        MethodReception = false;
+                        string command = "Connect -portname " + P.name;
+                        CommandID = int.Parse(InvokeCommand(command));
+                        while (!MethodReception)
+                        {
+                            System.Console.WriteLine("Waiting for connection");
+                            System.Threading.Thread.Sleep(500);
+                            methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                            //Check if reply recieved set to true, breaking the loop
+                        }
+                        System.Console.WriteLine("Port Connected");
+                    }
+                }
+            }
         }
 
         public void Dispose()
@@ -448,7 +521,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("getjobs"))
@@ -493,7 +566,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(rpcID);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("connect"))
@@ -543,7 +616,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.Hello(rpcID);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("canceljob"))//
@@ -565,7 +638,7 @@ namespace RepRancher
                     {
                         return "Invalid job id";
                     }
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("list"))
@@ -629,11 +702,12 @@ namespace RepRancher
             }
 
             //Should only get here if a valid command was issued, add command to history and queue it up.
-            if (!methodHistory.TryAdd(rpcID, Command))
+            if (!methodHistory.TryAdd(rpcID, Command) && !methodReplyRecieved.TryAdd(rpcID, false))
             {
                 return "This Command has previously been issued!";
             }
             commandQueue.Enqueue(command);
+            
             return outPut; //Command queued up and added to the issue history!
         }
 

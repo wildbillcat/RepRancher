@@ -21,6 +21,7 @@ namespace RepRancher
             Console.WriteLine("RepRancher!");
             Console.WriteLine();
             ConveyorService Conveyor = new ConveyorService("127.0.0.1", 9999);
+            Conveyor.Startup();
             while (true)
             {
                 try
