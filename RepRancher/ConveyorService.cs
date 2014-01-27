@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Conveyor_JSONRPC_API;
 using Conveyor_JSONRPC_API.Types;
+
 
 namespace RepRancher
 {
@@ -141,7 +143,7 @@ namespace RepRancher
             tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs);
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
@@ -149,18 +151,23 @@ namespace RepRancher
             t1.Start();
             t2.Start();
             t3.Start();
-            KeepAlive = new System.Timers.Timer(10000);
-            KeepAlive.Elapsed += new System.Timers.ElapsedEventHandler(KeepAliveEvent);
-            KeepAlive.Enabled = true;
+            int KeepAliveTime = int.Parse(ConfigurationManager.AppSettings["KeepAliveTime"])*1000;
+            if (KeepAliveTime > 0)
+            {
+                KeepAlive = new System.Timers.Timer(KeepAliveTime);
+                KeepAlive.Elapsed += new System.Timers.ElapsedEventHandler(KeepAliveEvent);
+                KeepAlive.Enabled = true;
+            }
         }
 
+        //This event triggers a call to check on printer status's
         public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
         {
-            //update 
-
-            //Detect 
-
-            InvokeCommand("hello");
+            KeepAlive.Enabled = false;
+            KeepAlive.Stop();
+            this.Startup();
+            KeepAlive.Enabled = true;
+            KeepAlive.Start();
         }
 
         public bool Valid()
@@ -536,7 +543,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.GetJobs(rpcID);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("getports"))
@@ -551,7 +558,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("getprinters"))
@@ -601,7 +608,7 @@ namespace RepRancher
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.Connect(rpcID, driver_name, machine_name, persistent, port_name, profile_name);
-                    outPut = "Command " + Command[0] + " successfull! RPCID : " + rpcID;
+                    outPut = "" + rpcID;
                 }
             }
             else if (Command[0].Equals("hello"))//
@@ -702,9 +709,13 @@ namespace RepRancher
             }
 
             //Should only get here if a valid command was issued, add command to history and queue it up.
-            if (!methodHistory.TryAdd(rpcID, Command) && !methodReplyRecieved.TryAdd(rpcID, false))
+            if (!methodHistory.TryAdd(rpcID, Command))
             {
                 return "This Command has previously been issued!";
+            }
+            if (!methodReplyRecieved.TryAdd(rpcID, false))
+            {
+                return "Command reception preparation could not be made. Aborting command";
             }
             commandQueue.Enqueue(command);
             
@@ -800,6 +811,7 @@ namespace RepRancher
 
         public void CommandThreadRun()
         {
+            System.Console.WriteLine("Command thread starting");
             while (true)
             {
                 DisposeMutex.WaitOne();

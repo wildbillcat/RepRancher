@@ -110,7 +110,7 @@ namespace RepRancher
 
         public void ListenerThreadRun()
         {
-
+            System.Console.WriteLine("Listener thread starting");
             while (true)
             {
                 Running.WaitOne();
@@ -152,6 +152,7 @@ namespace RepRancher
 
         public void ProcessorThreadRun()
         {
+            System.Console.WriteLine("Processor thread starting");
             int ProcessStalls = 0;
             while (true)
             {
@@ -311,6 +312,7 @@ namespace RepRancher
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
                 Console.Error.WriteLine("Detected Method : " + MethodName);
+                Console.WriteLine("Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
                     job AddedJob = ClientAPI.GetParams<job>(JSON);
