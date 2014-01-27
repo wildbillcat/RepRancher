@@ -108,9 +108,14 @@ namespace RepRancher
          */
         ConcurrentDictionary<int, job> CurrentJobs;
 
+        /*
+         * Determines how much output is sent to screen
+         */
+        bool NoisyClient;
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
+            NoisyClient = bool.Parse(ConfigurationManager.AppSettings["NoisyClient"]);
             CurrentPorts = new ConcurrentDictionary<string, port>();
             CurrentPrinters = new ConcurrentDictionary<string, printer>();
             CurrentJobs = new ConcurrentDictionary<int, job>();
@@ -119,15 +124,18 @@ namespace RepRancher
             commandQueue = new ConcurrentQueue<string>();
             methodHistory = new ConcurrentDictionary<int, string[]>();
             methodReplyRecieved = new ConcurrentDictionary<int, bool>();
+            if (NoisyClient) { System.Console.WriteLine("Attempting to Open Connection to Error Log (error.txt)");}
             try
             {
                 ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
                 errorLog = new StreamWriter(ostrm);
                 System.Console.SetError(errorLog);
-                Console.WriteLine("Opened Connection to Error Log");
+                if (NoisyClient) { System.Console.WriteLine("Opened Connection to Error Log");}
                 Console.WriteLine();
-                Console.Error.WriteLine("Opening Test Message for Log");
+                if (NoisyClient) { System.Console.WriteLine("Opening Test Message for Log");}
                 errorLog.Flush();
+                int ErrorTimer = 1000 * int.Parse(ConfigurationManager.AppSettings["ErrorTimer"]);
+                if (NoisyClient) { System.Console.WriteLine("Error Timer in ms: " + ErrorTimer); }
                 ErrorFlush = new System.Timers.Timer(2000);
                 ErrorFlush.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
                 ErrorFlush.Enabled = true;
@@ -139,6 +147,7 @@ namespace RepRancher
                 return;
             }
 
+            if (NoisyClient) { System.Console.WriteLine("Initializing connection to conveyor"); }
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
             tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
@@ -148,8 +157,11 @@ namespace RepRancher
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
             t3 = new Thread(new ThreadStart(ConveyorCommandServer.CommandThreadRun));
+            if (NoisyClient) { System.Console.WriteLine("Listener thread starting"); }
             t1.Start();
+            if (NoisyClient) { System.Console.WriteLine("Processor thread starting"); }
             t2.Start();
+            if (NoisyClient) { System.Console.WriteLine("Command thread starting"); }
             t3.Start();
             int KeepAliveTime = int.Parse(ConfigurationManager.AppSettings["KeepAliveTime"])*1000;
             if (KeepAliveTime > 0)
@@ -163,6 +175,7 @@ namespace RepRancher
         //This event triggers a call to check on printer status's
         public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
         {
+            if (NoisyClient) { System.Console.WriteLine("Keep Alive Timer Fired"); }
             KeepAlive.Enabled = false;
             KeepAlive.Stop();
             this.Startup();
@@ -178,7 +191,7 @@ namespace RepRancher
         public void Startup()
         {
             //List Ports
-            System.Console.WriteLine("Getting Ports");
+            if (NoisyClient) { System.Console.WriteLine("Getting Ports"); }
             int CommandID = int.Parse(InvokeCommand("getports"));
             bool MethodReception = false;
             //Wait for Ports
@@ -188,47 +201,48 @@ namespace RepRancher
             
             while (!MethodReception)
             {
-                System.Console.WriteLine("Waiting for Ports");
+                if (NoisyClient) { System.Console.WriteLine("Waiting for Ports"); }
                 System.Threading.Thread.Sleep(500);
                 methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                 //Check if reply recieved
             }
-            System.Console.WriteLine("Ports Recieved");
+            if (NoisyClient) { System.Console.WriteLine("Ports Recieved"); }
             //List Printers
-            System.Console.WriteLine("Getting Printers");
+            if (NoisyClient) { System.Console.WriteLine("Getting Printers"); }
             MethodReception = false;
+            if (NoisyClient) { System.Console.WriteLine("Waiting for Ports"); }
             CommandID = int.Parse(InvokeCommand("getprinters"));
             //Wait for Printers
             while (!MethodReception)
             {
-                System.Console.WriteLine("Waiting for Printers");
+                if (NoisyClient) { System.Console.WriteLine("Waiting for Printers"); }
                 System.Threading.Thread.Sleep(500);
                 methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                 //Check if reply recieved
             }
-            System.Console.WriteLine("Printers Recieved");
+            if (NoisyClient) { System.Console.WriteLine("Printers Recieved"); }
 
             //List Jobs
-            System.Console.WriteLine("Getting Jobs");
+            if (NoisyClient) { System.Console.WriteLine("Getting Jobs"); }
             MethodReception = false;
             CommandID = int.Parse(InvokeCommand("getjobs"));
             //Wait for Printers
             while (!MethodReception)
             {
-                System.Console.WriteLine("Waiting for Jobs");
+                if (NoisyClient) { System.Console.WriteLine("Waiting for Jobs"); }
                 System.Threading.Thread.Sleep(500);
                 methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                 //Check if reply recieved
             }
-            System.Console.WriteLine("Jobs Recieved");
+            if (NoisyClient) { System.Console.WriteLine("Jobs Recieved"); }
 
-            System.Console.WriteLine("Preparing to Connect");
+            if (NoisyClient) { System.Console.WriteLine("Preparing to Connect"); }
             foreach(string key in CurrentPorts.Keys){
                 port P = null;
                 if(CurrentPorts.TryGetValue(key, out P)){
                     //Port Found, Test if it is attached to printer. if not, connect
                     bool PortAttached = false;
-                    System.Console.WriteLine("Checking if Port is Attached to a Printer");
+                    if (NoisyClient) { System.Console.WriteLine("Checking if Port is Attached to a Printer"); }
                     foreach (string pkey in CurrentPrinters.Keys)
                     {
                         printer p = null;
@@ -237,25 +251,25 @@ namespace RepRancher
                             if (P.name.Equals(p.port_name))
                             {
                                 PortAttached = true;
-                                System.Console.WriteLine("Port is attached to a printer");
+                                if (NoisyClient) { System.Console.WriteLine("Port is attached to a printer"); }
                                 //Port exists and is attached to a printer
                             }
                         }
                     }
                     if (!PortAttached)
                     {
-                        System.Console.WriteLine("Port was not attached to a printer, Connecting");
+                        if (NoisyClient) { System.Console.WriteLine("Port was not attached to a printer, Connecting"); }
                         MethodReception = false;
                         string command = "Connect -portname " + P.name;
                         CommandID = int.Parse(InvokeCommand(command));
                         while (!MethodReception)
                         {
-                            System.Console.WriteLine("Waiting for connection");
+                            if (NoisyClient) { System.Console.WriteLine("Waiting for connection"); }
                             System.Threading.Thread.Sleep(500);
                             methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                             //Check if reply recieved set to true, breaking the loop
                         }
-                        System.Console.WriteLine("Port Connected");
+                        if (NoisyClient) { System.Console.WriteLine("Port Connected"); }
                     }
                 }
             }
