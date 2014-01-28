@@ -111,7 +111,7 @@ namespace RepRancher
         /*
          * Determines how much output is sent to screen
          */
-        bool NoisyClient;
+        public static bool NoisyClient;
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
@@ -381,7 +381,7 @@ namespace RepRancher
                     //Returns a string of help data giving the user a list of what commands are available, and what they accomplish
                     return "So far a hand full of methods have been made available. \n Should you need more details on a specific command, type: \n help command \n \n" +
                         "Commands Specific to RepRancher: \n exit \n restart \n list" +
-                    "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n print \n";
+                    "\n \n Available Conveyor Commands: \n hello \n getprinters \n getjobs \n getports \n connect \n print \n canceljob \n";
                 }
 
             } if (Command[0].Equals("print"))

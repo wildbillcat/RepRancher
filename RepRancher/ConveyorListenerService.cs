@@ -110,14 +110,13 @@ namespace RepRancher
 
         public void ListenerThreadRun()
         {
-            System.Console.WriteLine("Listener thread starting");
             while (true)
             {
                 Running.WaitOne();
                 if (Dispose)
                 {
                     Running.Release();
-                    Console.WriteLine("Listener thread returning.");
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Listener thread returning"); }
                     return;
                 }
                 Running.Release();
@@ -152,7 +151,6 @@ namespace RepRancher
 
         public void ProcessorThreadRun()
         {
-            System.Console.WriteLine("Processor thread starting");
             int ProcessStalls = 0;
             while (true)
             {
@@ -160,7 +158,7 @@ namespace RepRancher
                 if (Dispose)
                 {
                     Running.Release();
-                    Console.WriteLine("Processor thread returning.");
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor thread returning"); }
                     return;
                 }
                 Running.Release();
@@ -168,11 +166,12 @@ namespace RepRancher
                 {
                     ProcessStalls = 0;
                     contentAvailable = true;
-                    //System.Console.WriteLine("Processor Waiting to review Replies:");
-                    //Lock the repliesFronConveyor string for analyzation
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
                     ConveyorReplyMutex.WaitOne();
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
                     //Check to see if there is a command
                     //System.Console.WriteLine("Processor determining if there is a Complete JSON object");
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor determining if there is a Complete JSON object"); }
                     string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
                     repliesFromConveyor = command[0];
 
@@ -188,7 +187,7 @@ namespace RepRancher
                         {
                             if (ProcessJSONMessage(command[1]))
                             {
-                                //System.Console.Error.WriteLine("Successfully Processed Object");
+                                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Successfully Processed Object"); }
                             }
                             else
                             {
@@ -311,8 +310,8 @@ namespace RepRancher
             if (Reply == JsonReplyType.Method)
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
+                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Detected Method : " + MethodName); }
                 Console.Error.WriteLine("Detected Method : " + MethodName);
-                Console.WriteLine("Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
                     job AddedJob = ClientAPI.GetParams<job>(JSON);
@@ -391,7 +390,7 @@ namespace RepRancher
             {
                 //Fetch methodID in order to figure out what kind of reply to expect
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
-                //Console.WriteLine("Recieved Response to Command : " + MethodID);
+                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Recieved Response to Command : " + MethodID); }
                 string[] method;
                 if (methodHistory.TryGetValue(MethodID, out method))
                 {
@@ -502,13 +501,13 @@ namespace RepRancher
                     }
                     else
                     {
-                        Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]);
+                        if (ConveyorService.NoisyClient) { System.Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]); }
                     }
                     methodReplyRecieved.TryUpdate(MethodID, true, false);
                 }
                 else
                 {
-                    Console.WriteLine("RepRancher did not issue a method with this RPC id!");
+                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("RepRancher did not issue a method with this RPC id!"); }
                 }
             }
             else if (Reply == JsonReplyType.Error)
