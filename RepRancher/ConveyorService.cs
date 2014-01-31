@@ -245,10 +245,10 @@ namespace RepRancher
                         {
                             MUpdate.MachineStatus = MUpdate.MachineStatus + key + " : " + P.temperature.tools[key] + " \n ";
                         }
-                        if (P.temperature.heated_platforms != null && P.hasHeatedPlatform)
+                        if (P.temperature.heated_platforms != null && P.hasHeatedPlatform && P.temperature.heated_platforms.ToString().Length > 4)
                         {
                             string BedTemp = P.temperature.heated_platforms.ToString();
-                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + int.Parse(BedTemp.Substring(1, BedTemp.Length-(3)));
+                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + int.Parse(BedTemp.Substring(1, (BedTemp.Length-3)));
                         }
                     }
                     job J;
