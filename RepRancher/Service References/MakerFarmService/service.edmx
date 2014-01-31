@@ -1,0 +1,182 @@
+﻿<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices m:DataServiceVersion="3.0" m:MaxDataServiceVersion="3.0" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <Schema Namespace="MakerFarm.Models" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityType Name="Client">
+        <Key>
+          <PropertyRef Name="ClientId" />
+        </Key>
+        <Property Name="ClientId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ClientName" Type="Edm.String" />
+        <Property Name="ClientUserName" Type="Edm.String" />
+        <Property Name="ClientAPIKey" Type="Edm.String" />
+        <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="ClientPermissions" Relationship="MakerFarm.Models.MakerFarm_Models_Client_ClientPermissions_MakerFarm_Models_ClientPermission_ClientPermissionsPartner" ToRole="ClientPermissions" FromRole="ClientPermissionsPartner" />
+      </EntityType>
+      <ComplexType Name="MachineInterest">
+        <Property Name="MachineName" Type="Edm.String" />
+        <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
+      </ComplexType>
+      <EntityType Name="ClientPermission">
+        <Key>
+          <PropertyRef Name="ClientPermissionId" />
+        </Key>
+        <Property Name="ClientPermissionId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="GetInformation" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="SetInformation" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="Client" Relationship="MakerFarm.Models.MakerFarm_Models_ClientPermission_Client_MakerFarm_Models_Client_ClientPartner" ToRole="Client" FromRole="ClientPartner" />
+        <NavigationProperty Name="Machine" Relationship="MakerFarm.Models.MakerFarm_Models_ClientPermission_Machine_MakerFarm_Models_Machine_MachinePartner" ToRole="Machine" FromRole="MachinePartner" />
+      </EntityType>
+      <EntityType Name="Machine">
+        <Key>
+          <PropertyRef Name="MachineId" />
+        </Key>
+        <Property Name="MachineId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="MachineName" Type="Edm.String" />
+        <Property Name="PrinterId" Type="Edm.Int64" />
+        <Property Name="Status" Type="Edm.String" />
+        <Property Name="idle" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="ClientJobSupport" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="AffiliatedPrinter" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner" ToRole="AffiliatedPrinter" FromRole="AffiliatedPrinterPartner" />
+        <NavigationProperty Name="AssignedJob" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPartner" ToRole="AssignedJob" FromRole="AssignedJobPartner" />
+      </EntityType>
+      <EntityType Name="Printer">
+        <Key>
+          <PropertyRef Name="PrinterId" />
+        </Key>
+        <Property Name="PrinterId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="PrinterName" Type="Edm.String" />
+        <Property Name="InternalName" Type="Edm.String" />
+        <Property Name="PrinterTypeId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="PapercutPrintServer" Type="Edm.String" />
+        <Property Name="PapercutPrintQueue" Type="Edm.String" />
+        <NavigationProperty Name="MaterialsInUse" Relationship="MakerFarm.Models.MakerFarm_Models_Printer_MaterialsInUse_MakerFarm_Models_MaterialCheckout_MaterialsInUsePartner" ToRole="MaterialsInUse" FromRole="MaterialsInUsePartner" />
+        <NavigationProperty Name="PrinterType" Relationship="MakerFarm.Models.MakerFarm_Models_Printer_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner" ToRole="PrinterType" FromRole="PrinterTypePartner" />
+      </EntityType>
+      <EntityType Name="MaterialCheckout">
+        <Key>
+          <PropertyRef Name="MaterialCheckoutId" />
+        </Key>
+        <Property Name="MaterialCheckoutId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="PrinterId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="MaterialId" Type="Edm.Int64" Nullable="false" />
+        <NavigationProperty Name="Printer" Relationship="MakerFarm.Models.MakerFarm_Models_MaterialCheckout_Printer_MakerFarm_Models_Printer_PrinterPartner" ToRole="Printer" FromRole="PrinterPartner" />
+        <NavigationProperty Name="Material" Relationship="MakerFarm.Models.MakerFarm_Models_MaterialCheckout_Material_MakerFarm_Models_Material_MaterialPartner" ToRole="Material" FromRole="MaterialPartner" />
+      </EntityType>
+      <EntityType Name="Material">
+        <Key>
+          <PropertyRef Name="MaterialId" />
+        </Key>
+        <Property Name="MaterialId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="MaterialName" Type="Edm.String" />
+        <Property Name="SuppportMaterial" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PrinterTypeId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="MaterialSpoolQuantity" Type="Edm.Int64" Nullable="false" />
+        <NavigationProperty Name="PrinterType" Relationship="MakerFarm.Models.MakerFarm_Models_Material_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner" ToRole="PrinterType" FromRole="PrinterTypePartner" />
+      </EntityType>
+      <EntityType Name="PrinterType">
+        <Key>
+          <PropertyRef Name="PrinterTypeId" />
+        </Key>
+        <Property Name="PrinterTypeId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="TypeName" Type="Edm.String" />
+        <Property Name="SupportedNumberMaterials" Type="Edm.Int32" Nullable="false" />
+        <Property Name="MaterialUseUnit" Type="Edm.String" />
+        <Property Name="PrinterIcon" Type="Edm.String" />
+        <Property Name="MaxNumberUserAttempts" Type="Edm.Int32" Nullable="false" />
+        <Property Name="SupportedFileTypes" Type="Edm.String" />
+        <Property Name="CommentField" Type="Edm.String" />
+        <Property Name="AboutPrinter" Type="Edm.String" />
+        <Property Name="HyperLink" Type="Edm.String" />
+        <Property Name="MaximumNumberOfCopies" Type="Edm.Int32" Nullable="false" />
+        <Property Name="BuildLength" Type="Edm.Double" Nullable="false" />
+        <Property Name="BuildWidth" Type="Edm.Double" Nullable="false" />
+        <Property Name="BuildHeight" Type="Edm.Double" Nullable="false" />
+        <Property Name="OffersBreakawaySupport" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="OffersNonBreakAwaySupport" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="BuildSupportUsesMaterialSlot" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="OffersFullColorPrinting" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="FunctionalModelSupport" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="QueueVisible" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="SubmissionEnabled" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="InternalCostPerUnit" Type="Edm.Double" Nullable="false" />
+        <Property Name="ExternalCostPerUnit" Type="Edm.Double" Nullable="false" />
+      </EntityType>
+      <EntityType Name="Job">
+        <Key>
+          <PropertyRef Name="JobId" />
+        </Key>
+        <Property Name="JobId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Status" Type="Edm.String" />
+        <Property Name="started" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="complete" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
+        <NavigationProperty Name="AffiliatedPrint" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Printer_AffiliatedPrintPartner" ToRole="AffiliatedPrint" FromRole="AffiliatedPrintPartner" />
+        <NavigationProperty Name="AffiliatedMachine" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedMachine_MakerFarm_Models_Printer_AffiliatedMachinePartner" ToRole="AffiliatedMachine" FromRole="AffiliatedMachinePartner" />
+      </EntityType>
+      <Association Name="MakerFarm_Models_Client_ClientPermissions_MakerFarm_Models_ClientPermission_ClientPermissionsPartner">
+        <End Type="MakerFarm.Models.ClientPermission" Role="ClientPermissions" Multiplicity="*" />
+        <End Type="MakerFarm.Models.Client" Role="ClientPermissionsPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_ClientPermission_Client_MakerFarm_Models_Client_ClientPartner">
+        <End Type="MakerFarm.Models.Client" Role="Client" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.ClientPermission" Role="ClientPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_ClientPermission_Machine_MakerFarm_Models_Machine_MachinePartner">
+        <End Type="MakerFarm.Models.Machine" Role="Machine" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.ClientPermission" Role="MachinePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner">
+        <End Type="MakerFarm.Models.Printer" Role="AffiliatedPrinter" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Machine" Role="AffiliatedPrinterPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPartner">
+        <End Type="MakerFarm.Models.Job" Role="AssignedJob" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Machine" Role="AssignedJobPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Printer_MaterialsInUse_MakerFarm_Models_MaterialCheckout_MaterialsInUsePartner">
+        <End Type="MakerFarm.Models.MaterialCheckout" Role="MaterialsInUse" Multiplicity="*" />
+        <End Type="MakerFarm.Models.Printer" Role="MaterialsInUsePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Printer_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner">
+        <End Type="MakerFarm.Models.PrinterType" Role="PrinterType" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Printer" Role="PrinterTypePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_MaterialCheckout_Printer_MakerFarm_Models_Printer_PrinterPartner">
+        <End Type="MakerFarm.Models.Printer" Role="Printer" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.MaterialCheckout" Role="PrinterPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_MaterialCheckout_Material_MakerFarm_Models_Material_MaterialPartner">
+        <End Type="MakerFarm.Models.Material" Role="Material" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.MaterialCheckout" Role="MaterialPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Material_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner">
+        <End Type="MakerFarm.Models.PrinterType" Role="PrinterType" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Material" Role="PrinterTypePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Printer_AffiliatedPrintPartner">
+        <End Type="MakerFarm.Models.Printer" Role="AffiliatedPrint" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Job" Role="AffiliatedPrintPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Job_AffiliatedMachine_MakerFarm_Models_Printer_AffiliatedMachinePartner">
+        <End Type="MakerFarm.Models.Printer" Role="AffiliatedMachine" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Job" Role="AffiliatedMachinePartner" Multiplicity="0..1" />
+      </Association>
+    </Schema>
+    <Schema Namespace="Default" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="ClientsAPI" EntityType="MakerFarm.Models.Client" />
+        <FunctionImport Name="ISpy" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+          <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Machines" Type="Collection(Edm.String)" Nullable="false" FixedLength="false" Unicode="false" />
+        </FunctionImport>
+        <FunctionImport Name="DoTell" ReturnType="Collection(MakerFarm.Models.MachineInterest)" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+        </FunctionImport>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Conveyor_JSONRPC_API;
 using Conveyor_JSONRPC_API.Types;
+using System.Data.Services.Client;
 
 
 namespace RepRancher
@@ -113,6 +114,25 @@ namespace RepRancher
          */
         public static bool NoisyClient;
 
+        /*
+         * This is the connection to MakerFarm
+         */
+        RepRancher.MakerFarmService.Container MakerFarmService;
+
+        /*
+        * This is the APIKey to MakerFarm
+        */
+        string ClientAPIKey;
+
+        /*
+         * This is the ClientID used to access MakerFarm
+         */
+        int MakerFarmClientID;
+
+        Uri uri;
+        Uri ISpy;
+        Uri DoTellUri;
+
         public ConveyorService(string IPaddress, int PortNumber)
         {
             NoisyClient = bool.Parse(ConfigurationManager.AppSettings["NoisyClient"]);
@@ -146,6 +166,15 @@ namespace RepRancher
                 Console.WriteLine(e.Message);
                 return;
             }
+            if (NoisyClient) { System.Console.WriteLine("Reading MakerFarm Uri"); }
+            uri = new Uri(ConfigurationManager.AppSettings["MakerFarmAPIUri"]);
+            if (NoisyClient) { System.Console.WriteLine("Creating MakerFarm Service Container"); }
+            MakerFarmService = new MakerFarmService.Container(uri);
+            ClientAPIKey = ConfigurationManager.AppSettings["MakerFarmClientAPIKey"];
+            MakerFarmClientID = int.Parse(ConfigurationManager.AppSettings["MakerFarmClientID"]);
+            ISpy = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
+            DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
+            
 
             if (NoisyClient) { System.Console.WriteLine("Initializing connection to conveyor"); }
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
@@ -179,6 +208,12 @@ namespace RepRancher
             KeepAlive.Enabled = false;
             KeepAlive.Stop();
             this.Startup();
+            string[] ispy = CurrentPrinters.Keys.ToArray();
+            //Now that status has been pulled, lets say hi to Makerfarm
+            MakerFarmService.Execute(ISpy, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
+            //this.MakerFarmService.ClientsAPI.ISpy
+            //RepRancher.MakerFarmService.MachineInterest[] ReportOn;
+            var ReportOn = MakerFarmService.Execute<object[]>(DoTellUri, "POST", true);
             KeepAlive.Enabled = true;
             KeepAlive.Start();
         }
