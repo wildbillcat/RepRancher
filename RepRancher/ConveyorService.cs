@@ -247,7 +247,8 @@ namespace RepRancher
                         }
                         if (P.temperature.heated_platforms != null && P.hasHeatedPlatform)
                         {
-                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + P.temperature.heated_platforms.ToString();
+                            string BedTemp = P.temperature.heated_platforms.ToString();
+                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + int.Parse(BedTemp.Substring(1, BedTemp.Length-(3)));
                         }
                     }
                     job J;
