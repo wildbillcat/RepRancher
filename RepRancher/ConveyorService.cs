@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Conveyor_JSONRPC_API;
 using Conveyor_JSONRPC_API.Types;
 using System.Data.Services.Client;
+using RepRancher.MakerFarmService;
 
 
 namespace RepRancher
@@ -110,6 +111,16 @@ namespace RepRancher
         ConcurrentDictionary<int, job> CurrentJobs;
 
         /*
+         * This is a list of Conveyor JobIDs indexed by MakerWare Jobs
+         */
+        ConcurrentDictionary<int, int> MakerWareToConveyorJobIds;
+
+        /*
+         * This is a list of MakerFarm JobIDs indexed by RPCIDs
+         */
+        ConcurrentDictionary<int, int> RPCIDtoMakerFarmJobIds;
+
+        /*
          * Determines how much output is sent to screen
          */
         public static bool NoisyClient;
@@ -117,7 +128,7 @@ namespace RepRancher
         /*
          * This is the connection to MakerFarm
          */
-        RepRancher.MakerFarmService.Container MakerFarmService;
+        RepRancher.MakerFarmService.Container MakerFarmServiceContainer;
 
         /*
         * This is the APIKey to MakerFarm
@@ -130,8 +141,9 @@ namespace RepRancher
         int MakerFarmClientID;
 
         Uri uri;
-        Uri ISpy;
+        Uri ISpyUri;
         Uri DoTellUri;
+        Uri ISayUri;
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
@@ -144,6 +156,8 @@ namespace RepRancher
             commandQueue = new ConcurrentQueue<string>();
             methodHistory = new ConcurrentDictionary<int, string[]>();
             methodReplyRecieved = new ConcurrentDictionary<int, bool>();
+            MakerWareToConveyorJobIds = new ConcurrentDictionary<int, int>();
+            RPCIDtoMakerFarmJobIds = new ConcurrentDictionary<int, int>();
             if (NoisyClient) { System.Console.WriteLine("Attempting to Open Connection to Error Log (error.txt)");}
             try
             {
@@ -169,11 +183,12 @@ namespace RepRancher
             if (NoisyClient) { System.Console.WriteLine("Reading MakerFarm Uri"); }
             uri = new Uri(ConfigurationManager.AppSettings["MakerFarmAPIUri"]);
             if (NoisyClient) { System.Console.WriteLine("Creating MakerFarm Service Container"); }
-            MakerFarmService = new MakerFarmService.Container(uri);
+            MakerFarmServiceContainer = new MakerFarmService.Container(uri);
             ClientAPIKey = ConfigurationManager.AppSettings["MakerFarmClientAPIKey"];
             MakerFarmClientID = int.Parse(ConfigurationManager.AppSettings["MakerFarmClientID"]);
-            ISpy = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
+            ISpyUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
             DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
+            ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
             
 
             if (NoisyClient) { System.Console.WriteLine("Initializing connection to conveyor"); }
@@ -181,7 +196,7 @@ namespace RepRancher
             tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved);
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved, MakerWareToConveyorJobIds, RPCIDtoMakerFarmJobIds);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
@@ -210,10 +225,66 @@ namespace RepRancher
             this.Startup();
             string[] ispy = CurrentPrinters.Keys.ToArray();
             //Now that status has been pulled, lets say hi to Makerfarm
-            MakerFarmService.Execute(ISpy, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
-            //this.MakerFarmService.ClientsAPI.ISpy
-            //RepRancher.MakerFarmService.MachineInterest[] ReportOn;
-            var ReportOn = MakerFarmService.Execute<object[]>(DoTellUri, "POST", true);
+            MakerFarmServiceContainer.Execute(ISpyUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
+            MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+            //Now that RepRancher knows what Makerfarm is interested in hearing about, lets gather up that information and report on it!
+            foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
+            {
+                printer P;
+                if(CurrentPrinters.TryGetValue(Mi.MachineName, out P)){
+                    //Printer Makerfarm asked about exists! Lets Build a Machine Status!
+                    MachineStatusUpdate MUpdate = new MachineStatusUpdate();
+                    MUpdate.MachineName = P.name;
+                    MUpdate.MachineStatus = P.state + "\n" +
+                        "Printer Type: " + P.printerType + "\n" +
+                        "Firmware Version: " + P.firmware_version + "\n";
+                    if (P.temperature != null)
+                    {
+                        MUpdate.MachineStatus = MUpdate.MachineStatus + "Tools: \n";
+                        foreach (string key in P.temperature.tools.Keys)
+                        {
+                            MUpdate.MachineStatus = MUpdate.MachineStatus + key + " : " + P.temperature.tools[key] + " \n ";
+                        }
+                        if (P.temperature.heated_platforms != null && P.hasHeatedPlatform)
+                        {
+                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + P.temperature.heated_platforms.ToString();
+                        }
+                    }
+                    job J;
+                    JobStatusUpdate JUpdate = new JobStatusUpdate();
+                    int ConveyorJobId = 0;
+                    if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
+                    {
+                        JUpdate.JobId = Mi.CurrentJob;
+                        JUpdate.started = true;
+                        if(string.IsNullOrEmpty(J.conclusion)){
+                            JUpdate.complete = false;
+                        }else{
+                            JUpdate.complete = true;
+                        }
+                        JUpdate.Status = J.state + "\n" +
+                            "File Name: " + J.name + "\n";
+                        if (J.progress != null)
+                        {
+                            JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
+                        }
+                        if (J.failure != null)
+                        {
+                            JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
+                        }
+                    }
+                    else
+                    {
+                        JUpdate.JobId = 0;
+                        JUpdate.started = false;
+                        JUpdate.complete = false;
+                        JUpdate.Status = null;
+                    }
+                    //Built up information about this machine, submit to makerfarm
+                    MakerFarmServiceContainer.Execute(ISayUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineUpdate", MUpdate), new BodyOperationParameter("JobUpdate", JUpdate));
+                }
+                //string machineStatus = 
+            }
             KeepAlive.Enabled = true;
             KeepAlive.Start();
         }

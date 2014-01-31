@@ -83,7 +83,17 @@ namespace RepRancher
          */
         ConcurrentDictionary<int, job> CurrentJobs;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved)
+        /*
+         * This is a list of Conveyor JobIDs indexed by MakerWare Jobs
+         */
+        ConcurrentDictionary<int, int> MakerWareToConveyorJobIds;
+
+        /*
+         * This is a list of MakerFarm JobIDs indexed by RPCIDs
+         */
+        ConcurrentDictionary<int, int> RPCIDtoMakerFarmJobIds;
+
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -97,7 +107,8 @@ namespace RepRancher
             CurrentPorts = currentPorts;
             CurrentPrinters = currentPrinters;
             CurrentJobs = currentJobs;
-
+            MakerWareToConveyorJobIds = makerWareToConveyorJobIds;
+            RPCIDtoMakerFarmJobIds = rPCIDtoMakerFarmJobIds;
         }
 
         public void TriggerDispose()
@@ -498,6 +509,18 @@ namespace RepRancher
                             existingVal.conclusion = j.conclusion;
                             return existingVal;
                         });
+                        if (!methodReplyRecieved[MethodID])
+                        {
+                            if (ConveyorService.NoisyClient) { System.Console.WriteLine("Did not yet mark a return for Print method. Update the Makerware to JobID Dictionary "); }
+                            int MakerWareJobId = 0;
+                            if(RPCIDtoMakerFarmJobIds.TryGetValue(MethodID, out MakerWareJobId)){
+                                if (MakerWareToConveyorJobIds.TryUpdate(MakerWareJobId, j.id, 0))
+                                {
+                                    int temp;
+                                    RPCIDtoMakerFarmJobIds.TryRemove(MakerWareJobId, out temp);
+                                }
+                            }
+                        }
                     }
                     else
                     {

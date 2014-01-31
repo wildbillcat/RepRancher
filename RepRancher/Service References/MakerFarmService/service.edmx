@@ -17,6 +17,16 @@
         <Property Name="MachineName" Type="Edm.String" />
         <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
       </ComplexType>
+      <ComplexType Name="MachineStatusUpdate">
+        <Property Name="MachineName" Type="Edm.String" />
+        <Property Name="MachineStatus" Type="Edm.String" />
+      </ComplexType>
+      <ComplexType Name="JobStatusUpdate">
+        <Property Name="JobId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Status" Type="Edm.String" />
+        <Property Name="started" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="complete" Type="Edm.Boolean" Nullable="false" />
+      </ComplexType>
       <EntityType Name="ClientPermission">
         <Key>
           <PropertyRef Name="ClientPermissionId" />
@@ -175,6 +185,13 @@
         </FunctionImport>
         <FunctionImport Name="DoTell" ReturnType="Collection(MakerFarm.Models.MachineInterest)" IsBindable="true" m:IsAlwaysBindable="true">
           <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+          <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
+        </FunctionImport>
+        <FunctionImport Name="ISay" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+          <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="MachineUpdate" Type="MakerFarm.Models.MachineStatusUpdate" />
+          <Parameter Name="JobUpdate" Type="MakerFarm.Models.JobStatusUpdate" />
         </FunctionImport>
       </EntityContainer>
     </Schema>
