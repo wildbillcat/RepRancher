@@ -21,6 +21,7 @@ namespace RepRancher
 {
     class ConveyorService
     {
+        public bool EnableMakerFarmClient;
         /*
          * This is the IP Address of the Conveyor Service
          */
@@ -189,7 +190,8 @@ namespace RepRancher
             ISpyUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
             DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
             ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
-            
+
+            EnableMakerFarmClient = bool.Parse(ConfigurationManager.AppSettings["EnableMakerFarmClient"]);
 
             if (NoisyClient) { System.Console.WriteLine("Initializing connection to conveyor"); }
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
@@ -223,68 +225,93 @@ namespace RepRancher
             KeepAlive.Enabled = false;
             KeepAlive.Stop();
             this.Startup();
-            string[] ispy = CurrentPrinters.Keys.ToArray();
-            //Now that status has been pulled, lets say hi to Makerfarm
-            MakerFarmServiceContainer.Execute(ISpyUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
-            MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
-            //Now that RepRancher knows what Makerfarm is interested in hearing about, lets gather up that information and report on it!
-            foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
+            if (EnableMakerFarmClient)
             {
-                printer P;
-                if(CurrentPrinters.TryGetValue(Mi.MachineName, out P)){
-                    //Printer Makerfarm asked about exists! Lets Build a Machine Status!
-                    MachineStatusUpdate MUpdate = new MachineStatusUpdate();
-                    MUpdate.MachineName = P.name;
-                    MUpdate.MachineStatus = P.state + "\n" +
-                        "Printer Type: " + P.printerType + "\n" +
-                        "Firmware Version: " + P.firmware_version + "\n";
-                    if (P.temperature != null)
+                string[] ispy = CurrentPrinters.Keys.ToArray();
+                //Now that status has been pulled, lets say hi to Makerfarm
+                MakerFarmServiceContainer.Execute(ISpyUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
+                MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+                //Now that RepRancher knows what Makerfarm is interested in hearing about, lets gather up that information and report on it!
+                foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
+                {
+                    printer P;
+                    if (CurrentPrinters.TryGetValue(Mi.MachineName, out P))
                     {
-                        MUpdate.MachineStatus = MUpdate.MachineStatus + "Tools: \n";
-                        foreach (string key in P.temperature.tools.Keys)
+                        //Printer Makerfarm asked about exists! Lets Build a Machine Status!
+                        MachineStatusUpdate MUpdate = new MachineStatusUpdate();
+                        MUpdate.MachineName = P.name;
+                        MUpdate.MachineStatus = P.state + "\n" +
+                            "Printer Type: " + P.printerType + "\n" +
+                            "Firmware Version: " + P.firmware_version + "\n";
+                        if (P.temperature != null)
                         {
-                            MUpdate.MachineStatus = MUpdate.MachineStatus + key + " : " + P.temperature.tools[key] + " \n ";
+                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Tools: \n";
+                            foreach (string key in P.temperature.tools.Keys)
+                            {
+                                MUpdate.MachineStatus = MUpdate.MachineStatus + "Tool " + key + " : " + P.temperature.tools[key] + " \n ";
+                            }
+                            if (P.temperature.heated_platforms != null && P.hasHeatedPlatform)
+                            {
+                                int[] BedTemp = JsonConvert.DeserializeObject<int[]>(P.temperature.heated_platforms.ToString());
+                                foreach (int temp in BedTemp)
+                                {
+                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + temp + "\n";
+                                }
+
+                            }
                         }
-                        if (P.temperature.heated_platforms != null && P.hasHeatedPlatform && P.temperature.heated_platforms.ToString().Length > 4)
+                        job J;
+                        JobStatusUpdate JUpdate = new JobStatusUpdate();
+                        int ConveyorJobId = 0;
+                        if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                         {
-                            string BedTemp = P.temperature.heated_platforms.ToString();
-                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + int.Parse(BedTemp.Substring(1, (BedTemp.Length-3)));
+                            JUpdate.JobId = Mi.CurrentJob;
+                            JUpdate.started = true;
+                            if (string.IsNullOrEmpty(J.conclusion))
+                            {
+                                JUpdate.complete = false;
+                            }
+                            else
+                            {
+                                JUpdate.complete = true;
+                            }
+                            JUpdate.Status = J.state + "\n" +
+                                "File Name: " + J.name + "\n";
+                            if (J.progress != null)
+                            {
+                                JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
+                            }
+                            if (J.failure != null)
+                            {
+                                JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
+                            }
                         }
-                    }
-                    job J;
-                    JobStatusUpdate JUpdate = new JobStatusUpdate();
-                    int ConveyorJobId = 0;
-                    if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
-                    {
-                        JUpdate.JobId = Mi.CurrentJob;
-                        JUpdate.started = true;
-                        if(string.IsNullOrEmpty(J.conclusion)){
+                        else
+                        {
+                            JUpdate.JobId = 0;
+                            JUpdate.started = false;
                             JUpdate.complete = false;
-                        }else{
-                            JUpdate.complete = true;
+                            JUpdate.Status = null;
+                            //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
+                            J = CurrentJobs.Values.Where(p => p.machine_name != null && p.machine_name.Equals(P.name)).OrderByDescending(p => p.id).FirstOrDefault();
+                            if (J != null)
+                            {
+                                //Job is no longer null, meaning something has happened on the printer! Lets let users know.
+                                MUpdate.MachineStatus = MUpdate.MachineStatus + "\nNon-MakerFarm Job: \n";
+                                MUpdate.MachineStatus = MUpdate.MachineStatus + "Status: " + J.state + "\n" +
+                                "File Name: " + J.name + "\n";
+                                if (J.progress != null)
+                                {
+                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
+                                }
+                            }
+
                         }
-                        JUpdate.Status = J.state + "\n" +
-                            "File Name: " + J.name + "\n";
-                        if (J.progress != null)
-                        {
-                            JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
-                        }
-                        if (J.failure != null)
-                        {
-                            JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
-                        }
+                        //Built up information about this machine, submit to makerfarm
+                        MakerFarmServiceContainer.Execute(ISayUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineUpdate", MUpdate), new BodyOperationParameter("JobUpdate", JUpdate));
                     }
-                    else
-                    {
-                        JUpdate.JobId = 0;
-                        JUpdate.started = false;
-                        JUpdate.complete = false;
-                        JUpdate.Status = null;
-                    }
-                    //Built up information about this machine, submit to makerfarm
-                    MakerFarmServiceContainer.Execute(ISayUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineUpdate", MUpdate), new BodyOperationParameter("JobUpdate", JUpdate));
+                    //string machineStatus = 
                 }
-                //string machineStatus = 
             }
             KeepAlive.Enabled = true;
             KeepAlive.Start();
