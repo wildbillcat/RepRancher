@@ -19,7 +19,7 @@ using RepRancher.MakerFarmService;
 
 namespace RepRancher
 {
-    class ConveyorService
+    public class ConveyorService
     {
         public bool EnableMakerFarmClient;
         /*
@@ -246,7 +246,6 @@ namespace RepRancher
                             "Firmware Version: " + P.firmware_version + "\n";
                         if (P.temperature != null)
                         {
-                            MUpdate.MachineStatus = MUpdate.MachineStatus + "Tools: \n";
                             foreach (string key in P.temperature.tools.Keys)
                             {
                                 MUpdate.MachineStatus = MUpdate.MachineStatus + "Tool " + key + " : " + P.temperature.tools[key] + " \n ";
@@ -258,7 +257,6 @@ namespace RepRancher
                                 {
                                     MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + temp + "\n";
                                 }
-
                             }
                         }
                         job J;
