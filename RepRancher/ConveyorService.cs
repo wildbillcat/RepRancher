@@ -162,7 +162,7 @@ namespace RepRancher
             if (NoisyClient) { System.Console.WriteLine("Attempting to Open Connection to Error Log (error.txt)");}
             try
             {
-                ostrm = new FileStream("./error.txt", FileMode.Create, FileAccess.Write);
+                ostrm = new FileStream("./error.txt", FileMode.OpenOrCreate, FileAccess.Write);
                 errorLog = new StreamWriter(ostrm);
                 System.Console.SetError(errorLog);
                 if (NoisyClient) { System.Console.WriteLine("Opened Connection to Error Log");}

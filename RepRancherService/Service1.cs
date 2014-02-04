@@ -15,6 +15,7 @@ namespace RepRancherService
     {
         ConveyorService Conveyor;
         System.Timers.Timer t;
+        System.Timers.Timer Health;
         public Service1()
         {
             InitializeComponent();
@@ -25,8 +26,22 @@ namespace RepRancherService
             Conveyor = new ConveyorService("127.0.0.1", 9999);
             GC.KeepAlive(Conveyor);
             t = new System.Timers.Timer(5000);
-            t.Elapsed += new System.Timers.ElapsedEventHandler(startup);
+            t.Elapsed += new System.Timers.ElapsedEventHandler(HealthCheck);
+            Health = new System.Timers.Timer(10000);
             t.Start();
+        }
+
+        public void HealthCheck(object source, System.Timers.ElapsedEventArgs e)
+        {
+            Health.Stop();
+            Health.Enabled = false;
+            if (!Conveyor.Valid())
+            {
+                //Something has happened to the conveyor service!
+                Conveyor.Dispose();
+                Conveyor = new ConveyorService("127.0.0.1", 9999);
+            }
+            Conveyor.Startup();
         }
 
         public void startup(object source, System.Timers.ElapsedEventArgs e)
