@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="7f19dcad-a252-4c8f-832f-7081871d3783" Name="RepRancher" Language="1033" Version="0.8.0.0" Manufacturer="Patrick McMorran" UpgradeCode="22733e70-63ea-4306-a2cf-95de03ca6731">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Comments="Created by Patrick McMorran. This is 'Unlicensed' Software, http://unlicense.org/" />
+    <UIRef Id="WixUI_Minimal" />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
+
+		<Feature Id="RepRancherCommandline" Title="RepRancher Command-line" Level="1">
+      <ComponentRef Id="CMP_Conveyor_JSONRPC_API.dll" />
+      <ComponentRef Id="CMP_Microsoft.Data.Edm.dll" />
+      <ComponentRef Id="CMP_Microsoft.Data.Edm.xml" />
+      <ComponentRef Id="CMP_Microsoft.Data.OData.dll" />
+      <ComponentRef Id="CMP_Microsoft.Data.OData.xml" />
+      <ComponentRef Id="CMP_Microsoft.Data.Services.Client.dll" />
+      <ComponentRef Id="CMP_Microsoft.Data.Services.Client.xml" />
+      <ComponentRef Id="CMP_Newtonsoft.Json.dll" />
+      <ComponentRef Id="CMP_Newtonsoft.Json.xml" />
+      <ComponentRef Id="CMP_README.txt" />
+      <ComponentRef Id="CMP_RepRancher.exe" />
+      <ComponentRef Id="CMP_RepRancher.exe.config" />
+      <ComponentRef Id="CMP_System.Spatial.dll" />
+      <ComponentRef Id="CMP_System.Spatial.xml" />
+		</Feature>
+    <Feature Id="RepRancherService" Title="RepRancher Service" Level="1">
+      <ComponentRef Id="CMP_RepRancherService.exe" />
+      <ComponentRef Id="CMP_RepRancherService.exe.config" />
+    </Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="RepRancher" >
+          
+          <Component Id="CMP_Conveyor_JSONRPC_API.dll"
+                 Guid="c22511b9-b087-4e53-9e0f-e4c1dcada605">
+            <File Id="FILE_MyProgramDir_Conveyor_JSONRPC_API.dll"
+                  Source="$(var.FilesPath)Conveyor_JSONRPC_API.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.Edm.dll"
+                 Guid="68775ecb-e081-4564-ac59-80ab0c235cd2">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.Edm.dll"
+                  Source="$(var.FilesPath)Microsoft.Data.Edm.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.Edm.xml"
+                 Guid="17799e0b-e266-4da2-ab4a-e0bf596bded7">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.Edm.xml"
+                  Source="$(var.FilesPath)Microsoft.Data.Edm.xml"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.OData.dll"
+                 Guid="0bf1045f-b34b-42c7-8ace-613378c8ff7f">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.OData.dll"
+                  Source="$(var.FilesPath)Microsoft.Data.OData.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.OData.xml"
+                 Guid="e29e2092-e130-4b42-bcef-867930ed0381">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.OData.xml"
+                  Source="$(var.FilesPath)Microsoft.Data.OData.xml"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.Services.Client.dll"
+                 Guid="1e8d39c2-e6bf-4b47-b9c7-4d6b66056c05">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.Services.Client.dll"
+                  Source="$(var.FilesPath)Microsoft.Data.Services.Client.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Microsoft.Data.Services.Client.xml"
+                 Guid="e67f8787-5f2e-47d2-a3be-c8e9bc182e10">
+            <File Id="FILE_MyProgramDir_Microsoft.Data.Services.Client.xml"
+                  Source="$(var.FilesPath)Microsoft.Data.Services.Client.xml"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Newtonsoft.Json.dll"
+                 Guid="5f975fed-2113-4253-bfa7-505b6277837c">
+            <File Id="FILE_MyProgramDir_Newtonsoft.Json.dll"
+                  Source="$(var.FilesPath)Newtonsoft.Json.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_Newtonsoft.Json.xml"
+                 Guid="3f5d4132-ae7e-4169-9e7f-44b59ab486dc">
+            <File Id="FILE_MyProgramDir_Newtonsoft.Json.xml"
+                  Source="$(var.FilesPath)Newtonsoft.Json.xml"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_README.txt"
+                 Guid="45bdc460-f4d5-4e6b-8df6-18e995eea343">
+            <File Id="FILE_MyProgramDir_README.txt"
+                  Source="$(var.FilesPath)README.txt"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_RepRancher.exe"
+                 Guid="1b67ebb1-0433-47fa-9ab6-5b4ac1b0c0e0">
+            <File Id="FILE_MyProgramDir_RepRancher.exe"
+                  Source="$(var.FilesPath)RepRancher.exe"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_RepRancher.exe.config"
+                 Guid="8fdd8335-dd7d-4086-9df8-5365f98503c3">
+            <File Id="FILE_MyProgramDir_RepRancher.exe.config"
+                  Source="$(var.FilesPath)RepRancher.exe.config"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_RepRancherService.exe"
+                 Guid="40f5327d-095b-4227-a8d3-e0c7859ce886">
+            <File Id="FILE_MyProgramDir_RepRancherService.exe"
+                  Source="$(var.FilesPath)RepRancherService.exe"
+                  KeyPath="yes" />
+            <ServiceInstall
+             Id="ServiceInstaller"
+             Type="ownProcess"
+             Name="RepRancherService"
+             DisplayName="RepRancher Service"
+             Description="This application reports the status of Makerbots to a MakerFarm web application"
+             Start="auto"
+             Account="LocalSystem"
+             ErrorControl="normal"
+             />
+            <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="RepRancherService" Wait="yes" />
+          </Component>
+
+          <Component Id="CMP_RepRancherService.exe.config"
+                 Guid="da88f648-a610-40c0-8c42-4e5d128dc2c7">
+            <File Id="FILE_MyProgramDir_RepRancherService.exe.config"
+                  Source="$(var.FilesPath)RepRancherService.exe.config"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_System.Spatial.dll"
+                 Guid="ecac0d72-b58f-4754-bfa0-6d572b48e463">
+            <File Id="FILE_MyProgramDir_System.Spatial.dll"
+                  Source="$(var.FilesPath)System.Spatial.dll"
+                  KeyPath="yes" />
+          </Component>
+
+          <Component Id="CMP_System.Spatial.xml"
+                 Guid="ba38ec57-f881-457b-85fc-190ed2861cd0">
+            <File Id="FILE_MyProgramDir_System.Spatial.xml"
+                  Source="$(var.FilesPath)System.Spatial.xml"
+                  KeyPath="yes" />
+          </Component>
+          
+        </Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+</Wix>
