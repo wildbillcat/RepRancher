@@ -20,6 +20,7 @@
       <ComplexType Name="MachineStatusUpdate">
         <Property Name="MachineName" Type="Edm.String" />
         <Property Name="MachineStatus" Type="Edm.String" />
+        <Property Name="CurrentTaskProgress" Type="Edm.Double" />
       </ComplexType>
       <ComplexType Name="JobStatusUpdate">
         <Property Name="JobId" Type="Edm.Int32" Nullable="false" />
@@ -49,6 +50,7 @@
         <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
         <Property Name="ClientJobSupport" Type="Edm.Boolean" Nullable="false" />
         <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="CurrentTaskProgress" Type="Edm.Double" />
         <NavigationProperty Name="AffiliatedPrinter" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner" ToRole="AffiliatedPrinter" FromRole="AffiliatedPrinterPartner" />
         <NavigationProperty Name="AssignedJob" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPartner" ToRole="AssignedJob" FromRole="AssignedJobPartner" />
       </EntityType>

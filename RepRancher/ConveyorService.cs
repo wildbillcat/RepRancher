@@ -240,6 +240,7 @@ namespace RepRancher
                         //Printer Makerfarm asked about exists! Lets Build a Machine Status!
                         MachineStatusUpdate MUpdate = new MachineStatusUpdate();
                         MUpdate.MachineName = P.name;
+                        MUpdate.CurrentTaskProgress = null;
                         MUpdate.MachineStatus = P.state + "\n" +
                             "Printer Type: " + P.printerType + "\n" +
                             "Firmware Version: " + P.firmware_version + "\n";
@@ -285,6 +286,13 @@ namespace RepRancher
                             {
                                 JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
                             }
+                            if(J.progress != null){
+                                MUpdate.CurrentTaskProgress = J.progress.progress;
+                            }
+                            else
+                            {
+                                MUpdate.CurrentTaskProgress = null;
+                            }
                         }
                         else
                         {
@@ -303,6 +311,7 @@ namespace RepRancher
                                 if (J.progress != null)
                                 {
                                     MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
+                                    MUpdate.CurrentTaskProgress = J.progress.progress;
                                 }
                             }
 
