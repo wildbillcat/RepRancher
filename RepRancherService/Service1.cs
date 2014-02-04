@@ -40,8 +40,9 @@ namespace RepRancherService
                 //Something has happened to the conveyor service!
                 Conveyor.Dispose();
                 Conveyor = new ConveyorService("127.0.0.1", 9999);
+                Conveyor.Startup();
             }
-            Conveyor.Startup();
+            
         }
 
         public void startup(object source, System.Timers.ElapsedEventArgs e)

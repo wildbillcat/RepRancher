@@ -40,8 +40,6 @@
             // serviceInstaller1
             // 
             this.serviceInstaller1.ServiceName = "RepRancherService";
-            this.serviceInstaller1.ServicesDependedOn = new string[] {
-        "MakerBot Conveyor Service"};
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
