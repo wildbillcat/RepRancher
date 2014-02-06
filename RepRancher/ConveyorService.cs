@@ -312,10 +312,6 @@ namespace RepRancher
                             }
 
                         }
-                        if (P.state.Equals("IDLE") || P.state.Equals("DISCONNECTED"))
-                        {
-                            MUpdate.CurrentTaskProgress = null;
-                        }
                         //Built up information about this machine, submit to makerfarm
                         MakerFarmServiceContainer.Execute(ISayUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineUpdate", MUpdate), new BodyOperationParameter("JobUpdate", JUpdate));
                     }
