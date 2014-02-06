@@ -276,20 +276,18 @@ namespace RepRancher
                             }
                             JUpdate.Status = J.state + "\n" +
                                 "File Name: " + J.name + "\n";
-                            if (J.progress != null)
+                            if (J.progress != null && J.state.Equals("OPERATION"))
                             {
                                 JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
-                            }
-                            if (J.failure != null)
-                            {
-                                JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
-                            }
-                            if(J.progress != null){
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
                             }
                             else
                             {
                                 MUpdate.CurrentTaskProgress = null;
+                            }
+                            if (J.failure != null)
+                            {
+                                JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
                             }
                         }
                         else
