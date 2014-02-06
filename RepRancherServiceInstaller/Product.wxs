@@ -113,7 +113,7 @@
           <Component Id="CMP_RepRancher.exe.config"
                  Guid="8fdd8335-dd7d-4086-9df8-5365f98503c3">
             <File Id="FILE_MyProgramDir_RepRancher.exe.config"
-                  Source="$(var.FilesPath)RepRancher.exe.config"
+                  Source="$(var.RepRancher)RepRancher.exe.config"
                   KeyPath="yes" />
           </Component>
 
