@@ -276,7 +276,7 @@ namespace RepRancher
                             }
                             JUpdate.Status = J.state + "\n" +
                                 "File Name: " + J.name + "\n";
-                            if (J.progress != null && J.state.Equals("OPERATION"))
+                            if (J.progress != null)
                             {
                                 JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
@@ -304,7 +304,7 @@ namespace RepRancher
                                 MUpdate.MachineStatus = MUpdate.MachineStatus + "\nNon-MakerFarm Job: \n";
                                 MUpdate.MachineStatus = MUpdate.MachineStatus + "Status: " + J.state + "\n" +
                                 "File Name: " + J.name + "\n";
-                                if (J.progress != null)
+                                if (J.progress != null && J.state.Equals("RUNNING"))
                                 {
                                     MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
                                     MUpdate.CurrentTaskProgress = J.progress.progress;
