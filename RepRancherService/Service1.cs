@@ -57,12 +57,16 @@ namespace RepRancherService
             Conveyor.Startup();
             Health = new System.Timers.Timer(10000);
             Health.Elapsed += new System.Timers.ElapsedEventHandler(HealthCheck);
+            Health.Enabled = true;
+            Health.Start();
         }
 
         protected override void OnStop()
         {
             System.Timers.Timer d = new System.Timers.Timer(1000);
             d.Elapsed += new System.Timers.ElapsedEventHandler(Die);
+            d.Enabled = true;
+            d.Start();
             //Conveyor.Dispose();
         }
     }
