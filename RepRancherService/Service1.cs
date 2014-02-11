@@ -43,6 +43,11 @@ namespace RepRancherService
             Health.Start();
         }
 
+        public void Die(object source, System.Timers.ElapsedEventArgs e)
+        {
+            Environment.FailFast(null);
+        }
+
         public void startup(object source, System.Timers.ElapsedEventArgs e)
         {
             t.Stop();
@@ -56,6 +61,8 @@ namespace RepRancherService
 
         protected override void OnStop()
         {
+            System.Timers.Timer d = new System.Timers.Timer(1000);
+            d.Elapsed += new System.Timers.ElapsedEventHandler(Die);
             //Conveyor.Dispose();
         }
     }

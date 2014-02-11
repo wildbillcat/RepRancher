@@ -330,13 +330,24 @@ namespace RepRancher
         public void Startup()
         {
             //List Ports
-            if (NoisyClient) { System.Console.WriteLine("Getting Ports"); }
-            int CommandID = int.Parse(InvokeCommand("getports"));
+            if (NoisyClient) { System.Console.WriteLine("Saying hello"); }
+            int CommandID = int.Parse(InvokeCommand("hello"));
             bool MethodReception = false;
             //Wait for Ports
 
-            MethodReception = false;
+            while (!MethodReception)
+            {
+                if (NoisyClient) { System.Console.WriteLine("Waiting for world"); }
+                System.Threading.Thread.Sleep(500);
+                methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                //Check if reply recieved
+            }
+
+            //List Ports
+            if (NoisyClient) { System.Console.WriteLine("Getting Ports"); }
             CommandID = int.Parse(InvokeCommand("getports"));
+            MethodReception = false;
+            //Wait for Ports
             
             while (!MethodReception)
             {
@@ -399,7 +410,7 @@ namespace RepRancher
                     {
                         if (NoisyClient) { System.Console.WriteLine("Port was not attached to a printer, Connecting"); }
                         MethodReception = false;
-                        string command = "Connect -portname " + P.name;
+                        string command = "connect -portname " + P.name;
                         CommandID = int.Parse(InvokeCommand(command));
                         while (!MethodReception)
                         {
