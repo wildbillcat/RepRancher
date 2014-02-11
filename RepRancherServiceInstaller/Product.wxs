@@ -132,6 +132,7 @@
              Account="LocalSystem"
              ErrorControl="normal"
              />
+            <ServiceControl Id="StartService" Stop="both" Remove="uninstall" Name="RepRancherService" Wait="yes" />
           </Component>
 
           <Component Id="CMP_RepRancherService.exe.config"
