@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="7f19dcad-a252-4c8f-832f-7081871d3783" Name="RepRancher" Language="1033" Version="0.8.0.0" Manufacturer="Patrick McMorran" UpgradeCode="22733e70-63ea-4306-a2cf-95de03ca6731">
+	<Product Id="7f19dcad-a252-4c8f-832f-7081871d3783" Name="RepRancher" Language="1033" Version="0.8.1.0" Manufacturer="Patrick McMorran" UpgradeCode="22733e70-63ea-4306-a2cf-95de03ca6731">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Comments="Created by Patrick McMorran. This is 'Unlicensed' Software, http://unlicense.org/" />
-    <UIRef Id="WixUI_Minimal" />
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <UIRef Id="WixUI_Advanced" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <Property Id="ApplicationFolderName" Value="RepRancher" />
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+
+    <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes"/>
 
-		<Feature Id="RepRancherCommandline" Title="RepRancher Command-line" Level="1">
-      <ComponentRef Id="CMP_Conveyor_JSONRPC_API.dll" />
-      <ComponentRef Id="CMP_Microsoft.Data.Edm.dll" />
-      <ComponentRef Id="CMP_Microsoft.Data.Edm.xml" />
-      <ComponentRef Id="CMP_Microsoft.Data.OData.dll" />
-      <ComponentRef Id="CMP_Microsoft.Data.OData.xml" />
-      <ComponentRef Id="CMP_Microsoft.Data.Services.Client.dll" />
-      <ComponentRef Id="CMP_Microsoft.Data.Services.Client.xml" />
-      <ComponentRef Id="CMP_Newtonsoft.Json.dll" />
-      <ComponentRef Id="CMP_Newtonsoft.Json.xml" />
-      <ComponentRef Id="CMP_README.txt" />
-      <ComponentRef Id="CMP_RepRancher.exe" />
-      <ComponentRef Id="CMP_RepRancher.exe.config" />
-      <ComponentRef Id="CMP_System.Spatial.dll" />
-      <ComponentRef Id="CMP_System.Spatial.xml" />
-		</Feature>
-    <Feature Id="RepRancherService" Title="RepRancher Service" Level="1">
-      <ComponentRef Id="CMP_RepRancherService.exe" />
-      <ComponentRef Id="CMP_RepRancherService.exe.config" />
+    <Feature Id="Complete" Title="RepRancher Complete" Description="This is all components of the RepRancher program" Display='expand' Level='1' ConfigurableDirectory='INSTALLFOLDER'>
+		  <Feature Id="RepRancherCommandline" Title="RepRancher Command-line" Level="1">
+        <ComponentRef Id="CMP_Conveyor_JSONRPC_API.dll" />
+        <ComponentRef Id="CMP_Microsoft.Data.Edm.dll" />
+        <ComponentRef Id="CMP_Microsoft.Data.Edm.xml" />
+        <ComponentRef Id="CMP_Microsoft.Data.OData.dll" />
+        <ComponentRef Id="CMP_Microsoft.Data.OData.xml" />
+        <ComponentRef Id="CMP_Microsoft.Data.Services.Client.dll" />
+        <ComponentRef Id="CMP_Microsoft.Data.Services.Client.xml" />
+        <ComponentRef Id="CMP_Newtonsoft.Json.dll" />
+        <ComponentRef Id="CMP_Newtonsoft.Json.xml" />
+        <ComponentRef Id="CMP_README.txt" />
+        <ComponentRef Id="CMP_RepRancher.exe" />
+        <ComponentRef Id="CMP_RepRancher.exe.config" />
+        <ComponentRef Id="CMP_System.Spatial.dll" />
+        <ComponentRef Id="CMP_System.Spatial.xml" />
+		  </Feature>
+      <Feature Id="RepRancherService" Title="RepRancher Service" Description="This is the Service Process version of the application" Level="1">
+        <ComponentRef Id="CMP_RepRancherService.exe" />
+        <ComponentRef Id="CMP_RepRancherService.exe.config" />
+      </Feature>
     </Feature>
 	</Product>
 
