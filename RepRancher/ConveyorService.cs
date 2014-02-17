@@ -181,6 +181,14 @@ namespace RepRancher
                 Console.WriteLine(e.Message);
                 return;
             }
+
+            if (NoisyClient) { System.Console.WriteLine("Checking that download File Storage Exists"); }
+            if (!System.IO.Directory.Exists(ConfigurationManager.AppSettings["TemporaryFileStorage"]))
+            {
+                if (NoisyClient) { System.Console.WriteLine("Creating the File Storage Folder"); }
+                System.IO.Directory.CreateDirectory(ConfigurationManager.AppSettings["TemporaryFileStorage"]);
+            }
+
             if (NoisyClient) { System.Console.WriteLine("Reading MakerFarm Uri"); }
             uri = new Uri(ConfigurationManager.AppSettings["MakerFarmAPIUri"]);
             if (NoisyClient) { System.Console.WriteLine("Creating MakerFarm Service Container"); }
@@ -231,7 +239,8 @@ namespace RepRancher
                 //Now that status has been pulled, lets say hi to Makerfarm
                 MakerFarmServiceContainer.Execute(ISpyUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
                 MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
-                //Now that RepRancher knows what Makerfarm is interested in hearing about, lets gather up that information and report on it!
+                //Now that RepRancher knows what Makerfarm is interested in hearing about, act on that information!
+                //Report all the information Makerfarm in intersted in hearing about
                 foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
                 {
                     printer P;
@@ -259,9 +268,13 @@ namespace RepRancher
                                 }
                             }
                         }
+
+
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
                         int ConveyorJobId = 0;
+
+                        //Check if MakerFarm assigned a job
                         if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                         {
                             JUpdate.JobId = Mi.CurrentJob;
@@ -288,6 +301,45 @@ namespace RepRancher
                             if (J.failure != null)
                             {
                                 JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
+                            }
+                        }else if(false){ //Temporarily false so that the print command won't be called
+                            //if(Mi.CurrentJob != 0){
+                            //Makerfarm has assigned a job and RepRancher has not yet sent it!
+                            if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE"))
+                            {
+                                //No job is running on the Printer! Lets send one.
+                                int CommandID = int.Parse(InvokeCommand("print -input_file "));
+                                bool MethodReception = false;
+                                //Wait for Print
+                                while (!MethodReception)
+                                {
+                                    if (NoisyClient) { System.Console.WriteLine("Waiting for world"); }
+                                    System.Threading.Thread.Sleep(500);
+                                    methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                                    //Check if reply recieved
+                                }
+                            }
+                            else
+                            {
+                                //Something is running on the printer already or something is amiss with the printer, can't send the Job
+                                JUpdate.JobId = 0;
+                                JUpdate.started = false;
+                                JUpdate.complete = false;
+                                JUpdate.Status = null;
+                                //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
+                                J = CurrentJobs.Values.Where(p => p.machine_name != null && p.machine_name.Equals(P.name)).OrderByDescending(p => p.id).FirstOrDefault();
+                                if (J != null)
+                                {
+                                    //Job is no longer null, meaning something has happened on the printer! Lets let users know.
+                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "\nNon-MakerFarm Job: \n";
+                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "Status: " + J.state + "\n" +
+                                    "File Name: " + J.name + "\n";
+                                    if (J.progress != null && J.state.Equals("RUNNING"))
+                                    {
+                                        MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
+                                        MUpdate.CurrentTaskProgress = J.progress.progress;
+                                    }
+                                }
                             }
                         }
                         else

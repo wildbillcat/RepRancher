@@ -16,6 +16,7 @@
       <ComplexType Name="MachineInterest">
         <Property Name="MachineName" Type="Edm.String" />
         <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
+        <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
       </ComplexType>
       <ComplexType Name="MachineStatusUpdate">
         <Property Name="MachineName" Type="Edm.String" />
@@ -50,6 +51,7 @@
         <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
         <Property Name="ClientJobSupport" Type="Edm.Boolean" Nullable="false" />
         <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
         <Property Name="CurrentTaskProgress" Type="Edm.Double" />
         <NavigationProperty Name="AffiliatedPrinter" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner" ToRole="AffiliatedPrinter" FromRole="AffiliatedPrinterPartner" />
         <NavigationProperty Name="AssignedJob" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPartner" ToRole="AssignedJob" FromRole="AssignedJobPartner" />
@@ -115,6 +117,8 @@
         <Property Name="SubmissionEnabled" Type="Edm.Boolean" Nullable="false" />
         <Property Name="InternalCostPerUnit" Type="Edm.Double" Nullable="false" />
         <Property Name="ExternalCostPerUnit" Type="Edm.Double" Nullable="false" />
+        <Property Name="InternalInitialCost" Type="Edm.Double" Nullable="false" />
+        <Property Name="ExternalInitialCost" Type="Edm.Double" Nullable="false" />
       </EntityType>
       <EntityType Name="Job">
         <Key>
@@ -125,8 +129,49 @@
         <Property Name="started" Type="Edm.Boolean" Nullable="false" />
         <Property Name="complete" Type="Edm.Boolean" Nullable="false" />
         <Property Name="LastUpdated" Type="Edm.DateTime" Nullable="false" />
-        <NavigationProperty Name="AffiliatedPrint" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Printer_AffiliatedPrintPartner" ToRole="AffiliatedPrint" FromRole="AffiliatedPrintPartner" />
-        <NavigationProperty Name="AffiliatedMachine" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedMachine_MakerFarm_Models_Printer_AffiliatedMachinePartner" ToRole="AffiliatedMachine" FromRole="AffiliatedMachinePartner" />
+        <NavigationProperty Name="AffiliatedPrint" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Print_AffiliatedPrintPartner" ToRole="AffiliatedPrint" FromRole="AffiliatedPrintPartner" />
+        <NavigationProperty Name="AffiliatedPrinter" Relationship="MakerFarm.Models.MakerFarm_Models_Job_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner" ToRole="AffiliatedPrinter" FromRole="AffiliatedPrinterPartner" />
+      </EntityType>
+      <EntityType Name="Print">
+        <Key>
+          <PropertyRef Name="PrintId" />
+        </Key>
+        <Property Name="PrintId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="FileName" Type="Edm.String" />
+        <Property Name="UserName" Type="Edm.String" />
+        <Property Name="MaterialIds" Type="Edm.String" />
+        <Property Name="EstMaterialUse" Type="Edm.Double" Nullable="false" />
+        <Property Name="SubmissionTime" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="EstToolpathTime" Type="Edm.Int32" Nullable="false" />
+        <Property Name="AuthorizedAttempts" Type="Edm.Int32" Nullable="false" />
+        <Property Name="PrinterTypeId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="StaffAssistedPrint" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="ProcessingCharge" Type="Edm.Double" Nullable="false" />
+        <Property Name="Comment" Type="Edm.String" />
+        <Property Name="FlaggedPrint" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="FlaggedComment" Type="Edm.String" />
+        <Property Name="TermsAndConditionsAgreement" Type="Edm.DateTime" />
+        <Property Name="FullColorPrint" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="InternalUser" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="BilledUser" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="PrinterType" Relationship="MakerFarm.Models.MakerFarm_Models_Print_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner" ToRole="PrinterType" FromRole="PrinterTypePartner" />
+        <NavigationProperty Name="PrintEvents" Relationship="MakerFarm.Models.MakerFarm_Models_Print_PrintEvents_MakerFarm_Models_PrintEvent_PrintEventsPartner" ToRole="PrintEvents" FromRole="PrintEventsPartner" />
+      </EntityType>
+      <EntityType Name="PrintEvent">
+        <Key>
+          <PropertyRef Name="PrintEventId" />
+        </Key>
+        <Property Name="PrintEventId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="EventType" Type="Edm.String" Nullable="false" />
+        <Property Name="EventTimeStamp" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="MaterialUsed" Type="Edm.Double" Nullable="false" />
+        <Property Name="PrinterId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="UserName" Type="Edm.String" />
+        <Property Name="PrintId" Type="Edm.Int64" Nullable="false" />
+        <Property Name="PrintErrorTypeId" Type="Edm.Int64" />
+        <Property Name="Comment" Type="Edm.String" />
+        <NavigationProperty Name="Print" Relationship="MakerFarm.Models.MakerFarm_Models_PrintEvent_Print_MakerFarm_Models_Print_PrintPartner" ToRole="Print" FromRole="PrintPartner" />
+        <NavigationProperty Name="Printer" Relationship="MakerFarm.Models.MakerFarm_Models_PrintEvent_Printer_MakerFarm_Models_Printer_PrinterPartner" ToRole="Printer" FromRole="PrinterPartner" />
       </EntityType>
       <Association Name="MakerFarm_Models_Client_ClientPermissions_MakerFarm_Models_ClientPermission_ClientPermissionsPartner">
         <End Type="MakerFarm.Models.ClientPermission" Role="ClientPermissions" Multiplicity="*" />
@@ -168,14 +213,40 @@
         <End Type="MakerFarm.Models.PrinterType" Role="PrinterType" Multiplicity="0..1" />
         <End Type="MakerFarm.Models.Material" Role="PrinterTypePartner" Multiplicity="0..1" />
       </Association>
-      <Association Name="MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Printer_AffiliatedPrintPartner">
-        <End Type="MakerFarm.Models.Printer" Role="AffiliatedPrint" Multiplicity="0..1" />
+      <Association Name="MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Print_AffiliatedPrintPartner">
+        <End Type="MakerFarm.Models.Print" Role="AffiliatedPrint" Multiplicity="0..1" />
         <End Type="MakerFarm.Models.Job" Role="AffiliatedPrintPartner" Multiplicity="0..1" />
       </Association>
-      <Association Name="MakerFarm_Models_Job_AffiliatedMachine_MakerFarm_Models_Printer_AffiliatedMachinePartner">
-        <End Type="MakerFarm.Models.Printer" Role="AffiliatedMachine" Multiplicity="0..1" />
-        <End Type="MakerFarm.Models.Job" Role="AffiliatedMachinePartner" Multiplicity="0..1" />
+      <Association Name="MakerFarm_Models_Job_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner">
+        <End Type="MakerFarm.Models.Printer" Role="AffiliatedPrinter" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Job" Role="AffiliatedPrinterPartner" Multiplicity="0..1" />
       </Association>
+      <Association Name="MakerFarm_Models_Print_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner">
+        <End Type="MakerFarm.Models.PrinterType" Role="PrinterType" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.Print" Role="PrinterTypePartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_Print_PrintEvents_MakerFarm_Models_PrintEvent_PrintEventsPartner">
+        <End Type="MakerFarm.Models.PrintEvent" Role="PrintEvents" Multiplicity="*" />
+        <End Type="MakerFarm.Models.Print" Role="PrintEventsPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_PrintEvent_Print_MakerFarm_Models_Print_PrintPartner">
+        <End Type="MakerFarm.Models.Print" Role="Print" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.PrintEvent" Role="PrintPartner" Multiplicity="0..1" />
+      </Association>
+      <Association Name="MakerFarm_Models_PrintEvent_Printer_MakerFarm_Models_Printer_PrinterPartner">
+        <End Type="MakerFarm.Models.Printer" Role="Printer" Multiplicity="0..1" />
+        <End Type="MakerFarm.Models.PrintEvent" Role="PrinterPartner" Multiplicity="0..1" />
+      </Association>
+    </Schema>
+    <Schema Namespace="System.Net.Http" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <ComplexType Name="StreamContent">
+        <Property Name="Headers" Type="Collection(System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString)" Nullable="false" />
+      </ComplexType>
+    </Schema>
+    <Schema Namespace="System.Collections.Generic" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <ComplexType Name="KeyValuePair_2OfString_IEnumerable_1OfString">
+        <Property Name="Value" Type="Collection(Edm.String)" />
+      </ComplexType>
     </Schema>
     <Schema Namespace="Default" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
       <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
@@ -194,6 +265,12 @@
           <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
           <Parameter Name="MachineUpdate" Type="MakerFarm.Models.MachineStatusUpdate" />
           <Parameter Name="JobUpdate" Type="MakerFarm.Models.JobStatusUpdate" />
+        </FunctionImport>
+        <FunctionImport Name="TakeThis" ReturnType="System.Net.Http.StreamContent" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+          <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="MachineName" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="JobId" Type="Edm.Int32" Nullable="false" />
         </FunctionImport>
       </EntityContainer>
     </Schema>
