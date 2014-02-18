@@ -284,8 +284,13 @@ namespace RepRancher
                         //The Machine Exists, before worrying about the job lets make sure the Printer doesn't want us to cancel the job.
                         if (Mi.PoisonJobs)
                         {
-                            job ActiveMakerbotJob = CurrentJobs.Values.Where(p => p.machine_name.Equals(Mi.MachineName) && !p.state.Equals("STOPPED")).FirstOrDefault();
-                            while (ActiveMakerbotJob != null)
+                            List<job> jobs = new List<job>();
+                            foreach(job jj in CurrentJobs.Values){
+                                if(!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName)){
+                                    jobs.Add(jj);
+                                }
+                            }
+                            foreach(job ActiveMakerbotJob in jobs)
                             {
                                 //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
                                 int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
@@ -298,7 +303,6 @@ namespace RepRancher
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
                                 }
-                                ActiveMakerbotJob = CurrentJobs.Values.Where(p => p.machine_name.Equals(Mi.MachineName) && !p.state.Equals("STOPPED")).FirstOrDefault();
                             }
                         }//Now Done with poisoning Jobs, lets report on what is going on
 
