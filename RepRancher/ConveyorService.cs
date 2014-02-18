@@ -283,7 +283,7 @@ namespace RepRancher
                             while (ActiveMakerbotJob != null)
                             {
                                 //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
-                                int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id));
+                                int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
                                 bool MethodReception = false;
                                 //Wait for cancelation confirmation
                                 while (!MethodReception)
