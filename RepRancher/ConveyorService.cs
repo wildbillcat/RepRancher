@@ -1089,7 +1089,6 @@ namespace RepRancher
                     return;
                 }
                 DisposeMutex.ReleaseMutex();
-                //check with makerfarm and see if there are any assigned jobs
 
                 //process commands in the queue:
                 string command;
@@ -1106,7 +1105,17 @@ namespace RepRancher
                         Console.WriteLine("Command thread returning.");
                         return;
                     }
-                }  
+                }
+                if (bool.Parse(ConfigurationManager.AppSettings["EnableMakerFarmClient"]))
+                {
+                    //once all commands have been issued, go ahead and sleep until we've talked to MF again.
+                    System.Threading.Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["MakerFarmTime"]) * 1000);
+                }
+                else
+                {
+                    //Not reporting to makerfarm, which means this client is likely read only. Sleep until around the next keep alive is issued.
+                    System.Threading.Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["KeepAliveTime"]) * 500);
+                }
             }
         }
 
