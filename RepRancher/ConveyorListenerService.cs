@@ -325,6 +325,8 @@ namespace RepRancher
                 Console.Error.WriteLine("Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
+                    //This should trigger a printer poll
+                    //InvokeCommand("getprinters");
                     job AddedJob = ClientAPI.GetParams<job>(JSON);
                     CurrentJobs.AddOrUpdate(AddedJob.id, AddedJob, (key, existingVal) =>
                     {
@@ -355,7 +357,9 @@ namespace RepRancher
                     CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
                     {
                         // The only updatable fields are the temerature array and lastQueryDate.
-
+                        existingVal.state = ChangedPrinter.state;
+                        existingVal.firmware_version = ChangedPrinter.firmware_version;
+                        existingVal.canPrint = ChangedPrinter.canPrint;
                         existingVal.temperature = ChangedPrinter.temperature;
                         existingVal.displayName = ChangedPrinter.displayName;
                         return existingVal;
@@ -366,6 +370,9 @@ namespace RepRancher
                     printer ChangedPrinter = ClientAPI.GetParams<printer>(JSON);
                     CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
                     {
+                        existingVal.state = ChangedPrinter.state;
+                        existingVal.firmware_version = ChangedPrinter.firmware_version;
+                        existingVal.canPrint = ChangedPrinter.canPrint;
                         existingVal.temperature = ChangedPrinter.temperature;
                         existingVal.displayName = ChangedPrinter.displayName;
                         return existingVal;
@@ -373,6 +380,8 @@ namespace RepRancher
                 }
                 else if (MethodName.Equals(ClientAPI.port_attached))
                 {
+                    //This should trigger a printer poll
+                    //InvokeCommand("getprinters");
                     port AttachedPort = ClientAPI.GetParams<port>(JSON);
                     CurrentPorts.AddOrUpdate(AttachedPort.name, AttachedPort, (key, existingVal) =>
                     {
@@ -386,6 +395,8 @@ namespace RepRancher
                 }
                 else if (MethodName.Equals(ClientAPI.port_detached))
                 {
+                    //This should trigger a printer poll
+                    //InvokeCommand("getprinters");
                     string DetachedPortName = ClientAPI.GetParams<string>(JSON);
                     port RemovedPort; //Presently not used
                     CurrentPorts.TryRemove(DetachedPortName, out RemovedPort);

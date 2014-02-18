@@ -150,6 +150,7 @@ namespace RepRancher
         Uri ISpyUri;
         Uri DoTellUri;
         Uri ISayUri;
+        Uri TakeThis;
 
         public ConveyorService(string IPaddress, int PortNumber)
         {
@@ -208,6 +209,7 @@ namespace RepRancher
             ISpyUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
             DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
             ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
+            TakeThis = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/TakeThis");
 
             EnableMakerFarmClient = bool.Parse(ConfigurationManager.AppSettings["EnableMakerFarmClient"]);
             if (EnableMakerFarmClient)
@@ -259,7 +261,34 @@ namespace RepRancher
                     printer P;
                     if (CurrentPrinters.TryGetValue(Mi.MachineName, out P))
                     {
-                        //Printer Makerfarm asked about exists! Lets Build a Machine Status!
+                        //The Machine Exists, before worrying about the job and printer status lets make sure the Printer doesn't want us to cancel the job.
+                        if (Mi.PoisonJobs)
+                        {
+                            List<job> jobs = new List<job>();
+                            foreach (job jj in CurrentJobs.Values)
+                            {
+                                if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
+                                {
+                                    jobs.Add(jj);
+                                }
+                            }
+                            foreach (job ActiveMakerbotJob in jobs)
+                            {
+                                //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
+                                int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
+                                bool MethodReception = false;
+                                //Wait for cancelation confirmation
+                                while (!MethodReception)
+                                {
+                                    if (NoisyClient) { System.Console.WriteLine("Waiting for job cancelation notice"); }
+                                    System.Threading.Thread.Sleep(500);
+                                    methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                                    //Check if reply recieved
+                                }
+                            }
+                        }//Now Done with poisoning Jobs, lets report on what is going on
+                        
+                        //Lets Build a Machine Status!
                         MachineStatusUpdate MUpdate = new MachineStatusUpdate();
                         MUpdate.MachineName = P.name;
                         MUpdate.CurrentTaskProgress = null;
@@ -281,30 +310,7 @@ namespace RepRancher
                                 }
                             }
                         }
-                        //The Machine Exists, before worrying about the job lets make sure the Printer doesn't want us to cancel the job.
-                        if (Mi.PoisonJobs)
-                        {
-                            List<job> jobs = new List<job>();
-                            foreach(job jj in CurrentJobs.Values){
-                                if(!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName)){
-                                    jobs.Add(jj);
-                                }
-                            }
-                            foreach(job ActiveMakerbotJob in jobs)
-                            {
-                                //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
-                                int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
-                                bool MethodReception = false;
-                                //Wait for cancelation confirmation
-                                while (!MethodReception)
-                                {
-                                    if (NoisyClient) { System.Console.WriteLine("Waiting for job cancelation notice"); }
-                                    System.Threading.Thread.Sleep(500);
-                                    methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
-                                    //Check if reply recieved
-                                }
-                            }
-                        }//Now Done with poisoning Jobs, lets report on what is going on
+                       
 
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
@@ -344,6 +350,7 @@ namespace RepRancher
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
                             if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE"))
                             {
+                                //MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file "));
                                 bool MethodReception = false;
