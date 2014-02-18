@@ -655,6 +655,26 @@ namespace RepRancher
 
             } if (Command[0].Equals("print"))
             {
+                if (command.Contains("\""))
+                {
+                    //This corrects the Command Array if it has quotation marks
+                    int first = command.IndexOf('"');
+                    int last = command.LastIndexOf('"');
+                    List<string> cmd = new List<string>();
+                    foreach (string s in command.Substring(0, first).Split(' '))
+                    {
+                        cmd.Add(s);
+                    }
+                    cmd.Add(command.Substring(first + 1, last - (first+1)));
+                    if (last < command.Length - 1)
+                    {
+                        foreach (string s in command.Substring(last + 1).Split(' '))
+                        {
+                            cmd.Add(s);
+                        }
+                    }
+                    Command = cmd.ToArray();
+                }           
                 if (Command.Length < 5)
                 {
                     //Command has invalid number of parameters. Return
