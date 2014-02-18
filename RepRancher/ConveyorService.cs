@@ -63,6 +63,11 @@ namespace RepRancher
          * This Timer is used to send a simple hello command, to test that conveyor is still running.
          */
         System.Timers.Timer KeepAlive;
+
+        /*
+         * This Timer is used to send a simple hello command, to test that conveyor is still running.
+         */
+        System.Timers.Timer MakerFarm;
        
         /*
          * This is a list of the commands queued for printing.
@@ -200,6 +205,12 @@ namespace RepRancher
             ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
 
             EnableMakerFarmClient = bool.Parse(ConfigurationManager.AppSettings["EnableMakerFarmClient"]);
+            if (EnableMakerFarmClient)
+            {
+                MakerFarm = new System.Timers.Timer(int.Parse(ConfigurationManager.AppSettings["MakerFarmTime"])*1000);
+                MakerFarm.Elapsed += new System.Timers.ElapsedEventHandler(MakerFarmEvent);
+                MakerFarm.Enabled = true;
+            }
 
             if (NoisyClient) { System.Console.WriteLine("Initializing connection to conveyor"); }
             ipEndPoint = new IPEndPoint(IPAddress.Parse(IPaddress), PortNumber);
@@ -226,14 +237,11 @@ namespace RepRancher
             }
         }
 
-        //This event triggers a call to check on printer status's
-        public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
+        public void MakerFarmEvent(object source, System.Timers.ElapsedEventArgs e)
         {
-            if (NoisyClient) { System.Console.WriteLine("Keep Alive Timer Fired"); }
-            KeepAlive.Enabled = false;
-            KeepAlive.Stop();
-            this.Startup();
-            if (EnableMakerFarmClient)
+            MakerFarm.Enabled = false;
+            MakerFarm.Stop();
+            try
             {
                 string[] ispy = CurrentPrinters.Keys.ToArray();
                 //Now that status has been pulled, lets say hi to Makerfarm
@@ -268,7 +276,26 @@ namespace RepRancher
                                 }
                             }
                         }
-
+                        //The Machine Exists, before worrying about the job lets make sure the Printer doesn't want us to cancel the job.
+                        if (Mi.PoisonJobs)
+                        {
+                            job ActiveMakerbotJob = CurrentJobs.Values.Where(p => p.machine_name.Equals(Mi.MachineName) && !p.state.Equals("STOPPED")).FirstOrDefault();
+                            while (ActiveMakerbotJob != null)
+                            {
+                                //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
+                                int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id));
+                                bool MethodReception = false;
+                                //Wait for cancelation confirmation
+                                while (!MethodReception)
+                                {
+                                    if (NoisyClient) { System.Console.WriteLine("Waiting for job cancelation notice"); }
+                                    System.Threading.Thread.Sleep(500);
+                                    methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                                    //Check if reply recieved
+                                }
+                                ActiveMakerbotJob = CurrentJobs.Values.Where(p => p.machine_name.Equals(Mi.MachineName) && !p.state.Equals("STOPPED")).FirstOrDefault();
+                            }
+                        }//Now Done with poisoning Jobs, lets report on what is going on
 
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
@@ -302,8 +329,9 @@ namespace RepRancher
                             {
                                 JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
                             }
-                        }else if(false){ //Temporarily false so that the print command won't be called
-                            //if(Mi.CurrentJob != 0){
+                        }
+                        else if (Mi.CurrentJob != 0)
+                        {
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
                             if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE"))
                             {
@@ -367,8 +395,31 @@ namespace RepRancher
                         //Built up information about this machine, submit to makerfarm
                         MakerFarmServiceContainer.Execute(ISayUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineUpdate", MUpdate), new BodyOperationParameter("JobUpdate", JUpdate));
                     }
-                    //string machineStatus = 
                 }
+            }
+            catch 
+            {
+                System.Console.Error.WriteLine("Something has gone Wrong with connectivity to Makerfarm!" + DateTime.Now.ToString());
+                //Likely a connectivity issue with MakerFarm!
+            }
+            MakerFarm.Enabled = true;
+            MakerFarm.Start();
+        }
+
+        //This event triggers a call to check on printer status's
+        public void KeepAliveEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (NoisyClient) { System.Console.WriteLine("Keep Alive Timer Fired"); }
+            KeepAlive.Enabled = false;
+            KeepAlive.Stop();
+            try
+            {
+                this.Startup();
+            }
+            catch 
+            {
+                System.Console.Error.WriteLine("Something has gone Wrong with conveyor connectivity for the Keep alive!" + DateTime.Now.ToString());
+                //Something went wrong in that startup command
             }
             KeepAlive.Enabled = true;
             KeepAlive.Start();
