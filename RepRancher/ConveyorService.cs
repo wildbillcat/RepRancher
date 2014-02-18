@@ -167,6 +167,11 @@ namespace RepRancher
             if (NoisyClient) { System.Console.WriteLine("Attempting to Open Connection to Error Log (error.txt)");}
             try
             {
+                int end = ConfigurationManager.AppSettings["ErrorFile"].LastIndexOf("\\");
+                if (!Directory.Exists(ConfigurationManager.AppSettings["ErrorFile"].Substring(0, end)))
+                {
+                    Directory.CreateDirectory(ConfigurationManager.AppSettings["ErrorFile"].Substring(0, end));
+                }
                 ostrm = new FileStream(ConfigurationManager.AppSettings["ErrorFile"], FileMode.OpenOrCreate, FileAccess.Write);
                 errorLog = new StreamWriter(ostrm);
                 System.Console.SetError(errorLog);
