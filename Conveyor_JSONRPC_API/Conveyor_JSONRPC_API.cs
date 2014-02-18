@@ -424,7 +424,7 @@ namespace Conveyor_JSONRPC_API
         public static string CancelJob(int rpcid, int jobid)
         {
             List<JProperty> Params = new List<JProperty>();
-            Params.Add(new JProperty("jobid", jobid.ToString()));
+            Params.Add(new JProperty("id", jobid));
             return BuildRPCString(rpcid, "canceljob", Params);
         }
 
