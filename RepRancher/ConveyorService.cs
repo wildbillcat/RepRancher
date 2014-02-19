@@ -359,6 +359,7 @@ namespace RepRancher
                             }
                             if (jobs.Count() == 0 && P.canPrint)
                             {
+                                /* This is likely garbage, lets just do a standard post!
                                 System.IO.FileStream writeStream = new System.IO.FileStream((ConfigurationManager.AppSettings["TemporaryFileStorage"]) + Mi.CurrentJob.ToString() + ".gcode", System.IO.FileMode.Create);
                                 System.IO.FileStream readStream = (System.IO.FileStream)MakerFarmServiceContainer.Execute<System.IO.FileStream>(TakeThis, "POST", true, new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineName", ClientAPIKey), new BodyOperationParameter("JobId", ClientAPIKey));
                                 if (readStream.Length < 4194304)
@@ -381,9 +382,9 @@ namespace RepRancher
                                             fileChunk = new byte[readStream.Length - i];
                                         }
                                     }
-                                }
-                                
-                                /*var url = "https://reporting.datacash.com/reporting2/csvlist";
+                                }*/
+
+                                var url = ConfigurationManager.AppSettings["MakerFarmAPIUri"] + TakeThis.ToString();
                                 using (var client = new WebClient())
                                 {
                                     var values = new NameValueCollection
@@ -393,8 +394,8 @@ namespace RepRancher
                                         { "JobId", Mi.CurrentJob.ToString() }
                                     };
                                     byte[] result = client.UploadValues(url, values);
-                                    File.WriteAllBytes("C:\\foo\\bar.csv", result);
-                                }*/
+                                    File.WriteAllBytes(string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], Mi.CurrentJob.ToString(), ".gcode"), result);
+                                }
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file "));
                                 bool MethodReception = false;
