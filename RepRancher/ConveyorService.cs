@@ -384,7 +384,7 @@ namespace RepRancher
                                     }
                                 }*/
 
-                                var url = ConfigurationManager.AppSettings["MakerFarmAPIUri"] + TakeThis.ToString();
+                                var url = TakeThis.ToString();
                                 using (var client = new WebClient())
                                 {
                                     var values = new NameValueCollection
