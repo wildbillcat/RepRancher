@@ -369,6 +369,10 @@ namespace RepRancher
                                         readStream.Read(fileChunk, 0, fileChunk.Length);
                                         writeStream.Write(fileChunk, 0, fileChunk.Length);
                                         i = i + fileChunk.Length;
+                                        if (readStream.Length - i < fileChunk.Length && readStream.Length - i == 0)
+                                        {
+                                            fileChunk = new byte[readStream.Length - i];
+                                        }
                                     }
                                 }
                                 
