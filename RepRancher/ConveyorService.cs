@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -348,9 +349,41 @@ namespace RepRancher
                         else if (Mi.CurrentJob != 0)
                         {
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
-                            if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE"))
+                            //This if statement won't work, use loop from above!!!!***********************************************************************************************
+                            if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE") && P.canPrint)
                             {
-                                //MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+                                System.IO.FileStream writeStream = new System.IO.FileStream((ConfigurationManager.AppSettings["TemporaryFileStorage"]) + Mi.CurrentJob.ToString() + ".gcode", System.IO.FileMode.Create);
+                                System.IO.FileStream readStream = (System.IO.FileStream)MakerFarmServiceContainer.Execute<System.IO.FileStream>(TakeThis, "POST", true, new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineName", ClientAPIKey), new BodyOperationParameter("JobId", ClientAPIKey));
+                                if (readStream.Length < 4194304)
+                                {
+                                    byte[] fileChunk = new byte[readStream.Length];
+                                    readStream.Read(fileChunk, 0, fileChunk.Length);
+                                    writeStream.Write(fileChunk, 0, fileChunk.Length);
+                                }
+                                else
+                                {
+                                    byte[] fileChunk = new byte[4194304];
+                                    int i = 0;
+                                    while (i < readStream.Length)
+                                    {
+                                        readStream.Read(fileChunk, 0, fileChunk.Length);
+                                        writeStream.Write(fileChunk, 0, fileChunk.Length);
+                                        i = i + fileChunk.Length;
+                                    }
+                                }
+                                
+                                /*var url = "https://reporting.datacash.com/reporting2/csvlist";
+                                using (var client = new WebClient())
+                                {
+                                    var values = new NameValueCollection
+                                    {
+                                        { "ClientAPIKey", ClientAPIKey },
+                                        { "MachineName", P.name },
+                                        { "JobId", Mi.CurrentJob.ToString() }
+                                    };
+                                    byte[] result = client.UploadValues(url, values);
+                                    File.WriteAllBytes("C:\\foo\\bar.csv", result);
+                                }*/
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file "));
                                 bool MethodReception = false;
@@ -663,14 +696,20 @@ namespace RepRancher
                     List<string> cmd = new List<string>();
                     foreach (string s in command.Substring(0, first).Split(' '))
                     {
-                        cmd.Add(s);
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            cmd.Add(s);
+                        }
                     }
                     cmd.Add(command.Substring(first + 1, last - (first+1)));
                     if (last < command.Length - 1)
                     {
                         foreach (string s in command.Substring(last + 1).Split(' '))
                         {
-                            cmd.Add(s);
+                            if (!string.IsNullOrEmpty(s))
+                            {
+                                cmd.Add(s);
+                            }
                         }
                     }
                     Command = cmd.ToArray();
