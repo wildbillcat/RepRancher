@@ -349,8 +349,15 @@ namespace RepRancher
                         else if (Mi.CurrentJob != 0)
                         {
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
-                            //This if statement won't work, use loop from above!!!!***********************************************************************************************
-                            if (CurrentJobs.Values.FirstOrDefault(j => !j.state.Equals("STOPPED") && j.machine_name.Equals(P.name)) == null && P.state.Equals("IDLE") && P.canPrint)
+                            List<job> jobs = new List<job>();
+                            foreach (job jj in CurrentJobs.Values)
+                            {
+                                if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
+                                {
+                                    jobs.Add(jj);
+                                }
+                            }
+                            if (jobs.Count() == 0 && P.canPrint)
                             {
                                 System.IO.FileStream writeStream = new System.IO.FileStream((ConfigurationManager.AppSettings["TemporaryFileStorage"]) + Mi.CurrentJob.ToString() + ".gcode", System.IO.FileMode.Create);
                                 System.IO.FileStream readStream = (System.IO.FileStream)MakerFarmServiceContainer.Execute<System.IO.FileStream>(TakeThis, "POST", true, new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineName", ClientAPIKey), new BodyOperationParameter("JobId", ClientAPIKey));
