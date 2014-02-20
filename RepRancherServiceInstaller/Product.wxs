@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="7f19dcad-a252-4c8f-832f-7081871d3783" Name="RepRancher" Language="1033" Version="0.8.1.0" Manufacturer="Patrick McMorran" UpgradeCode="22733e70-63ea-4306-a2cf-95de03ca6731">
+	<Product Id="10f645fb-97be-490c-abd1-b59e410d4976" Name="RepRancher" Language="1033" Version="1.0.0.0" Manufacturer="Patrick McMorran" UpgradeCode="22733e70-63ea-4306-a2cf-95de03ca6731">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Comments="Created by Patrick McMorran. This is 'Unlicensed' Software, http://unlicense.org/" />
     <UIRef Id="WixUI_Advanced" />
     <UIRef Id="WixUI_ErrorProgressText" />

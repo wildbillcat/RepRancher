@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 2/18/2014 11:26:57 PM
+// Generation date: 2/20/2014 10:53:40 AM
 namespace RepRancher.MakerFarmService
 {
     
@@ -39,17 +39,7 @@ namespace RepRancher.MakerFarmService
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         protected global::System.Type ResolveTypeFromName(string typeName)
         {
-            global::System.Type resolvedType = this.DefaultResolveType(typeName, "System.Collections.Generic", "RepRancher.MakerFarmService.System.Collections.Generic");
-            if ((resolvedType != null))
-            {
-                return resolvedType;
-            }
-            resolvedType = this.DefaultResolveType(typeName, "MakerFarm.Models", "RepRancher.MakerFarmService");
-            if ((resolvedType != null))
-            {
-                return resolvedType;
-            }
-            resolvedType = this.DefaultResolveType(typeName, "System.Net.Http", "RepRancher.MakerFarmService.System.Net.Http");
+            global::System.Type resolvedType = this.DefaultResolveType(typeName, "MakerFarm.Models", "RepRancher.MakerFarmService");
             if ((resolvedType != null))
             {
                 return resolvedType;
@@ -64,14 +54,6 @@ namespace RepRancher.MakerFarmService
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         protected string ResolveNameFromType(global::System.Type clientType)
         {
-            if (clientType.Namespace.Equals("RepRancher.MakerFarmService.System.Collections.Generic", global::System.StringComparison.Ordinal))
-            {
-                return string.Concat("System.Collections.Generic.", clientType.Name);
-            }
-            if (clientType.Namespace.Equals("RepRancher.MakerFarmService.System.Net.Http", global::System.StringComparison.Ordinal))
-            {
-                return string.Concat("System.Net.Http.", clientType.Name);
-            }
             if (clientType.Namespace.Equals("RepRancher.MakerFarmService", global::System.StringComparison.Ordinal))
             {
                 return string.Concat("MakerFarm.Models.", clientType.Name);
@@ -304,36 +286,29 @@ namespace RepRancher.MakerFarmService
                 "</Association><Association Name=\"MakerFarm_Models_PrintEvent_Printer_MakerFarm_M" +
                 "odels_Printer_PrinterPartner\"><End Type=\"MakerFarm.Models.Printer\" Role=\"Printer" +
                 "\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.PrintEvent\" Role=\"PrinterPar" +
-                "tner\" Multiplicity=\"0..1\" /></Association></Schema><Schema Namespace=\"System.Net" +
-                ".Http\" xmlns=\"http://schemas.microsoft.com/ado/2009/11/edm\"><ComplexType Name=\"S" +
-                "treamContent\"><Property Name=\"Headers\" Type=\"Collection(System.Collections.Gener" +
-                "ic.KeyValuePair_2OfString_IEnumerable_1OfString)\" Nullable=\"false\" /></ComplexTy" +
-                "pe></Schema><Schema Namespace=\"System.Collections.Generic\" xmlns=\"http://schemas" +
-                ".microsoft.com/ado/2009/11/edm\"><ComplexType Name=\"KeyValuePair_2OfString_IEnume" +
-                "rable_1OfString\"><Property Name=\"Value\" Type=\"Collection(Edm.String)\" /></Comple" +
-                "xType></Schema><Schema Namespace=\"Default\" xmlns=\"http://schemas.microsoft.com/a" +
-                "do/2009/11/edm\"><EntityContainer Name=\"Container\" m:IsDefaultEntityContainer=\"tr" +
-                "ue\"><EntitySet Name=\"ClientsAPI\" EntityType=\"MakerFarm.Models.Client\" /><Functio" +
-                "nImport Name=\"ISpy\" IsBindable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=" +
-                "\"bindingParameter\" Type=\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKe" +
-                "y\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"Mach" +
-                "ines\" Type=\"Collection(Edm.String)\" Nullable=\"false\" FixedLength=\"false\" Unicode" +
-                "=\"false\" /></FunctionImport><FunctionImport Name=\"DoTell\" ReturnType=\"Collection" +
-                "(MakerFarm.Models.MachineInterest)\" IsBindable=\"true\" m:IsAlwaysBindable=\"true\">" +
-                "<Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client\" /><Parameter N" +
-                "ame=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /></Fun" +
-                "ctionImport><FunctionImport Name=\"ISay\" IsBindable=\"true\" m:IsAlwaysBindable=\"tr" +
-                "ue\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client\" /><Paramet" +
-                "er Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><" +
-                "Parameter Name=\"MachineUpdate\" Type=\"MakerFarm.Models.MachineStatusUpdate\" /><Pa" +
-                "rameter Name=\"JobUpdate\" Type=\"MakerFarm.Models.JobStatusUpdate\" /></FunctionImp" +
-                "ort><FunctionImport Name=\"TakeThis\" ReturnType=\"System.Net.Http.StreamContent\" I" +
-                "sBindable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Ty" +
-                "pe=\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" " +
-                "FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"MachineName\" Type=\"Edm.St" +
-                "ring\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"JobId\" Type=\"Edm.In" +
-                "t32\" Nullable=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataS" +
-                "ervices></edmx:Edmx>";
+                "tner\" Multiplicity=\"0..1\" /></Association></Schema><Schema Namespace=\"Default\" x" +
+                "mlns=\"http://schemas.microsoft.com/ado/2009/11/edm\"><EntityContainer Name=\"Conta" +
+                "iner\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"ClientsAPI\" EntityType=" +
+                "\"MakerFarm.Models.Client\" /><FunctionImport Name=\"ISpy\" IsBindable=\"true\" m:IsAl" +
+                "waysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Cl" +
+                "ient\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Uni" +
+                "code=\"false\" /><Parameter Name=\"Machines\" Type=\"Collection(Edm.String)\" Nullable" +
+                "=\"false\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport " +
+                "Name=\"DoTell\" ReturnType=\"Collection(MakerFarm.Models.MachineInterest)\" IsBindab" +
+                "le=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"Mak" +
+                "erFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLe" +
+                "ngth=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"ISay\" IsBi" +
+                "ndable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=" +
+                "\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" Fix" +
+                "edLength=\"false\" Unicode=\"false\" /><Parameter Name=\"MachineUpdate\" Type=\"MakerFa" +
+                "rm.Models.MachineStatusUpdate\" /><Parameter Name=\"JobUpdate\" Type=\"MakerFarm.Mod" +
+                "els.JobStatusUpdate\" /></FunctionImport><FunctionImport Name=\"TakeThis\" IsBindab" +
+                "le=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"Mak" +
+                "erFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLe" +
+                "ngth=\"false\" Unicode=\"false\" /><Parameter Name=\"MachineName\" Type=\"Edm.String\" F" +
+                "ixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"JobId\" Type=\"Edm.Int32\" Nu" +
+                "llable=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:DataServices" +
+                "></edmx:Edmx>";
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
             private static string GetConcatenatedEdmxString()
             {
@@ -3349,109 +3324,6 @@ namespace RepRancher.MakerFarmService
         }
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         private Printer _Printer;
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        protected virtual void OnPropertyChanged(string property)
-        {
-            if ((this.PropertyChanged != null))
-            {
-                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
-            }
-        }
-    }
-}
-// Original file name:
-// Generation date: 2/18/2014 11:26:57 PM
-namespace RepRancher.MakerFarmService.System.Net.Http
-{
-    
-    /// <summary>
-    /// There are no comments for ComplexType System.Net.Http.StreamContent in the schema.
-    /// </summary>
-    public partial class StreamContent : global::System.ComponentModel.INotifyPropertyChanged
-    {
-        /// <summary>
-        /// Create a new StreamContent object.
-        /// </summary>
-        /// <param name="headers">Initial value of Headers.</param>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        public static StreamContent CreateStreamContent(global::System.Collections.ObjectModel.ObservableCollection<RepRancher.MakerFarmService.System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString> headers)
-        {
-            StreamContent streamContent = new StreamContent();
-            if ((headers == null))
-            {
-                throw new global::System.ArgumentNullException("headers");
-            }
-            streamContent.Headers = headers;
-            return streamContent;
-        }
-        /// <summary>
-        /// There are no comments for Property Headers in the schema.
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        public global::System.Collections.ObjectModel.ObservableCollection<RepRancher.MakerFarmService.System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString> Headers
-        {
-            get
-            {
-                return this._Headers;
-            }
-            set
-            {
-                this.OnHeadersChanging(value);
-                this._Headers = value;
-                this.OnHeadersChanged();
-                this.OnPropertyChanged("Headers");
-            }
-        }
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        private global::System.Collections.ObjectModel.ObservableCollection<RepRancher.MakerFarmService.System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString> _Headers = new global::System.Collections.ObjectModel.ObservableCollection<RepRancher.MakerFarmService.System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString>();
-        partial void OnHeadersChanging(global::System.Collections.ObjectModel.ObservableCollection<RepRancher.MakerFarmService.System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString> value);
-        partial void OnHeadersChanged();
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        protected virtual void OnPropertyChanged(string property)
-        {
-            if ((this.PropertyChanged != null))
-            {
-                this.PropertyChanged(this, new global::System.ComponentModel.PropertyChangedEventArgs(property));
-            }
-        }
-    }
-}
-// Original file name:
-// Generation date: 2/18/2014 11:26:57 PM
-namespace RepRancher.MakerFarmService.System.Collections.Generic
-{
-    
-    /// <summary>
-    /// There are no comments for ComplexType System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString in the schema.
-    /// </summary>
-    public partial class KeyValuePair_2OfString_IEnumerable_1OfString : global::System.ComponentModel.INotifyPropertyChanged
-    {
-        /// <summary>
-        /// There are no comments for Property Value in the schema.
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        public global::System.Collections.ObjectModel.ObservableCollection<string> Value
-        {
-            get
-            {
-                return this._Value;
-            }
-            set
-            {
-                this.OnValueChanging(value);
-                this._Value = value;
-                this.OnValueChanged();
-                this.OnPropertyChanged("Value");
-            }
-        }
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-        private global::System.Collections.ObjectModel.ObservableCollection<string> _Value = new global::System.Collections.ObjectModel.ObservableCollection<string>();
-        partial void OnValueChanging(global::System.Collections.ObjectModel.ObservableCollection<string> value);
-        partial void OnValueChanged();
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]

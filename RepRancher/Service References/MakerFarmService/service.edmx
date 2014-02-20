@@ -238,16 +238,6 @@
         <End Type="MakerFarm.Models.PrintEvent" Role="PrinterPartner" Multiplicity="0..1" />
       </Association>
     </Schema>
-    <Schema Namespace="System.Net.Http" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-      <ComplexType Name="StreamContent">
-        <Property Name="Headers" Type="Collection(System.Collections.Generic.KeyValuePair_2OfString_IEnumerable_1OfString)" Nullable="false" />
-      </ComplexType>
-    </Schema>
-    <Schema Namespace="System.Collections.Generic" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-      <ComplexType Name="KeyValuePair_2OfString_IEnumerable_1OfString">
-        <Property Name="Value" Type="Collection(Edm.String)" />
-      </ComplexType>
-    </Schema>
     <Schema Namespace="Default" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
       <EntityContainer Name="Container" m:IsDefaultEntityContainer="true">
         <EntitySet Name="ClientsAPI" EntityType="MakerFarm.Models.Client" />
@@ -266,7 +256,7 @@
           <Parameter Name="MachineUpdate" Type="MakerFarm.Models.MachineStatusUpdate" />
           <Parameter Name="JobUpdate" Type="MakerFarm.Models.JobStatusUpdate" />
         </FunctionImport>
-        <FunctionImport Name="TakeThis" ReturnType="System.Net.Http.StreamContent" IsBindable="true" m:IsAlwaysBindable="true">
+        <FunctionImport Name="TakeThis" IsBindable="true" m:IsAlwaysBindable="true">
           <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
           <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
           <Parameter Name="MachineName" Type="Edm.String" FixedLength="false" Unicode="false" />

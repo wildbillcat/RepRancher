@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.IO;
 using System.Threading;
@@ -255,6 +256,32 @@ namespace RepRancher
                 //Now that status has been pulled, lets say hi to Makerfarm
                 MakerFarmServiceContainer.Execute(ISpyUri, "POST", new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("Machines", ispy));
                 MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+                //First lets see if RePRancher is Tracking any jobs that MakerFarm isnt interested in. If so, let's toss them out and delete their files.
+                List<int> Abort = new List<int>();
+                foreach (int i in MakerWareToConveyorJobIds.Values)
+                {
+                    bool invalid = true;
+                    foreach (MachineInterest Mi in ReportOn)
+                    {
+                        if (Mi.CurrentJob == i)
+                        {
+                            invalid = false;
+                            break;
+                        }
+                        if (invalid)
+                        {
+                            Abort.Add(i);
+                        }
+                    }
+                }
+                //Now that there is a list of no longer valid jobs, let's toss them
+                foreach (int i in Abort)
+                {
+                    job j;
+                    CurrentJobs.TryRemove(i, out j);
+                    string FilePath = string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], i.ToString(), ".gcode");
+                    File.Delete(FilePath);
+                }
                 //Now that RepRancher knows what Makerfarm is interested in hearing about, act on that information!
                 //Report all the information Makerfarm in intersted in hearing about
                 foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
@@ -359,64 +386,48 @@ namespace RepRancher
                             }
                             if (jobs.Count() == 0 && P.canPrint)
                             {
-                                /* This is likely garbage, lets just do a standard post!
-                                System.IO.FileStream writeStream = new System.IO.FileStream((ConfigurationManager.AppSettings["TemporaryFileStorage"]) + Mi.CurrentJob.ToString() + ".gcode", System.IO.FileMode.Create);
-                                System.IO.FileStream readStream = (System.IO.FileStream)MakerFarmServiceContainer.Execute<System.IO.FileStream>(TakeThis, "POST", true, new BodyOperationParameter("ClientAPIKey", ClientAPIKey), new BodyOperationParameter("MachineName", ClientAPIKey), new BodyOperationParameter("JobId", ClientAPIKey));
-                                if (readStream.Length < 4194304)
-                                {
-                                    byte[] fileChunk = new byte[readStream.Length];
-                                    readStream.Read(fileChunk, 0, fileChunk.Length);
-                                    writeStream.Write(fileChunk, 0, fileChunk.Length);
-                                }
-                                else
-                                {
-                                    byte[] fileChunk = new byte[4194304];
-                                    int i = 0;
-                                    while (i < readStream.Length)
-                                    {
-                                        readStream.Read(fileChunk, 0, fileChunk.Length);
-                                        writeStream.Write(fileChunk, 0, fileChunk.Length);
-                                        i = i + fileChunk.Length;
-                                        if (readStream.Length - i < fileChunk.Length && readStream.Length - i == 0)
-                                        {
-                                            fileChunk = new byte[readStream.Length - i];
-                                        }
-                                    }
-                                }*/
-
-                                var url = TakeThis.ToString();
+                                //Lets fetch the file we need to print.
+                                string PostData = "{\"ClientAPIKey\":\"" + ClientAPIKey + "\",\"MachineName\":\"" + P.name + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
+                                string FilePath = string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], Mi.CurrentJob.ToString(), ".gcode");
                                 using (var client = new WebClient())
                                 {
-                                    var values = new NameValueCollection
-                                    {
-                                        { "ClientAPIKey", ClientAPIKey },
-                                        { "MachineName", P.name },
-                                        { "JobId", Mi.CurrentJob.ToString() }
-                                    };
-                                    byte[] result = client.UploadValues(url, values);
-                                    File.WriteAllBytes(string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], Mi.CurrentJob.ToString(), ".gcode"), result);
+                                    client.Headers.Add("Content-Type", "application/json;odata=verbose");
+                                    byte[] result = client.UploadData(TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
+                                    File.WriteAllBytes(FilePath, result);
                                 }
+                                
                                 //No job is running on the Printer! Lets send one.
-                                int CommandID = int.Parse(InvokeCommand("print -input_file "));
+                                int CommandID = int.Parse(InvokeCommand("print -input_file \"" + FilePath + "\" -machine_name " + P.name));
                                 bool MethodReception = false;
                                 //Wait for Print
                                 while (!MethodReception)
                                 {
-                                    if (NoisyClient) { System.Console.WriteLine("Waiting for world"); }
+                                    if (NoisyClient) { System.Console.WriteLine("Waiting for print to send"); }
                                     System.Threading.Thread.Sleep(500);
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
                                 }
+                                JUpdate.JobId = Mi.CurrentJob;
+                                JUpdate.started = true;
+                                JUpdate.complete = false;
+                                JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
                             }
                             else
                             {
                                 //Something is running on the printer already or something is amiss with the printer, can't send the Job
-                                JUpdate.JobId = 0;
+                                JUpdate.JobId = Mi.CurrentJob;
                                 JUpdate.started = false;
                                 JUpdate.complete = false;
-                                JUpdate.Status = null;
+                                JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
                                 //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
-                                J = CurrentJobs.Values.Where(p => p.machine_name != null && p.machine_name.Equals(P.name)).OrderByDescending(p => p.id).FirstOrDefault();
+                                J = null;
+                                foreach (job JinQ in CurrentJobs.Values)
+                                {
+                                    if (JinQ.machine_name.Equals(P.name))
+                                    {
+                                        J = JinQ;
+                                    }
+                                }
                                 if (J != null)
                                 {
                                     //Job is no longer null, meaning something has happened on the printer! Lets let users know.
@@ -884,6 +895,25 @@ namespace RepRancher
                     command = Conveyor_JSONRPC_API.ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
                     outPut = "" + rpcID;
                 }
+            }
+            else if (Command[0].Equals("download"))
+            {
+                try
+                {
+                    int jobid = int.Parse(Command[0]);
+                    string PostData = "{\"ClientAPIKey\":\"" + "50df2131-096e-4f0a-920a-f20d416d93e4" + "\",\"MachineName\":\"" + "23C1:B015:55333303834351303212" + "\",\"JobId\":" + jobid.ToString() + "}";
+                    using (var client = new WebClient())
+                    {
+                        client.Headers.Add("Content-Type","application/json;odata=verbose");
+                        byte[] result = client.UploadData(TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
+                        File.WriteAllBytes(string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], jobid.ToString(), ".gcode"), result);
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+                
             }
             else if (Command[0].Equals("getjobs"))
             {
