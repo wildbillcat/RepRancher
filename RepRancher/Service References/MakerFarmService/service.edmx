@@ -17,6 +17,7 @@
         <Property Name="MachineName" Type="Edm.String" />
         <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
         <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PreviouslyCollected" Type="Edm.Boolean" Nullable="false" />
       </ComplexType>
       <ComplexType Name="MachineStatusUpdate">
         <Property Name="MachineName" Type="Edm.String" />

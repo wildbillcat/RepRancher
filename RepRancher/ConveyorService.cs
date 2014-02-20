@@ -282,6 +282,7 @@ namespace RepRancher
                     string FilePath = string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], i.ToString(), ".gcode");
                     File.Delete(FilePath);
                 }
+
                 //Now that RepRancher knows what Makerfarm is interested in hearing about, act on that information!
                 //Report all the information Makerfarm in intersted in hearing about
                 foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
@@ -343,7 +344,6 @@ namespace RepRancher
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
                         int ConveyorJobId = 0;
-
                         //Check if MakerFarm assigned a job
                         if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                         {
@@ -373,7 +373,7 @@ namespace RepRancher
                                 JUpdate.Status = JUpdate.Status + "Failure: " + J.failure + "\n";
                             }
                         }
-                        else if (Mi.CurrentJob != 0)
+                        else if (Mi.CurrentJob != 0 && !Mi.PoisonJobs && !Mi.PreviouslyCollected)
                         {
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
                             List<job> jobs = new List<job>();
@@ -407,6 +407,7 @@ namespace RepRancher
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
                                 }
+                                MakerWareToConveyorJobIds.TryAdd(Mi.CurrentJob, CommandID);
                                 JUpdate.JobId = Mi.CurrentJob;
                                 JUpdate.started = true;
                                 JUpdate.complete = false;
