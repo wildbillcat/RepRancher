@@ -523,12 +523,13 @@ namespace RepRancher
                         if (!methodReplyRecieved[MethodID])
                         {
                             if (ConveyorService.NoisyClient) { System.Console.WriteLine("Did not yet mark a return for Print method. Update the Makerware to JobID Dictionary "); }
-                            int MakerWareJobId = 0;
-                            if(RPCIDtoMakerFarmJobIds.TryGetValue(MethodID, out MakerWareJobId)){
-                                if (MakerWareToConveyorJobIds.TryUpdate(MakerWareJobId, j.id, 0))
+                            int MakerFarmJobId = 0;
+                            if (RPCIDtoMakerFarmJobIds.TryGetValue(MethodID, out MakerFarmJobId))
+                            {
+                                if (MakerWareToConveyorJobIds.TryUpdate(MakerFarmJobId, j.id, 0))
                                 {
                                     int temp;
-                                    RPCIDtoMakerFarmJobIds.TryRemove(MakerWareJobId, out temp);
+                                    RPCIDtoMakerFarmJobIds.TryRemove(MakerFarmJobId, out temp);
                                 }
                             }
                         }

@@ -344,8 +344,10 @@ namespace RepRancher
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
                         int ConveyorJobId = 0;
+                        bool CurrentJobExists = CurrentJobs.TryGetValue(ConveyorJobId, out J);
+                        bool MFJobExists = MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId);
                         //Check if MakerFarm assigned a job
-                        if (Mi.CurrentJob != 0 && MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId) && CurrentJobs.TryGetValue(ConveyorJobId, out J))//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
+                        if (Mi.CurrentJob != 0 && CurrentJobExists && MFJobExists)//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                         {
                             JUpdate.JobId = Mi.CurrentJob;
                             JUpdate.started = true;
@@ -398,6 +400,7 @@ namespace RepRancher
                                 
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file \"" + FilePath + "\" -machine_name " + P.name));
+                                MakerWareToConveyorJobIds.TryAdd(Mi.CurrentJob, 0);
                                 bool MethodReception = false;
                                 //Wait for Print
                                 while (!MethodReception)
@@ -407,16 +410,15 @@ namespace RepRancher
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
                                 }
-                                MakerWareToConveyorJobIds.TryAdd(Mi.CurrentJob, CommandID);
                                 JUpdate.JobId = Mi.CurrentJob;
                                 JUpdate.started = true;
                                 JUpdate.complete = false;
-                                JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
+                                JUpdate.Status = "Print Job Queued to Conveyor!";
                             }
                             else
                             {
                                 //Something is running on the printer already or something is amiss with the printer, can't send the Job
-                                JUpdate.JobId = Mi.CurrentJob;
+                                JUpdate.JobId = 0;
                                 JUpdate.started = false;
                                 JUpdate.complete = false;
                                 JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
@@ -450,7 +452,14 @@ namespace RepRancher
                             JUpdate.complete = false;
                             JUpdate.Status = null;
                             //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
-                            J = CurrentJobs.Values.Where(p => p.machine_name != null && p.machine_name.Equals(P.name)).OrderByDescending(p => p.id).FirstOrDefault();
+                            J = null;
+                            foreach (job jerb in CurrentJobs.Values)
+                            {
+                                if (jerb.machine_name.Equals(Mi.MachineName))
+                                {
+                                    J = jerb;
+                                }
+                            }
                             if (J != null)
                             {
                                 //Job is no longer null, meaning something has happened on the printer! Lets let users know.
@@ -638,6 +647,7 @@ namespace RepRancher
         {
             string[] Command = command.Split(' ');
             string outPut = "";
+            string TempToken = "";
             int rpcID = 0;
             if (Command[0].Equals("help"))
             {
@@ -769,6 +779,17 @@ namespace RepRancher
                         {
                             i++;
                             input_file = Command[i];
+                            try
+                            {
+                                string filename = Command[i].Split('\\').Last();
+                                TempToken = filename.Split('.').First();
+                                int.Parse(TempToken);
+                            }
+                            catch
+                            {
+                                //Invalid Job ID
+                                TempToken = "";
+                            }
                         }
                         else if (cmd.Equals("-machine_name"))
                         {
@@ -1093,6 +1114,17 @@ namespace RepRancher
                 return "Invalid Command: " + Command[0] + "\n Type help for information on available commands";
             }
 
+            if (Command[0].Equals("print") && !string.IsNullOrEmpty(TempToken))
+            {
+                if (!RPCIDtoMakerFarmJobIds.TryAdd(rpcID, int.Parse(TempToken)))
+                {
+                    return "This print could not be tracked!";
+                }
+                if (!MakerWareToConveyorJobIds.TryAdd(int.Parse(TempToken), 0))
+                {
+                    return "This print could not be tracked!";
+                }
+            }
             //Should only get here if a valid command was issued, add command to history and queue it up.
             if (!methodHistory.TryAdd(rpcID, Command))
             {
