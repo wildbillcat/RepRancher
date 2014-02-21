@@ -400,7 +400,6 @@ namespace RepRancher
                                 
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file \"" + FilePath + "\" -machine_name " + P.name));
-                                MakerWareToConveyorJobIds.TryAdd(Mi.CurrentJob, 0);
                                 bool MethodReception = false;
                                 //Wait for Print
                                 while (!MethodReception)
