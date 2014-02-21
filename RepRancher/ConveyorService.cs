@@ -496,7 +496,23 @@ namespace RepRancher
             KeepAlive.Stop();
             try
             {
-                this.Startup();
+                this.InvokeCommand("getprinters");
+                foreach (string file in Directory.GetFiles(ConfigurationManager.AppSettings["TemporaryFileStorage"]))
+                {
+                    bool fileInUse = false;
+                    foreach (job presentJob in CurrentJobs.Values)
+                    {
+                        if (string.IsNullOrEmpty(presentJob.conclusion))
+                        {
+                            fileInUse = true;
+                            break;
+                        }
+                    }
+                    if (!fileInUse)
+                    {
+                        File.Delete(file);
+                    }
+                }
             }
             catch 
             {
