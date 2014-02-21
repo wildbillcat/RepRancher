@@ -758,7 +758,7 @@ namespace RepRancher
                     bool has_start_end = true;
                     string input_file = ""; //Required
                     string machine_name = ""; //Required
-                    string[] material_name = new string[] {"PLA","PLA"};
+                    string[] material_name = null;
                     string slicer_name = "miraclegrue";
                     slicersettings slicer_settings = new slicersettings();
                     for (int i = 1; i < Command.Length; i++)
@@ -911,6 +911,18 @@ namespace RepRancher
                     {
                         return "The Printer you wanted is currently unavailable. State: " + selectedPrinter.state;
                     }
+                    if (material_name == null)
+                    {
+                        if (selectedPrinter.printerType.Equals("The Replicator 2X"))
+                        {
+                            material_name = new string[] { "PLA", "PLA" };
+                        }
+                        else
+                        {
+                            material_name = new string[] { "PLA" };
+                        }
+                        
+                    }
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
@@ -930,7 +942,7 @@ namespace RepRancher
                         File.WriteAllBytes(string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], jobid.ToString(), ".gcode"), result);
                     }
                 }
-                catch (Exception e)
+                catch
                 {
 
                 }

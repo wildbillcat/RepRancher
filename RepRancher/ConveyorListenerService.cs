@@ -547,9 +547,9 @@ namespace RepRancher
             }
             else if (Reply == JsonReplyType.Error)
             {
-                JsonError<string> Error = JsonConvert.DeserializeObject<JsonError<string>>(JSON);
+                //JsonError<string> Error = JsonConvert.DeserializeObject<JsonError<string>>(JSON);
                 Console.WriteLine("Error");
-                Console.WriteLine(Error.error.message);
+                Console.WriteLine(JSON);
                 Console.WriteLine();
             }
             else if (Reply == JsonReplyType.Invalid)
