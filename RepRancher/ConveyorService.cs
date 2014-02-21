@@ -344,8 +344,8 @@ namespace RepRancher
                         job J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
                         int ConveyorJobId = 0;
-                        bool CurrentJobExists = CurrentJobs.TryGetValue(ConveyorJobId, out J);
                         bool MFJobExists = MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId);
+                        bool CurrentJobExists = CurrentJobs.TryGetValue(ConveyorJobId, out J);
                         //Check if MakerFarm assigned a job
                         if (Mi.CurrentJob != 0 && CurrentJobExists && MFJobExists)//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                         {

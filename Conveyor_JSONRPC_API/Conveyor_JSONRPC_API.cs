@@ -581,11 +581,8 @@ namespace Conveyor_JSONRPC_API
         {
             JObject rpcCall = new JObject();
             rpcCall.Add(new JProperty("jsonrpc", "2.0"));
-            rpcCall.Add(new JProperty("id", rpcid.ToString()));
+            rpcCall.Add(new JProperty("id", rpcid));
             rpcCall.Add(new JProperty("method", MethodName));
-            //rpcCall.Add(new JProperty("method", "add"));
-
-
             // params is a collection values which the method requires..
             if (Params.Count == 0)
             {
