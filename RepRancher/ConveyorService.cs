@@ -258,7 +258,7 @@ namespace RepRancher
                 MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<MachineInterest>(DoTellUri, "POST", false, new BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
                 //First lets see if RePRancher is Tracking any jobs that MakerFarm isnt interested in. If so, let's toss them out and delete their files.
                 List<int> Abort = new List<int>();
-                foreach (int i in MakerWareToConveyorJobIds.Values)
+                foreach (int i in MakerWareToConveyorJobIds.Keys)
                 {
                     bool invalid = true;
                     foreach (MachineInterest Mi in ReportOn)
@@ -268,19 +268,20 @@ namespace RepRancher
                             invalid = false;
                             break;
                         }
-                        if (invalid)
-                        {
-                            Abort.Add(i);
-                        }
+                    }
+                    if (invalid)
+                    {
+                        Abort.Add(MakerWareToConveyorJobIds[i]);
                     }
                 }
                 //Now that there is a list of no longer valid jobs, let's toss them
                 foreach (int i in Abort)
                 {
-                    job j;
-                    CurrentJobs.TryRemove(i, out j);
                     string FilePath = string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], i.ToString(), ".gcode");
-                    File.Delete(FilePath);
+                    if (File.Exists(FilePath))
+                    {
+                        File.Delete(FilePath);
+                    }
                 }
 
                 //Now that RepRancher knows what Makerfarm is interested in hearing about, act on that information!
@@ -425,7 +426,7 @@ namespace RepRancher
                                 J = null;
                                 foreach (job JinQ in CurrentJobs.Values)
                                 {
-                                    if (JinQ.machine_name.Equals(P.name))
+                                    if (JinQ.machine_name.Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
                                     {
                                         J = JinQ;
                                     }
@@ -454,7 +455,7 @@ namespace RepRancher
                             J = null;
                             foreach (job jerb in CurrentJobs.Values)
                             {
-                                if (jerb.machine_name.Equals(Mi.MachineName))
+                                if (jerb.machine_name.Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
                                 {
                                     J = jerb;
                                 }
