@@ -148,6 +148,11 @@ namespace RepRancher
          */
         int MakerFarmClientID;
 
+        /*
+         * This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
+         */
+        int ConveyorReplyTimeout;
+
         Uri uri;
         Uri ISpyUri;
         Uri DoTellUri;
@@ -212,6 +217,8 @@ namespace RepRancher
             DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
             ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
             TakeThis = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/TakeThis");
+
+            ConveyorReplyTimeout = int.Parse(ConfigurationManager.AppSettings["ConveyorReplyTimeout"]);
 
             EnableMakerFarmClient = bool.Parse(ConfigurationManager.AppSettings["EnableMakerFarmClient"]);
             if (EnableMakerFarmClient)
@@ -307,10 +314,16 @@ namespace RepRancher
                                 //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
                                 int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
                                 bool MethodReception = false;
+                                DateTime CommandSent = DateTime.Now;
                                 //Wait for cancelation confirmation
                                 while (!MethodReception)
                                 {
                                     if (NoisyClient) { System.Console.WriteLine("Waiting for job cancelation notice"); }
+                                    if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
+                                    {
+                                        //If recieving a response from conveyor about the print has taken over 5 seconds, abort waiting and carry on.
+                                        break;
+                                    }
                                     System.Threading.Thread.Sleep(500);
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
@@ -402,10 +415,16 @@ namespace RepRancher
                                 //No job is running on the Printer! Lets send one.
                                 int CommandID = int.Parse(InvokeCommand("print -input_file \"" + FilePath + "\" -machine_name " + P.name));
                                 bool MethodReception = false;
+                                DateTime CommandSent = DateTime.Now;
                                 //Wait for Print
                                 while (!MethodReception)
                                 {
                                     if (NoisyClient) { System.Console.WriteLine("Waiting for print to send"); }
+                                    if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
+                                    {
+                                        //If recieving a response from conveyor about the print has taken over 5 seconds, abort waiting and carry on.
+                                        break;
+                                    }
                                     System.Threading.Thread.Sleep(500);
                                     methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
                                     //Check if reply recieved
