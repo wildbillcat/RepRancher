@@ -630,7 +630,7 @@ namespace RepRancher
                     {
                         if (NoisyClient) { System.Console.WriteLine("Port was not attached to a printer, Connecting"); }
                         MethodReception = false;
-                        string command = "connect -portname " + P.name;
+                        string command = "connect -port_name " + P.name;
                         CommandID = int.Parse(InvokeCommand(command));
                         while (!MethodReception)
                         {
@@ -1047,18 +1047,27 @@ namespace RepRancher
                     for(int i = 0; i < Command.Length; i++){
                         string cmd = Command[i];
                         if(cmd.Equals("-port_name")){
-                            port_name = Command[i++];
+                            i++;
+                            port_name = Command[i];
                         }else if(cmd.Equals("-driver_name")){
-                            driver_name = Command[i++];
+                            i++;
+                            driver_name = Command[i];
                         }else if(cmd.Equals("-machine_name")){
-                            machine_name = Command[i++];
+                            i++;
+                            machine_name = Command[i];
                         }else if(cmd.Equals("-persistent")){
-                            persistent = bool.Parse(Command[i++]);
+                            i++;
+                            persistent = bool.Parse(Command[i]);
                         }else if(cmd.Equals("-profile_name")){
-                            profile_name = Command[i++];
+                            i++;
+                            profile_name = Command[i];
                         }
                     }
                     //Valid Command
+                    if (string.IsNullOrEmpty(port_name))
+                    {
+                        return "Invalid Port Name";
+                    }
                     rpcID = rpcid.FetchRPCID();
                     command = Conveyor_JSONRPC_API.ServerAPI.Connect(rpcID, driver_name, machine_name, persistent, port_name, profile_name);
                     outPut = "" + rpcID;
