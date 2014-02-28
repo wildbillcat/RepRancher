@@ -93,7 +93,12 @@ namespace RepRancher
          */
         ConcurrentDictionary<int, int> RPCIDtoMakerFarmJobIds;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds)
+        /*
+         * This is the Conveyor Connection Service, which allows for writing back to the Conveyor Service.
+         */
+        ConveyorService ConveyorSvc;
+
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds, ConveyorService ConveyorService)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -109,6 +114,7 @@ namespace RepRancher
             CurrentJobs = currentJobs;
             MakerWareToConveyorJobIds = makerWareToConveyorJobIds;
             RPCIDtoMakerFarmJobIds = rPCIDtoMakerFarmJobIds;
+            ConveyorSvc = ConveyorService;
         }
 
         public void TriggerDispose()
@@ -392,11 +398,12 @@ namespace RepRancher
                         existingVal.type = AttachedPort.type;
                         return existingVal;
                     });
+                    ConveyorSvc.InvokeCommand("connect -portname " + AttachedPort.name);
                 }
                 else if (MethodName.Equals(ClientAPI.port_detached))
                 {
                     //This should trigger a printer poll
-                    //InvokeCommand("getprinters");
+                    ConveyorSvc.InvokeCommand("getprinters");
                     string DetachedPortName = ClientAPI.GetParams<string>(JSON);
                     port RemovedPort; //Presently not used
                     CurrentPorts.TryRemove(DetachedPortName, out RemovedPort);

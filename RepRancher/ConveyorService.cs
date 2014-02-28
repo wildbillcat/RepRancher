@@ -233,7 +233,7 @@ namespace RepRancher
             tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved, MakerWareToConveyorJobIds, RPCIDtoMakerFarmJobIds);
+            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved, MakerWareToConveyorJobIds, RPCIDtoMakerFarmJobIds, this);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));
@@ -515,7 +515,7 @@ namespace RepRancher
             KeepAlive.Stop();
             try
             {
-                this.InvokeCommand("getprinters");
+                Startup();
                 foreach (string file in Directory.GetFiles(ConfigurationManager.AppSettings["TemporaryFileStorage"]))
                 {
                     bool fileInUse = false;
