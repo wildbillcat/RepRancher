@@ -398,13 +398,13 @@ namespace RepRancher
                         existingVal.type = AttachedPort.type;
                         return existingVal;
                     });
-                    ConveyorSvc.InvokeCommand("connect -portname " + AttachedPort.name);
+                    ConveyorSvc.InvokeCommand("connect -port_name " + AttachedPort.name);
                 }
                 else if (MethodName.Equals(ClientAPI.port_detached))
                 {
                     //This should trigger a printer poll
-                    ConveyorSvc.InvokeCommand("getprinters");
-                    string DetachedPortName = ClientAPI.GetParams<string>(JSON);
+                    JObject PortNameParams = ClientAPI.GetParams<JObject>(JSON);
+                    string DetachedPortName = PortNameParams.GetValue("port_name").ToString();
                     port RemovedPort; //Presently not used
                     CurrentPorts.TryRemove(DetachedPortName, out RemovedPort);
                 }
