@@ -8,4 +8,4 @@ Presently This application is only Tested on Makerware 2.4.1 and the Conveyor Se
 Makerware Version:
 <2.4.1 = Does not work
 2.4.1 = Working
->2.4.1 = Untested
+>2.4.1 = Does not work
