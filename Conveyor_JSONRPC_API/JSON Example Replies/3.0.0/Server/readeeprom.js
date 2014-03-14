@@ -1,0 +1,1 @@
+﻿{"id":26,"jsonrpc":"2.0","method":"readeeprom","params":{"printername":"23C1:B015:7523733353635171A221"}}

@@ -1,0 +1,1 @@
+﻿{"id":12,"jsonrpc":"2.0","method":"job_cancel","params":{"id":1}}
