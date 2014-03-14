@@ -94,5 +94,17 @@ namespace Conveyor_JSONRPC_API_Tests
             string result = ServerAPI.CancelJob(rpcid, JobId);
             Console.WriteLine(result);
         }
+
+        [TestMethod]
+        public void PauseJob()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void ResumeJob()
+        {
+            Assert.Fail();
+        }
     }
 }

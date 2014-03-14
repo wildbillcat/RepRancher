@@ -74,6 +74,7 @@
     <Content Include="JSON Example Replies\2.4.1\Server\Pause.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\jobchanged.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\machine_temperature_changed.js" />
+    <Content Include="JSON Example Replies\3.0.0\Client\port_attached.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\port_detached.js" />
     <Content Include="JSON Example Replies\3.0.0\Server\connect_to_machine.js" />
     <Content Include="JSON Example Replies\3.0.0\Server\getjobs.js" />
@@ -87,6 +88,7 @@
     <Content Include="JSON Example Replies\3.0.0\Server\print-2X.js" />
     <Content Include="JSON Example Replies\3.0.0\Server\readeeprom.js" />
     <Content Include="JSON Example Replies\3.0.0\Server\slice.js" />
+    <Content Include="JSON Example Replies\3.0.0\Server\unloadfilament.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
