@@ -33,6 +33,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.rtf" />
+    <Content Include="TargetedBuilds\2.4.1\RepRancherServiceInstaller.msi" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TargetedBuilds" />
+    <Folder Include="TargetedBuilds\2.4.1" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

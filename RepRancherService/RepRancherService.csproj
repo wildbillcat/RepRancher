@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="TargetedBuilds\2.4.1\RepRancherService.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RepRancher\RepRancher.csproj">
@@ -76,6 +77,23 @@
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TargetedBuilds\2.4.1\Conveyor_JSONRPC_API.dll" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.Edm.dll" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.Edm.xml" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.OData.dll" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.OData.xml" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.Services.Client.dll" />
+    <Content Include="TargetedBuilds\2.4.1\Microsoft.Data.Services.Client.xml" />
+    <Content Include="TargetedBuilds\2.4.1\Newtonsoft.Json.dll" />
+    <Content Include="TargetedBuilds\2.4.1\Newtonsoft.Json.xml" />
+    <Content Include="TargetedBuilds\2.4.1\README.txt" />
+    <Content Include="TargetedBuilds\2.4.1\RepRancher.exe" />
+    <Content Include="TargetedBuilds\2.4.1\RepRancherService.exe" />
+    <Content Include="TargetedBuilds\2.4.1\System.Spatial.dll" />
+    <Content Include="TargetedBuilds\2.4.1\System.Spatial.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
