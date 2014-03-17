@@ -1,15 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Text;
-using Conveyor_JSONRPC_API;
-using Conveyor_JSONRPC_API.Types;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
-namespace Conveyor_JSONRPC_API_Tests
+namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
     public class ServerAPIReadTests

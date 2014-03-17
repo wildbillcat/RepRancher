@@ -52,10 +52,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ServerAPIReadTests.cs" />
+    <Compile Include="2.4.1\ClientAPIReadTests.cs" />
+    <Compile Include="2.4.1\ServerAPIReadTests.cs" />
+    <Compile Include="2.4.1\ServerAPIWriteTests.cs" />
+    <Compile Include="3.0.0\ServerAPIReadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClientAPIReadTests.cs" />
-    <Compile Include="ServerAPIWriteTests.cs" />
+    <Compile Include="3.0.0\ClientAPIReadTests.cs" />
+    <Compile Include="3.0.0\ServerAPIWriteTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Conveyor_JSONRPC_API\Conveyor_JSONRPC_API.csproj">

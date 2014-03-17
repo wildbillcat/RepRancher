@@ -3,10 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using Conveyor_JSONRPC_API;
-using Conveyor_JSONRPC_API.Types;
 
-namespace Conveyor_JSONRPC_API_Tests
+namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
     public class ServerAPIWriteTests
@@ -24,6 +22,7 @@ namespace Conveyor_JSONRPC_API_Tests
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
             rpcid = 0;
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -32,6 +31,7 @@ namespace Conveyor_JSONRPC_API_Tests
             rpcid++;
             string result = ServerAPI.Hello(rpcid);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -47,6 +47,7 @@ namespace Conveyor_JSONRPC_API_Tests
             slicersettings slicer_settings = new slicersettings();
             string result = ServerAPI.Print(rpcid, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -55,6 +56,7 @@ namespace Conveyor_JSONRPC_API_Tests
             rpcid++;
             string result = ServerAPI.GetJobs(rpcid);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -63,6 +65,7 @@ namespace Conveyor_JSONRPC_API_Tests
             rpcid++;
             string result = ServerAPI.GetPrinters(rpcid);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -71,6 +74,7 @@ namespace Conveyor_JSONRPC_API_Tests
             rpcid++;
             string result = ServerAPI.GetPorts(rpcid);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -84,6 +88,7 @@ namespace Conveyor_JSONRPC_API_Tests
             string profile_name = null;
             string result = ServerAPI.Connect(rpcid, driver_name, machine_name, persistent, port_name, profile_name);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]

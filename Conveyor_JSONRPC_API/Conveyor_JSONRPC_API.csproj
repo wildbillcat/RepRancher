@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Conveyor_JSONRPC_API.cs" />
+    <Compile Include="2.4.1\Conveyor_JSONRPC_API.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,45 +52,45 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="JSON Example Replies\2.4.1\Client\Error.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\JobAdded.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\JobChanged.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\MachineStateChanged.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\MachineTemperatureChanged.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\PortAttached.js" />
-    <Content Include="JSON Example Replies\2.4.1\Client\PortDetached.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\01 makerware connect.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\02 makerware print file from gcode.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\03 makerware cancel print..js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\05 read eeprom.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\06 write eeprom - machine name = test.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\09 without preview.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\10 with preview.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\11 firmware upgrade.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\Connect.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\GetJobs.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\GetPorts.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\GetPrinters.js" />
-    <Content Include="JSON Example Replies\2.4.1\Server\Pause.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\jobadded.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\jobchanged.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\machine_state_changed.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\machine_temperature_changed.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\port_attached.js" />
-    <Content Include="JSON Example Replies\3.0.0\Client\port_detached.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\connect_to_machine.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\getjobs.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\getports.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\getprinters.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\hello.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\job_cancel.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\job_pause.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\job_resume.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\print-2.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\print-2X.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\readeeprom.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\slice.js" />
-    <Content Include="JSON Example Replies\3.0.0\Server\unloadfilament.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\Error.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\JobAdded.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\JobChanged.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\MachineStateChanged.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\MachineTemperatureChanged.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\PortAttached.js" />
+    <Content Include="2.4.1\JSON Example Replies\Client\PortDetached.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\01 makerware connect.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\02 makerware print file from gcode.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\03 makerware cancel print..js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\05 read eeprom.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\06 write eeprom - machine name = test.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\09 without preview.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\10 with preview.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\11 firmware upgrade.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\Connect.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\GetJobs.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\GetPorts.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\GetPrinters.js" />
+    <Content Include="2.4.1\JSON Example Replies\Server\Pause.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\jobadded.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\jobchanged.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\machine_state_changed.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\machine_temperature_changed.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\port_attached.js" />
+    <Content Include="3.0.0\JSON Example Replies\Client\port_detached.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\connect_to_machine.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\getjobs.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\getports.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\getprinters.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\hello.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\job_cancel.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\job_pause.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\job_resume.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\print-2.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\print-2X.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\readeeprom.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\slice.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\unloadfilament.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

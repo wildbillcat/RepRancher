@@ -1,9 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Conveyor_JSONRPC_API;
-using Conveyor_JSONRPC_API.Types;
 
-namespace Conveyor_JSONRPC_API_Tests
+namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
     public class ClientAPIReadTests
