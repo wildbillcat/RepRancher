@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Conveyor_JSONRPC_API._2._4._1;
+using Conveyor_JSONRPC_API._2._4._1.Types;
 
 namespace Conveyor_JSONRPC_API_Tests._2._4._1
 {
