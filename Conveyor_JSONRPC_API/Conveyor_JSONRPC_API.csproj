@@ -44,9 +44,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="2.4.1\Conveyor_JSONRPC_API.cs" />
+    <Compile Include="3.0.0\ClientAPI.cs" />
+    <Compile Include="3.0.0\ConveyorException.cs" />
+    <Compile Include="3.0.0\ConveyorFailure.cs" />
+    <Compile Include="3.0.0\ConveyorJobProgress.cs" />
+    <Compile Include="3.0.0\ConveyorJsonReplyParser.cs" />
     <Compile Include="3.0.0\ConveyorPort.cs" />
     <Compile Include="3.0.0\ConveyorPrinter.cs" />
     <Compile Include="3.0.0\ConveyorJob.cs" />
+    <Compile Include="3.0.0\JsonReplyType.cs" />
+    <Compile Include="3.0.0\PhysicalPrinterName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

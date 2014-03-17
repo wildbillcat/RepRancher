@@ -25,26 +25,4 @@ namespace Conveyor_JSONRPC_API._3._0._0
         public double extrusion_distance_a_mm { get; set; }
         public string conclusion { get; set; }
     }
-
-    public class ConveyorFailure
-    {
-        public ConveyorException exception { get; set; }
-    }
-
-    public class ConveyorException
-    {
-        public string winerror { get; set; }
-        public string name { get; set; }
-        public string errno { get; set; }
-        public string args { get; set; }
-        public string strerror { get; set; }
-        public string filename { get; set; }
-        public string message { get; set; }
-    }
-
-    public class ConveyorJobProgress
-    {
-        public int progress { get; set; }
-        public string name { get; set; }
-    }
 }
