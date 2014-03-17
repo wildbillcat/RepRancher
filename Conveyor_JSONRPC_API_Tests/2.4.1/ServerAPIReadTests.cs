@@ -6,7 +6,7 @@ using Conveyor_JSONRPC_API._2._4._1.Types;
 namespace Conveyor_JSONRPC_API_Tests._2._4._1
 {
         [TestClass]
-        public class ServerAPIReadTests
+        public class _2_4_1_ServerAPIReadTests
         {
 
             [TestMethod]

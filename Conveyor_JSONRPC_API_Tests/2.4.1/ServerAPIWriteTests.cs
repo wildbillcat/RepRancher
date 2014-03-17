@@ -9,7 +9,7 @@ using Conveyor_JSONRPC_API._2._4._1.Types;
 namespace Conveyor_JSONRPC_API_Tests._2._4._1
 {
     [TestClass]
-    public class ServerAPIWriteTests
+    public class _2_4_1_ServerAPIWriteTests
     {
 
         IPEndPoint ipEndPoint;
@@ -17,7 +17,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
         Stream dataStream;
         int rpcid;
 
-        public ServerAPIWriteTests()
+        public _2_4_1_ServerAPIWriteTests()
         {
             ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9999);
             tcpClient = new TcpClient();
