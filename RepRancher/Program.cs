@@ -20,7 +20,7 @@ namespace RepRancher
         {
             Console.WriteLine("RepRancher!");
             Console.WriteLine();
-            ConveyorService Conveyor = new ConveyorService("127.0.0.1", 9999);
+            _2._4._1.ConveyorService Conveyor = new _2._4._1.ConveyorService("127.0.0.1", 9999); //Hardcoded current working version, will have to add a test for version typing
             Conveyor.Startup();
             while (true)
             {
@@ -37,7 +37,7 @@ namespace RepRancher
                     else if (command.Equals("restart"))
                     {
                         Conveyor.Dispose();
-                        Conveyor = new ConveyorService("127.0.0.1", 9999);
+                        Conveyor = new _2._4._1.ConveyorService("127.0.0.1", 9999);
                     }
                     else
                     {
@@ -57,7 +57,7 @@ namespace RepRancher
                     Console.WriteLine("Oh my! It seems that something might have happened to the Conveyor Service! Please restart it, make sure all is well, and then press enter to restart RepRancher.");
                     Console.ReadLine();
                     //This is presently wasteful, will have to look into disposing of the old Conveyor service.
-                    Conveyor = new ConveyorService("127.0.0.1", 9999);
+                    Conveyor = new _2._4._1.ConveyorService("127.0.0.1", 9999);
                 }
             }
         }

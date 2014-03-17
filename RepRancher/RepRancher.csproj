@@ -86,8 +86,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConveyorListenerService.cs" />
-    <Compile Include="ConveyorService.cs" />
+    <Compile Include="2.4.1\ConveyorListenerService.cs" />
+    <Compile Include="2.4.1\ConveyorService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\MakerFarmService\Reference.cs">

@@ -10,10 +10,10 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Conveyor_JSONRPC_API;
-using Conveyor_JSONRPC_API.Types;
+using Conveyor_JSONRPC_API._2._4._1;
+using Conveyor_JSONRPC_API._2._4._1.Types;
 
-namespace RepRancher
+namespace RepRancher._2._4._1
 {
     class ConveyorListenerService
     {
@@ -426,7 +426,7 @@ namespace RepRancher
                     //This looks up the method originally called in order to put the Reply into context.
                     if (method[0].Equals("getprinters"))
                     {
-                        printer[] printers = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer[]>(JSON);                        
+                        printer[] printers = ServerAPI.GetResult<printer[]>(JSON);                        
                         foreach (printer p in printers)
                         {
                             CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
@@ -451,7 +451,7 @@ namespace RepRancher
                     }
                     else if (method[0].Equals("getjobs"))
                     {
-                        job[] jobs = Conveyor_JSONRPC_API.ServerAPI.GetResult<job[]>(JSON);
+                        job[] jobs = ServerAPI.GetResult<job[]>(JSON);
                         foreach (job j in jobs)
                         {
                             CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
@@ -467,7 +467,7 @@ namespace RepRancher
                     }
                     else if (method[0].Equals("getports"))
                     {
-                        port[] ports = Conveyor_JSONRPC_API.ServerAPI.GetResult<port[]>(JSON);
+                        port[] ports = ServerAPI.GetResult<port[]>(JSON);
                         foreach (port p in ports)
                         {
                             CurrentPorts.AddOrUpdate(p.name, p, (key, existingVal) =>
@@ -482,7 +482,7 @@ namespace RepRancher
                     }
                     else if (method[0].Equals("connect"))
                     {
-                        printer p = Conveyor_JSONRPC_API.ServerAPI.GetResult<printer>(JSON);
+                        printer p = ServerAPI.GetResult<printer>(JSON);
                         CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
                         {
                             existingVal.displayName = p.displayName;
@@ -504,7 +504,7 @@ namespace RepRancher
                     }
                     else if (method[0].Equals("hello"))
                     {
-                        string reply = Conveyor_JSONRPC_API.ServerAPI.GetResult<string>(JSON);
+                        string reply = ServerAPI.GetResult<string>(JSON);
                         if (reply.Equals("world"))
                         {
                             //Recieved a reply! Good to start
@@ -512,7 +512,7 @@ namespace RepRancher
                     }
                     else if (method[0].Equals("print"))
                     {
-                        job j = Conveyor_JSONRPC_API.ServerAPI.GetResult<job>(JSON);
+                        job j = ServerAPI.GetResult<job>(JSON);
                         CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
                         {
                             existingVal.machine_name = j.machine_name;

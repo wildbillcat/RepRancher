@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-
+/*
 namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
@@ -113,3 +113,4 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         }
     }
 }
+*/

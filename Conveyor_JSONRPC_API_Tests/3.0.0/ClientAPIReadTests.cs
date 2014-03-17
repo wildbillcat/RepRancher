@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+/* Commenting out unimplemented 3.0 code
 namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
@@ -116,3 +116,4 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         }
     }
 }
+*/

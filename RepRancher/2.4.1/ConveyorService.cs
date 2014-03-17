@@ -13,13 +13,13 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Conveyor_JSONRPC_API;
-using Conveyor_JSONRPC_API.Types;
+using Conveyor_JSONRPC_API._2._4._1;
+using Conveyor_JSONRPC_API._2._4._1.Types;
 using System.Data.Services.Client;
 using RepRancher.MakerFarmService;
 
 
-namespace RepRancher
+namespace RepRancher._2._4._1
 {
     public class ConveyorService
     {
@@ -40,7 +40,7 @@ namespace RepRancher
         Stream dataStream;
 
         /*
-         * These threads are ised to run the ConveyorListenerServer and ConveyorCommandServer
+         * These threads are used to run the ConveyorListenerServer and ConveyorCommandServer
          */
         Thread t1;
         Thread t2;
@@ -961,7 +961,7 @@ namespace RepRancher
                     }
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
+                    command = ServerAPI.Print(rpcID, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
                     outPut = "" + rpcID;
                 }
             }
@@ -995,7 +995,7 @@ namespace RepRancher
                 {
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.GetJobs(rpcID);
+                    command = ServerAPI.GetJobs(rpcID);
                     outPut = "" + rpcID;
                 }
             }
@@ -1010,7 +1010,7 @@ namespace RepRancher
                 {
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.GetPorts(rpcID);
+                    command = ServerAPI.GetPorts(rpcID);
                     outPut = "" + rpcID;
                 }
             }
@@ -1025,7 +1025,7 @@ namespace RepRancher
                 {
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.GetPrinters(rpcID);
+                    command = ServerAPI.GetPrinters(rpcID);
                     outPut = "" + rpcID;
                 }
             }
@@ -1069,7 +1069,7 @@ namespace RepRancher
                         return "Invalid Port Name";
                     }
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.Connect(rpcID, driver_name, machine_name, persistent, port_name, profile_name);
+                    command = ServerAPI.Connect(rpcID, driver_name, machine_name, persistent, port_name, profile_name);
                     outPut = "" + rpcID;
                 }
             }
@@ -1084,7 +1084,7 @@ namespace RepRancher
                 {
                     //Valid Command
                     rpcID = rpcid.FetchRPCID();
-                    command = Conveyor_JSONRPC_API.ServerAPI.Hello(rpcID);
+                    command = ServerAPI.Hello(rpcID);
                     outPut = "" + rpcID;
                 }
             }
@@ -1101,7 +1101,7 @@ namespace RepRancher
                     rpcID = rpcid.FetchRPCID();
                     try
                     {
-                        command = Conveyor_JSONRPC_API.ServerAPI.CancelJob(rpcID, int.Parse(Command[2]));
+                        command = ServerAPI.CancelJob(rpcID, int.Parse(Command[2]));
                     }
                     catch
                     {
