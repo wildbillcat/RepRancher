@@ -9,6 +9,8 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
+using System.Configuration;
 
 namespace ConveyorCommandCracker
 {
@@ -35,6 +37,21 @@ namespace ConveyorCommandCracker
         Thread t1;
         Thread t2;
         Thread t3;
+
+        /*
+        * This is a list of the commands queued for printing.
+        */
+        ConcurrentQueue<string> commandQueue;
+
+        /*
+         * Mutex Protects the dispose variable
+         */
+        Mutex DisposeMutex;
+
+        /*
+         * Determines if the thread should end.
+         */
+        bool Dispose;
 
         static void Main(string[] args)
         {

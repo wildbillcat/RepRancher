@@ -4,7 +4,8 @@
     "id":29,
     "jsonrpc":"2.0",
     "method":"slice",
-    "params":{
+    "params":
+    {
         "add_start_end":false,
         "input_file":"C:/Users/Rob/AppData/Local/Temp/conveyor-ui-{d98d230b-8010-4949-8e2e-d9301de647b2}/1 inch cube.thing",
         "job_metadata":{
@@ -31,4 +32,25 @@
             "support":false,
             "travel_speed":150}
     }
+}
+
+/*************************Reply**********************************/
+{"jsonrpc": "2.0", "result": {"machine_name": "23C1:B015:7523733353635171A221", "pausable": false, "failure": null, "profile_name": "Replicator2X", "id": 2, "name": "1 inch cube", "can_cancel": true, "state": "RUNNING", "driver_name": "s3g", "progress": null, "type": "SliceJob", "conclusion": null}, "id": 9}
+
+{
+    "jsonrpc": "2.0", 
+    "result": {
+        "machine_name": "23C1:B015:7523733353635171A221", 
+        "pausable": false, 
+        "failure": null, 
+        "profile_name": "Replicator2X", 
+        "id": 2, "name": "1 inch cube", 
+        "can_cancel": true, 
+        "state": "RUNNING", 
+        "driver_name": "s3g", 
+        "progress": null, 
+        "type": "SliceJob", 
+        "conclusion": null
+    }, 
+    "id": 9
 }

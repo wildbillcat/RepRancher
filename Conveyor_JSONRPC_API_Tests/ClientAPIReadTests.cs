@@ -12,7 +12,7 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReadJobAdded()
         {
-            string JSON = "
+            string JSON = "{\"params\": {\"machine_name\": {\"iserial\": \"7523733353635171A221\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}, \"pausable\": false, \"failure\": null, \"profile_name\": \"Replicator2X\", \"extrusion_mass_a_grams\": 7.00589, \"id\": 1, \"name\": \"1 inch cube\", \"can_cancel\": true, \"state\": \"RUNNING\", \"driver_name\": \"s3g\", \"duration_s\": 1637, \"progress\": null, \"type\": \"PrintJob\", \"extrusion_distance_a_mm\": 2296.18, \"conclusion\": null}, \"jsonrpc\": \"2.0\", \"method\": \"jobadded\"}";
             string methodname = Conveyor_JSONRPC_API.ConveyorJsonReplyParser.GetMethodName(JSON);
             if (!methodname.Equals("jobadded"))
             {
@@ -28,7 +28,7 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReadJobChanged()
         {
-            string JSON = "
+            string JSON = "{\"params\": {\"machine_name\": {\"iserial\": \"7523733353635171A221\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}, \"pausable\": true, \"failure\": null, \"profile_name\": \"Replicator2X\", \"extrusion_mass_a_grams\": 7.00589, \"id\": 3, \"name\": \"1 inch cube\", \"can_cancel\": true, \"elapsed_time\": 76.893, \"state\": \"RUNNING\", \"driver_name\": \"s3g\", \"duration_s\": 1637, \"progress\": {\"progress\": 0, \"name\": \"print\"}, \"type\": \"PrintJob\", \"extrusion_distance_a_mm\": 2296.18, \"conclusion\": null}, \"jsonrpc\": \"2.0\", \"method\": \"jobchanged\"}";
             string methodname = Conveyor_JSONRPC_API.ConveyorJsonReplyParser.GetMethodName(JSON);
             if (!methodname.Equals("jobchanged"))
             {
@@ -44,7 +44,7 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReachMachineStateChanged()
         {
-            string JSON = "
+            string JSON = "{\"params\": {\"can_print\": true, \"number_of_toolheads\": 2, \"has_heated_platform\": true, \"display_name\": \"Rep2X\", \"name\": {\"iserial\": \"7523733353635171A221\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}, \"printer_type\": \"The Replicator 2X\", \"profile_name\": \"Replicator2X\", \"toolhead_target_temperature\": null, \"build_volume\": [246, 152, 155], \"state\": \"PAUSED\", \"driver_name\": \"s3g\", \"machine_names\": [\"TheReplicator2X\"], \"firmware_version\": [7, 5], \"temperature\": null}, \"jsonrpc\": \"2.0\", \"method\": \"machine_state_changed\"}";
             string methodname = Conveyor_JSONRPC_API.ConveyorJsonReplyParser.GetMethodName(JSON);
             if (!methodname.Equals("machine_state_changed"))
             {
@@ -60,7 +60,7 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReachMachineTemperatureChanged()
         {
-            string JSON = "
+            string JSON = "{\"params\": {\"can_print\": true, \"number_of_toolheads\": 2, \"has_heated_platform\": true, \"display_name\": \"Rep 2X\", \"name\": {\"iserial\": \"7523733353635171A221\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}, \"printer_type\": \"The Replicator 2X\", \"profile_name\": \"Replicator2X\", \"toolhead_target_temperature\": null, \"build_volume\": [246, 152, 155], \"state\": \"IDLE\", \"driver_name\": \"s3g\", \"machine_names\": [\"TheReplicator2X\"], \"firmware_version\": [7, 5], \"temperature\": null}, \"jsonrpc\": \"2.0\", \"method\": \"machine_temperature_changed\"}";
             string methodname = Conveyor_JSONRPC_API.ConveyorJsonReplyParser.GetMethodName(JSON);
             if (!methodname.Equals("machine_temperature_changed"))
             {
@@ -92,7 +92,7 @@ namespace Conveyor_JSONRPC_API_Tests
         [TestMethod]
         public void ReadPortRemoved()
         {
-            string JSON = "
+            string JSON = "{\"params\": {\"machine_name\": {\"iserial\": \"7523733353635171E0D1\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}}, \"jsonrpc\": \"2.0\", \"method\": \"port_detached\"}";
             string methodname = Conveyor_JSONRPC_API.ConveyorJsonReplyParser.GetMethodName(JSON);
             if (!methodname.Equals("port_detached"))
             {

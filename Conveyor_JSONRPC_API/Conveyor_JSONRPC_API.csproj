@@ -72,7 +72,9 @@
     <Content Include="JSON Example Replies\2.4.1\Server\GetPorts.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\GetPrinters.js" />
     <Content Include="JSON Example Replies\2.4.1\Server\Pause.js" />
+    <Content Include="JSON Example Replies\3.0.0\Client\jobadded.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\jobchanged.js" />
+    <Content Include="JSON Example Replies\3.0.0\Client\machine_state_changed.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\machine_temperature_changed.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\port_attached.js" />
     <Content Include="JSON Example Replies\3.0.0\Client\port_detached.js" />
