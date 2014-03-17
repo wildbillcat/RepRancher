@@ -23,7 +23,9 @@ namespace RepRancher._2._4._1
 {
     public class ConveyorService
     {
+
         public bool EnableMakerFarmClient;
+
         /*
          * This is the IP Address of the Conveyor Service
          */
@@ -106,17 +108,17 @@ namespace RepRancher._2._4._1
         /*
          * This is a list of the current ports known to be attached to the Conveyor Service
          */
-        ConcurrentDictionary<string, port> CurrentPorts;
+        ConcurrentDictionary<string, ConveyorPort> CurrentPorts;
 
         /*
          * This is a list of the current printers known to the Conveyor Service
          */
-        ConcurrentDictionary<string, printer> CurrentPrinters;
+        ConcurrentDictionary<string, ConveyorPrinter> CurrentPrinters;
 
         /*
          * This is a list of jobs known to the Conveyor Service
          */
-        ConcurrentDictionary<int, job> CurrentJobs;
+        ConcurrentDictionary<int, ConveyorJob> CurrentJobs;
 
         /*
          * This is a list of Conveyor JobIDs indexed by MakerWare Jobs
@@ -162,9 +164,9 @@ namespace RepRancher._2._4._1
         public ConveyorService(string IPaddress, int PortNumber)
         {
             NoisyClient = bool.Parse(ConfigurationManager.AppSettings["NoisyClient"]);
-            CurrentPorts = new ConcurrentDictionary<string, port>();
-            CurrentPrinters = new ConcurrentDictionary<string, printer>();
-            CurrentJobs = new ConcurrentDictionary<int, job>();
+            CurrentPorts = new ConcurrentDictionary<string, ConveyorPort>();
+            CurrentPrinters = new ConcurrentDictionary<string, ConveyorPrinter>();
+            CurrentJobs = new ConcurrentDictionary<int, ConveyorJob>();
 
             rpcid = new ConcurrentRPCID();
             commandQueue = new ConcurrentQueue<string>();
@@ -295,21 +297,21 @@ namespace RepRancher._2._4._1
                 //Report all the information Makerfarm in intersted in hearing about
                 foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
                 {
-                    printer P;
+                    ConveyorPrinter P;
                     if (CurrentPrinters.TryGetValue(Mi.MachineName, out P))
                     {
                         //The Machine Exists, before worrying about the job and printer status lets make sure the Printer doesn't want us to cancel the job.
                         if (Mi.PoisonJobs)
                         {
-                            List<job> jobs = new List<job>();
-                            foreach (job jj in CurrentJobs.Values)
+                            List<ConveyorJob> jobs = new List<ConveyorJob>();
+                            foreach (ConveyorJob jj in CurrentJobs.Values)
                             {
                                 if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
                                 {
                                     jobs.Add(jj);
                                 }
                             }
-                            foreach (job ActiveMakerbotJob in jobs)
+                            foreach (ConveyorJob ActiveMakerbotJob in jobs)
                             {
                                 //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
                                 int CommandID = int.Parse(InvokeCommand("canceljob -jobid " + ActiveMakerbotJob.id.ToString()));
@@ -355,7 +357,7 @@ namespace RepRancher._2._4._1
                         }
                        
 
-                        job J;
+                        ConveyorJob J;
                         JobStatusUpdate JUpdate = new JobStatusUpdate();
                         int ConveyorJobId = 0;
                         bool MFJobExists = MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId);
@@ -392,8 +394,8 @@ namespace RepRancher._2._4._1
                         else if (Mi.CurrentJob != 0 && !Mi.PoisonJobs && !Mi.PreviouslyCollected)
                         {
                             //Makerfarm has assigned a job and RepRancher has not yet sent it!
-                            List<job> jobs = new List<job>();
-                            foreach (job jj in CurrentJobs.Values)
+                            List<ConveyorJob> jobs = new List<ConveyorJob>();
+                            foreach (ConveyorJob jj in CurrentJobs.Values)
                             {
                                 if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
                                 {
@@ -443,7 +445,7 @@ namespace RepRancher._2._4._1
                                 JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
                                 //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                                 J = null;
-                                foreach (job JinQ in CurrentJobs.Values)
+                                foreach (ConveyorJob JinQ in CurrentJobs.Values)
                                 {
                                     if (JinQ.machine_name.Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
                                     {
@@ -472,7 +474,7 @@ namespace RepRancher._2._4._1
                             JUpdate.Status = null;
                             //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                             J = null;
-                            foreach (job jerb in CurrentJobs.Values)
+                            foreach (ConveyorJob jerb in CurrentJobs.Values)
                             {
                                 if (jerb.machine_name.Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
                                 {
@@ -519,7 +521,7 @@ namespace RepRancher._2._4._1
                 foreach (string file in Directory.GetFiles(ConfigurationManager.AppSettings["TemporaryFileStorage"]))
                 {
                     bool fileInUse = false;
-                    foreach (job presentJob in CurrentJobs.Values)
+                    foreach (ConveyorJob presentJob in CurrentJobs.Values)
                     {
                         if (string.IsNullOrEmpty(presentJob.conclusion))
                         {
@@ -608,14 +610,14 @@ namespace RepRancher._2._4._1
 
             if (NoisyClient) { System.Console.WriteLine("Preparing to Connect"); }
             foreach(string key in CurrentPorts.Keys){
-                port P = null;
+                ConveyorPort P = null;
                 if(CurrentPorts.TryGetValue(key, out P)){
                     //Port Found, Test if it is attached to printer. if not, connect
                     bool PortAttached = false;
                     if (NoisyClient) { System.Console.WriteLine("Checking if Port is Attached to a Printer"); }
                     foreach (string pkey in CurrentPrinters.Keys)
                     {
-                        printer p = null;
+                        ConveyorPrinter p = null;
                         if (CurrentPrinters.TryGetValue(pkey, out p))
                         {
                             if (P.name.Equals(p.port_name))
@@ -936,7 +938,7 @@ namespace RepRancher._2._4._1
                     {
                         return "The File you wanted printed does not appear to exist. File: \n" + input_file;
                     }
-                    printer selectedPrinter = null;
+                    ConveyorPrinter selectedPrinter = null;
                     bool existingPrinter = CurrentPrinters.TryGetValue(machine_name, out selectedPrinter);
 
                     if (!existingPrinter)

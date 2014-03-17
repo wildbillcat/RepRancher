@@ -18,7 +18,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
             {
                 Assert.Fail();
             }
-            job job = ClientAPI.GetParams<job>(JSON);
+            ConveyorJob job = ClientAPI.GetParams<ConveyorJob>(JSON);
             if (job == null)
             {
                 Assert.Fail();
@@ -34,7 +34,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
             {
                 Assert.Fail();
             }
-            job job = ClientAPI.GetParams<job>(JSON);
+            ConveyorJob job = ClientAPI.GetParams<ConveyorJob>(JSON);
             if (job == null)
             {
                 Assert.Fail();
@@ -50,7 +50,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
             {
                 Assert.Fail();
             }
-            port Port = ClientAPI.GetParams<port>(JSON);
+            ConveyorPort Port = ClientAPI.GetParams<ConveyorPort>(JSON);
             if (Port == null)
             {
                 Assert.Fail();
@@ -66,7 +66,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
             {
                 Assert.Fail();
             }
-            port Port = ClientAPI.GetParams<port>(JSON);
+            ConveyorPort Port = ClientAPI.GetParams<ConveyorPort>(JSON);
             if (Port == null)
             {
                 Assert.Fail();
@@ -82,7 +82,7 @@ namespace Conveyor_JSONRPC_API_Tests._2._4._1
             {
                 Assert.Fail();
             }
-            port Port = ClientAPI.GetParams<port>(JSON);
+            ConveyorPort Port = ClientAPI.GetParams<ConveyorPort>(JSON);
             if (Port == null)
             {
                 Assert.Fail();

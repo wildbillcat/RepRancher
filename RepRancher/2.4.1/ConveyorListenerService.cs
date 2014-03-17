@@ -71,17 +71,17 @@ namespace RepRancher._2._4._1
         /*
          * This is a list of the current ports known to be attached to the Conveyor Service
          */
-        ConcurrentDictionary<string, port> CurrentPorts;
+        ConcurrentDictionary<string, ConveyorPort> CurrentPorts;
 
         /*
          * This is a list of the current printers known to the Conveyor Service
          */
-        ConcurrentDictionary<string, printer> CurrentPrinters;
+        ConcurrentDictionary<string, ConveyorPrinter> CurrentPrinters;
 
         /*
          * This is a list of jobs known to the Conveyor Service
          */
-        ConcurrentDictionary<int, job> CurrentJobs;
+        ConcurrentDictionary<int, ConveyorJob> CurrentJobs;
 
         /*
          * This is a list of Conveyor JobIDs indexed by MakerWare Jobs
@@ -98,7 +98,7 @@ namespace RepRancher._2._4._1
          */
         ConveyorService ConveyorSvc;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, port> currentPorts, ConcurrentDictionary<string, printer> currentPrinters, ConcurrentDictionary<int, job> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds, ConveyorService ConveyorService)
+        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, ConveyorPort> currentPorts, ConcurrentDictionary<string, ConveyorPrinter> currentPrinters, ConcurrentDictionary<int, ConveyorJob> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds, ConveyorService ConveyorService)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -333,7 +333,7 @@ namespace RepRancher._2._4._1
                 {
                     //This should trigger a printer poll
                     //InvokeCommand("getprinters");
-                    job AddedJob = ClientAPI.GetParams<job>(JSON);
+                    ConveyorJob AddedJob = ClientAPI.GetParams<ConveyorJob>(JSON);
                     CurrentJobs.AddOrUpdate(AddedJob.id, AddedJob, (key, existingVal) =>
                     {
                         existingVal.failure = AddedJob.failure;
@@ -346,7 +346,7 @@ namespace RepRancher._2._4._1
                 }
                 else if (MethodName.Equals(ClientAPI.jobchanged))
                 {
-                    job ChangedJob = ClientAPI.GetParams<job>(JSON);
+                    ConveyorJob ChangedJob = ClientAPI.GetParams<ConveyorJob>(JSON);
                     CurrentJobs.AddOrUpdate(ChangedJob.id, ChangedJob, (key, existingVal) =>
                     {
                         existingVal.failure = ChangedJob.failure;
@@ -359,7 +359,7 @@ namespace RepRancher._2._4._1
                 }
                 else if (MethodName.Equals(ClientAPI.machine_state_changed))
                 {
-                    printer ChangedPrinter = ClientAPI.GetParams<printer>(JSON);
+                    ConveyorPrinter ChangedPrinter = ClientAPI.GetParams<ConveyorPrinter>(JSON);
                     CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
                     {
                         // The only updatable fields are the temerature array and lastQueryDate.
@@ -373,7 +373,7 @@ namespace RepRancher._2._4._1
                 }
                 else if (MethodName.Equals(ClientAPI.machine_temperature_changed))
                 {
-                    printer ChangedPrinter = ClientAPI.GetParams<printer>(JSON);
+                    ConveyorPrinter ChangedPrinter = ClientAPI.GetParams<ConveyorPrinter>(JSON);
                     CurrentPrinters.AddOrUpdate(ChangedPrinter.name, ChangedPrinter, (key, existingVal) =>
                     {
                         existingVal.state = ChangedPrinter.state;
@@ -388,7 +388,7 @@ namespace RepRancher._2._4._1
                 {
                     //This should trigger a printer poll
                     //InvokeCommand("getprinters");
-                    port AttachedPort = ClientAPI.GetParams<port>(JSON);
+                    ConveyorPort AttachedPort = ClientAPI.GetParams<ConveyorPort>(JSON);
                     CurrentPorts.AddOrUpdate(AttachedPort.name, AttachedPort, (key, existingVal) =>
                     {
                         // The only updatable fields are the temerature array and lastQueryDate.
@@ -405,7 +405,7 @@ namespace RepRancher._2._4._1
                     //This should trigger a printer poll
                     JObject PortNameParams = ClientAPI.GetParams<JObject>(JSON);
                     string DetachedPortName = PortNameParams.GetValue("port_name").ToString();
-                    port RemovedPort; //Presently not used
+                    ConveyorPort RemovedPort; //Presently not used
                     CurrentPorts.TryRemove(DetachedPortName, out RemovedPort);
                 }
                 else
@@ -426,8 +426,8 @@ namespace RepRancher._2._4._1
                     //This looks up the method originally called in order to put the Reply into context.
                     if (method[0].Equals("getprinters"))
                     {
-                        printer[] printers = ServerAPI.GetResult<printer[]>(JSON);                        
-                        foreach (printer p in printers)
+                        ConveyorPrinter[] printers = ServerAPI.GetResult<ConveyorPrinter[]>(JSON);                        
+                        foreach (ConveyorPrinter p in printers)
                         {
                             CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
                             {
@@ -451,8 +451,8 @@ namespace RepRancher._2._4._1
                     }
                     else if (method[0].Equals("getjobs"))
                     {
-                        job[] jobs = ServerAPI.GetResult<job[]>(JSON);
-                        foreach (job j in jobs)
+                        ConveyorJob[] jobs = ServerAPI.GetResult<ConveyorJob[]>(JSON);
+                        foreach (ConveyorJob j in jobs)
                         {
                             CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
                             {
@@ -467,8 +467,8 @@ namespace RepRancher._2._4._1
                     }
                     else if (method[0].Equals("getports"))
                     {
-                        port[] ports = ServerAPI.GetResult<port[]>(JSON);
-                        foreach (port p in ports)
+                        ConveyorPort[] ports = ServerAPI.GetResult<ConveyorPort[]>(JSON);
+                        foreach (ConveyorPort p in ports)
                         {
                             CurrentPorts.AddOrUpdate(p.name, p, (key, existingVal) =>
                             {
@@ -482,7 +482,7 @@ namespace RepRancher._2._4._1
                     }
                     else if (method[0].Equals("connect"))
                     {
-                        printer p = ServerAPI.GetResult<printer>(JSON);
+                        ConveyorPrinter p = ServerAPI.GetResult<ConveyorPrinter>(JSON);
                         CurrentPrinters.AddOrUpdate(p.name, p, (key, existingVal) =>
                         {
                             existingVal.displayName = p.displayName;
@@ -512,7 +512,7 @@ namespace RepRancher._2._4._1
                     }
                     else if (method[0].Equals("print"))
                     {
-                        job j = ServerAPI.GetResult<job>(JSON);
+                        ConveyorJob j = ServerAPI.GetResult<ConveyorJob>(JSON);
                         CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
                         {
                             existingVal.machine_name = j.machine_name;

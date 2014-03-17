@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="2.4.1\Conveyor_JSONRPC_API.cs" />
+    <Compile Include="3.0.0\ConveyorPort.cs" />
+    <Compile Include="3.0.0\ConveyorPrinter.cs" />
+    <Compile Include="3.0.0\ConveyorJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

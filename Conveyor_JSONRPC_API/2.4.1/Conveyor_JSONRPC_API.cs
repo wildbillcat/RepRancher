@@ -31,7 +31,7 @@ namespace Conveyor_JSONRPC_API._2._4._1
          * "type": "SERIAL"
          * }
          */
-        public class port
+        public class ConveyorPort
         {
             public string name { get; set; }
             public int vid { get; set; }
@@ -62,7 +62,7 @@ namespace Conveyor_JSONRPC_API._2._4._1
          *"conclusion": null
          *}
          */
-        public class job
+        public class ConveyorJob
         {
             public string machine_name { get; set; }
             public JobFailure failure { get; set; }
@@ -157,14 +157,14 @@ namespace Conveyor_JSONRPC_API._2._4._1
          * "canPrint": false
          * }
          */
-        public class printer
+        public class ConveyorPrinter
         {
             public string displayName { get; set; }
             public string name { get; set; }
             public string printerType { get; set; }
             public string profile_name { get; set; }
             public bool hasHeatedPlatform { get; set; }
-            public string[] toolhead_target_temperature { get; set; } //Not sure if Null toolhead targets are acceptable.
+            public string[] toolhead_target_temperature { get; set; } 
             public int[] build_volume { get; set; }
             public string state { get; set; }
             public string driver_name { get; set; }
