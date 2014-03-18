@@ -101,6 +101,7 @@
     <Content Include="3.0.0\JSON Example Replies\Server\job_resume.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\print-2.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\print-2X.js" />
+    <Content Include="3.0.0\JSON Example Replies\Server\print_to_file.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\readeeprom.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\slice.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\unloadfilament.js" />

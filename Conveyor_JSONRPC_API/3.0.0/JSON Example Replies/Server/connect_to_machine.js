@@ -24,4 +24,5 @@
         "firmware_version": [7, 5], 
         "temperature": null
     }, 
-    "id": 4}
+    "id": 4
+}
