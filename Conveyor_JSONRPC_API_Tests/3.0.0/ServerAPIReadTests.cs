@@ -43,6 +43,21 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
             ConveyorJob[] Response = ServerAPI.GetResult<ConveyorJob[]>(RPCGetJobs);
             if (Response.Length > 0)
             {
+                foreach (ConveyorJob J in Response)
+                {
+                    if (J.type.Equals("SliceJob"))
+                    {
+                        ConveyorSliceJob Slice = new ConveyorSliceJob(J);
+                        Console.WriteLine(Slice.machine_name);
+                    }
+                    else
+                    if (J.type.Equals("PrintJob"))
+                    {
+                        ConveyorPrintJob Print = new ConveyorPrintJob(J);
+                        Console.WriteLine(Print.machine_name.GetMachine_Hash());
+                    }
+                }
+                
                 return;
             }
             else
