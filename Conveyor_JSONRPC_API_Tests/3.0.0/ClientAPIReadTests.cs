@@ -89,7 +89,7 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         }
 
         [TestMethod]
-        public void ReadPortRemoved()
+        public void ReadPortDetached()
         {
             string JSON = "{\"params\": {\"machine_name\": {\"iserial\": \"7523733353635171E0D1\", \"pid\": 45077, \"port_type\": \"UsbPort\", \"vid\": 9153}}, \"jsonrpc\": \"2.0\", \"method\": \"port_detached\"}";
             string methodname = ConveyorJsonReplyParser.GetMethodName(JSON);
@@ -97,7 +97,7 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
             {
                 Assert.Fail();
             }
-            string Port = null; //ClientAPI.GetParams<detachment>(JSON);
+            ConveyorPhysicalPrinterName Port = ClientAPI.GetParams<ConveyorPhysicalPrinterName>(JSON);
             if (Port == null)
             {
                 Assert.Fail();

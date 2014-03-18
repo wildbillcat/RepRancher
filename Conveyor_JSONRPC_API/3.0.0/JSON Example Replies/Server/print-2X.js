@@ -7,12 +7,15 @@
     "params":{
         "has_start_end":false,
         "input_file":"C:/Users/Rob/AppData/Local/Temp/MakerWare-l0VAKJ/1 inch cube.gcode",
-        "job_metadata":{
+        "job_metadata":
+        {
             "duration_s":1637,
             "extrusion_distance_a_mm":2296.180,
-            "extrusion_mass_a_grams":7.005890},
+            "extrusion_mass_a_grams":7.005890
+        },
         "machine_name":"23C1:B015:7523733353635171A221",
-        "metadata":null,"slicer_name":"miraclegrue",
+        "metadata":null,
+        "slicer_name":"miraclegrue",
         "slicer_settings":{
             "default_raft_extruder":0,
             "default_support_extruder":0,

@@ -8,7 +8,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
 {
     public class ConveyorJob
     {
-        public string machine_name { get; set; }
+        public ConveyorPhysicalPrinterName machine_name { get; set; }
         public bool pausable { get; set; }
         public ConveyorFailure failure { get; set; }
         public string profile_name { get; set; }

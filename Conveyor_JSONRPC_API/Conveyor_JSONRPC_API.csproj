@@ -47,13 +47,16 @@
     <Compile Include="3.0.0\ClientAPI.cs" />
     <Compile Include="3.0.0\ConveyorException.cs" />
     <Compile Include="3.0.0\ConveyorFailure.cs" />
+    <Compile Include="3.0.0\ConveyorJobMetadata.cs" />
     <Compile Include="3.0.0\ConveyorJobProgress.cs" />
     <Compile Include="3.0.0\ConveyorJsonReplyParser.cs" />
     <Compile Include="3.0.0\ConveyorPort.cs" />
     <Compile Include="3.0.0\ConveyorPrinter.cs" />
     <Compile Include="3.0.0\ConveyorJob.cs" />
+    <Compile Include="3.0.0\ConveyorSlicerSettings.cs" />
     <Compile Include="3.0.0\JsonReplyType.cs" />
     <Compile Include="3.0.0\PhysicalPrinterName.cs" />
+    <Compile Include="3.0.0\ServerAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
