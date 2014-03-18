@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RepRancher.MakerFarmService;
 
 namespace RepRancher
 {
@@ -13,6 +14,6 @@ namespace RepRancher
         RancherCommandGlossary GetRancherCommandGlossary();
 
         //This returns an array of Makerfarm Updates that can be sent to MakerFarm.
-        MakerFarmUpdate[] GetMakerFarmUpdates();
+        MakerFarmUpdate[] GetMakerFarmUpdates(MachineInterest[] ReportOn);
     }
 }
