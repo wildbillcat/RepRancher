@@ -3,11 +3,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-/*
+using System.Text;
+using Conveyor_JSONRPC_API._3._0._0;
+
 namespace Conveyor_JSONRPC_API_Tests._3._0._0
 {
     [TestClass]
-    public class ServerAPIWriteTests
+    public class _3_0_0_ServerAPIWriteTests
     {
 
         IPEndPoint ipEndPoint;
@@ -15,22 +17,25 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         Stream dataStream;
         int rpcid;
 
-        public ServerAPIWriteTests()
+        public _3_0_0_ServerAPIWriteTests()
         {
             ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9999);
             tcpClient = new TcpClient();
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
             rpcid = 0;
-            Assert.Fail();
         }
 
         [TestMethod]
         public void Hello()
         {
             rpcid++;
-            string result = ServerAPI.Hello(rpcid);
-            Console.WriteLine(result);
+            string command = ServerAPI.Hello(rpcid);
+            string result = CallConveyorMethod<string>(command);
+            if (result.Equals("world"))
+            {
+                return;
+            }
             Assert.Fail();
         }
 
@@ -44,9 +49,10 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
             string machine_name = "23C1:B015:7523733353635171E0D1"; //Required
             string[] material_name = new string[] { "PLA", "PLA" };
             string slicer_name = "miraclegrue";
-            slicersettings slicer_settings = new slicersettings();
-            string result = ServerAPI.Print(rpcid, gcode_processor_names, has_start_end, input_file, machine_name, material_name, slicer_name, slicer_settings);
-            Console.WriteLine(result);
+            ConveyorJobMetadata job_metadata = new ConveyorJobMetadata();
+            ConveyorSlicerSettings slicer_settings = new ConveyorSlicerSettings();
+            string command = ServerAPI.Print(rpcid, has_start_end, input_file, job_metadata, machine_name, material_name, slicer_name, slicer_settings);
+            //ConveyorJob result = CallConveyorMethod<ConveyorJob>(command);
             Assert.Fail();
         }
 
@@ -54,8 +60,12 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         public void GetJobs()
         {
             rpcid++;
-            string result = ServerAPI.GetJobs(rpcid);
-            Console.WriteLine(result);
+            string command = ServerAPI.GetJobs(rpcid);
+            ConveyorJob[] Jobs = CallConveyorMethod<ConveyorJob[]>(command);
+            if (Jobs.Length > 0)
+            {
+                return;
+            }
             Assert.Fail();
         }
 
@@ -63,9 +73,28 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         public void GetPrinters()
         {
             rpcid++;
-            string result = ServerAPI.GetPrinters(rpcid);
-            Console.WriteLine(result);
-            Assert.Fail();
+            string RPCGetPrinters = ServerAPI.GetPrinters(rpcid);
+            ConveyorPrinter[] Response = CallConveyorMethod<ConveyorPrinter[]>(RPCGetPrinters);
+            if (Response.Length > 0)
+            {
+                foreach (ConveyorPrinter P in Response)
+                {
+                    if (P.can_print) //Denotes Physical Printer
+                    {
+                        ConveyorPhysicalPrinter Physical = new ConveyorPhysicalPrinter(P);
+                        Console.WriteLine(Physical.name.GetMachine_Hash());
+                    }
+                    else //Denotes Virtual Printer
+                    {
+                        ConveyorVirtualPrinter Virtual = new ConveyorVirtualPrinter(P);
+                        Console.WriteLine(Virtual.name);
+                    }
+                }
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
 
         [TestMethod]
@@ -73,8 +102,7 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         {
             rpcid++;
             string result = ServerAPI.GetPorts(rpcid);
-            Console.WriteLine(result);
-            Assert.Fail();
+            ConveyorPort[] Response = CallConveyorMethod<ConveyorPort[]>(result);
         }
 
         [TestMethod]
@@ -98,6 +126,7 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
             int JobId = 1;
             string result = ServerAPI.CancelJob(rpcid, JobId);
             Console.WriteLine(result);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -111,6 +140,16 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
         {
             Assert.Fail();
         }
+
+        public T CallConveyorMethod<T>(string command)
+        {
+            byte[] bytesToWrite = Encoding.ASCII.GetBytes(command);
+            dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
+            dataStream.Flush();
+            byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
+            int bytesRead = dataStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
+            string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+            return ServerAPI.GetResult<T>(Reply);
+        }
     }
 }
-*/

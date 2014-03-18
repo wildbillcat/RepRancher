@@ -47,7 +47,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
          * result
          * (job)
          */
-        public static string Print(int rpcid, string[] gcode_processor_names, bool has_start_end, string input_file, ConveyorJobMetadata job_metadata, string machine_name, string[] material_name, string slicer_name, ConveyorSlicerSettings slicer_settings)
+        public static string Print(int rpcid, bool has_start_end, string input_file, ConveyorJobMetadata job_metadata, string machine_name, string[] material_name, string slicer_name, ConveyorSlicerSettings slicer_settings)
         {
             List<JProperty> Params = new List<JProperty>();
             Params.Add(new JProperty("has_start_end", has_start_end));

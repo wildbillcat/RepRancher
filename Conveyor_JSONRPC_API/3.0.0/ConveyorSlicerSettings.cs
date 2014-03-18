@@ -73,7 +73,6 @@ namespace Conveyor_JSONRPC_API._3._0._0
                 support = false;
                 travel_speed = 150;
             }
-
         }
     }
 }

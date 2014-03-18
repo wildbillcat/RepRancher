@@ -28,7 +28,19 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
             
             if (Response.Length > 0)
             {
-                return;
+                foreach (ConveyorPrinter P in Response)
+                {
+                    if (P.can_print) //Denotes Physical Printer
+                    {
+                        ConveyorPhysicalPrinter Physical = new ConveyorPhysicalPrinter(P);
+                        Console.WriteLine(Physical.name.GetMachine_Hash());
+                    }
+                    else //Denotes Virtual Printer
+                    {
+                        ConveyorVirtualPrinter Virtual = new ConveyorVirtualPrinter(P);
+                        Console.WriteLine(Virtual.name);
+                    }
+                }
             }
             else
             {
@@ -56,8 +68,7 @@ namespace Conveyor_JSONRPC_API_Tests._3._0._0
                         ConveyorPrintJob Print = new ConveyorPrintJob(J);
                         Console.WriteLine(Print.machine_name.GetMachine_Hash());
                     }
-                }
-                
+                }                
                 return;
             }
             else
