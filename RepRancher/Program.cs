@@ -20,6 +20,21 @@ namespace RepRancher
         {
             Console.WriteLine("RepRancher!");
             Console.WriteLine();
+            //Test if Parsing the Rancher Works
+            RancherBrandCollection RancherBrands = Properties.Settings.Default.RancherBrands;
+            foreach (RancherBrand R in RancherBrands)
+            {
+                Console.WriteLine("Enabled: " + R.Enabled);
+                Console.WriteLine("Enabled: " + R.IPAddress);
+                Console.WriteLine("Port: " + R.PortNumber);
+                Console.WriteLine("Printer Reply Timeout: " + R.PrinterReplyTimeout);
+                Console.WriteLine("File Storage: " + R.PrintTemporaryFileStoragePath);
+                Console.WriteLine("Type: " + R.Type);
+                Console.WriteLine();
+            }
+
+            Console.ReadLine();
+            /*
             _2._4._1.ConveyorService Conveyor = new _2._4._1.ConveyorService("127.0.0.1", 9999); //Hardcoded current working version, will have to add a test for version typing
             Conveyor.Startup();
             while (true)
@@ -59,7 +74,7 @@ namespace RepRancher
                     //This is presently wasteful, will have to look into disposing of the old Conveyor service.
                     Conveyor = new _2._4._1.ConveyorService("127.0.0.1", 9999);
                 }
-            }
+            }*/
         }
     }
 }
