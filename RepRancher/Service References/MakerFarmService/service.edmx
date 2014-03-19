@@ -18,17 +18,22 @@
         <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
         <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
         <Property Name="PreviouslyCollected" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="PauseMachine" Type="Edm.String" Nullable="false" />
       </ComplexType>
       <ComplexType Name="MachineStatusUpdate">
         <Property Name="MachineName" Type="Edm.String" />
         <Property Name="MachineStatus" Type="Edm.String" />
         <Property Name="CurrentTaskProgress" Type="Edm.Double" />
+        <Property Name="MachinePaused" Type="Edm.Double" Nullable="false" />
       </ComplexType>
       <ComplexType Name="JobStatusUpdate">
         <Property Name="JobId" Type="Edm.Int32" Nullable="false" />
         <Property Name="Status" Type="Edm.String" />
         <Property Name="started" Type="Edm.Boolean" Nullable="false" />
         <Property Name="complete" Type="Edm.Boolean" Nullable="false" />
+      </ComplexType>
+      <ComplexType Name="RancherCommandGlossary">
+        <Property Name="MachineName" Type="Edm.String" />
       </ComplexType>
       <EntityType Name="ClientPermission">
         <Key>
@@ -54,6 +59,11 @@
         <Property Name="Enabled" Type="Edm.Boolean" Nullable="false" />
         <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
         <Property Name="CurrentTaskProgress" Type="Edm.Double" />
+        <Property Name="PauseMachine" Type="Edm.String" Nullable="false" />
+        <Property Name="Print_Send" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Cancel" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Pause" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Resume" Type="Edm.Boolean" Nullable="false" />
         <NavigationProperty Name="AffiliatedPrinter" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner" ToRole="AffiliatedPrinter" FromRole="AffiliatedPrinterPartner" />
         <NavigationProperty Name="AssignedJob" Relationship="MakerFarm.Models.MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPartner" ToRole="AssignedJob" FromRole="AssignedJobPartner" />
       </EntityType>
@@ -120,6 +130,10 @@
         <Property Name="ExternalCostPerUnit" Type="Edm.Double" Nullable="false" />
         <Property Name="InternalInitialCost" Type="Edm.Double" Nullable="false" />
         <Property Name="ExternalInitialCost" Type="Edm.Double" Nullable="false" />
+        <Property Name="EnhancedGcodeViewerEnabled" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="GCodePlasticDiameter" Type="Edm.Double" Nullable="false" />
+        <Property Name="PlasticType" Type="Edm.String" Nullable="false" />
+        <Property Name="NozzleSize" Type="Edm.Double" Nullable="false" />
       </EntityType>
       <EntityType Name="Job">
         <Key>
@@ -262,6 +276,11 @@
           <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
           <Parameter Name="MachineName" Type="Edm.String" FixedLength="false" Unicode="false" />
           <Parameter Name="JobId" Type="Edm.Int32" Nullable="false" />
+        </FunctionImport>
+        <FunctionImport Name="CanDo" IsBindable="true" m:IsAlwaysBindable="true">
+          <Parameter Name="bindingParameter" Type="MakerFarm.Models.Client" />
+          <Parameter Name="ClientAPIKey" Type="Edm.String" FixedLength="false" Unicode="false" />
+          <Parameter Name="Machines" Type="Collection(MakerFarm.Models.RancherCommandGlossary)" Nullable="false" />
         </FunctionImport>
       </EntityContainer>
     </Schema>
