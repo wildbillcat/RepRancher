@@ -25,10 +25,10 @@ namespace RepRancher
             foreach (RancherBrand R in RancherBrands)
             {
                 Console.WriteLine("Enabled: " + R.Enabled);
-                Console.WriteLine("Enabled: " + R.IPAddress);
+                Console.WriteLine("IP: " + R.IPAddress);
+                Console.WriteLine("File Storage" + R.PrintTemporaryFileStoragePath);
                 Console.WriteLine("Port: " + R.PortNumber);
                 Console.WriteLine("Printer Reply Timeout: " + R.PrinterReplyTimeout);
-                Console.WriteLine("File Storage: " + R.PrintTemporaryFileStoragePath);
                 Console.WriteLine("Type: " + R.Type);
                 Console.WriteLine();
             }

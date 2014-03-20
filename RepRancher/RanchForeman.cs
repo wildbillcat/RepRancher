@@ -9,7 +9,7 @@ namespace RepRancher
     /*
      * This is the main class that monitor's everything that is going on. 
      */
-    class Foreman
+    class RanchForeman
     {
 
     }
