@@ -7,7 +7,7 @@ using RepRancher.MakerFarmService;
 
 namespace RepRancher
 {
-    class MakerFarmUpdate
+    public class MakerFarmUpdate
     {
         MachineStatusUpdate MachineUpdate { set; get; }
         JobStatusUpdate JobUpdate { set; get; }

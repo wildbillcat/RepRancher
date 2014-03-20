@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Original file name:
-// Generation date: 3/19/2014 11:14:33 AM
+// Generation date: 3/20/2014 1:56:32 PM
 namespace RepRancher.MakerFarmService
 {
     
@@ -116,215 +116,218 @@ namespace RepRancher.MakerFarmService
                 "pe=\"Edm.String\" /><Property Name=\"started\" Type=\"Edm.Boolean\" Nullable=\"false\" /" +
                 "><Property Name=\"complete\" Type=\"Edm.Boolean\" Nullable=\"false\" /></ComplexType><" +
                 "ComplexType Name=\"RancherCommandGlossary\"><Property Name=\"MachineName\" Type=\"Edm" +
-                ".String\" /></ComplexType><EntityType Name=\"ClientPermission\"><Key><PropertyRef N" +
-                "ame=\"ClientPermissionId\" /></Key><Property Name=\"ClientPermissionId\" Type=\"Edm.I" +
-                "nt64\" Nullable=\"false\" /><Property Name=\"GetInformation\" Type=\"Edm.Boolean\" Null" +
-                "able=\"false\" /><Property Name=\"SetInformation\" Type=\"Edm.Boolean\" Nullable=\"fals" +
-                "e\" /><NavigationProperty Name=\"Client\" Relationship=\"MakerFarm.Models.MakerFarm_" +
-                "Models_ClientPermission_Client_MakerFarm_Models_Client_ClientPartner\" ToRole=\"Cl" +
-                "ient\" FromRole=\"ClientPartner\" /><NavigationProperty Name=\"Machine\" Relationship" +
-                "=\"MakerFarm.Models.MakerFarm_Models_ClientPermission_Machine_MakerFarm_Models_Ma" +
-                "chine_MachinePartner\" ToRole=\"Machine\" FromRole=\"MachinePartner\" /></EntityType>" +
-                "<EntityType Name=\"Machine\"><Key><PropertyRef Name=\"MachineId\" /></Key><Property " +
-                "Name=\"MachineId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MachineName" +
-                "\" Type=\"Edm.String\" /><Property Name=\"PrinterId\" Type=\"Edm.Int64\" /><Property Na" +
-                "me=\"Status\" Type=\"Edm.String\" /><Property Name=\"idle\" Type=\"Edm.Boolean\" Nullabl" +
-                "e=\"false\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" />" +
-                "<Property Name=\"ClientJobSupport\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Propert" +
-                "y Name=\"Enabled\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"PoisonJob" +
-                "s\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"CurrentTaskProgress\" Ty" +
-                "pe=\"Edm.Double\" /><Property Name=\"PauseMachine\" Type=\"Edm.String\" Nullable=\"fals" +
-                "e\" /><Property Name=\"Print_Send\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property" +
-                " Name=\"Print_Cancel\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Print" +
-                "_Pause\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Print_Resume\" Type" +
-                "=\"Edm.Boolean\" Nullable=\"false\" /><NavigationProperty Name=\"AffiliatedPrinter\" R" +
-                "elationship=\"MakerFarm.Models.MakerFarm_Models_Machine_AffiliatedPrinter_MakerFa" +
-                "rm_Models_Printer_AffiliatedPrinterPartner\" ToRole=\"AffiliatedPrinter\" FromRole=" +
-                "\"AffiliatedPrinterPartner\" /><NavigationProperty Name=\"AssignedJob\" Relationship" +
-                "=\"MakerFarm.Models.MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_Ass" +
-                "ignedJobPartner\" ToRole=\"AssignedJob\" FromRole=\"AssignedJobPartner\" /></EntityTy" +
-                "pe><EntityType Name=\"Printer\"><Key><PropertyRef Name=\"PrinterId\" /></Key><Proper" +
-                "ty Name=\"PrinterId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"PrinterN" +
-                "ame\" Type=\"Edm.String\" /><Property Name=\"InternalName\" Type=\"Edm.String\" /><Prop" +
-                "erty Name=\"PrinterTypeId\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"Pa" +
-                "percutPrintServer\" Type=\"Edm.String\" /><Property Name=\"PapercutPrintQueue\" Type=" +
-                "\"Edm.String\" /><NavigationProperty Name=\"MaterialsInUse\" Relationship=\"MakerFarm" +
-                ".Models.MakerFarm_Models_Printer_MaterialsInUse_MakerFarm_Models_MaterialCheckou" +
-                "t_MaterialsInUsePartner\" ToRole=\"MaterialsInUse\" FromRole=\"MaterialsInUsePartner" +
-                "\" /><NavigationProperty Name=\"PrinterType\" Relationship=\"MakerFarm.Models.MakerF" +
-                "arm_Models_Printer_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner\" " +
-                "ToRole=\"PrinterType\" FromRole=\"PrinterTypePartner\" /></EntityType><EntityType Na" +
-                "me=\"MaterialCheckout\"><Key><PropertyRef Name=\"MaterialCheckoutId\" /></Key><Prope" +
-                "rty Name=\"MaterialCheckoutId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name" +
-                "=\"PrinterId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MaterialId\" Typ" +
-                "e=\"Edm.Int64\" Nullable=\"false\" /><NavigationProperty Name=\"Printer\" Relationship" +
-                "=\"MakerFarm.Models.MakerFarm_Models_MaterialCheckout_Printer_MakerFarm_Models_Pr" +
-                "inter_PrinterPartner\" ToRole=\"Printer\" FromRole=\"PrinterPartner\" /><NavigationPr" +
-                "operty Name=\"Material\" Relationship=\"MakerFarm.Models.MakerFarm_Models_MaterialC" +
-                "heckout_Material_MakerFarm_Models_Material_MaterialPartner\" ToRole=\"Material\" Fr" +
-                "omRole=\"MaterialPartner\" /></EntityType><EntityType Name=\"Material\"><Key><Proper" +
-                "tyRef Name=\"MaterialId\" /></Key><Property Name=\"MaterialId\" Type=\"Edm.Int64\" Nul" +
-                "lable=\"false\" /><Property Name=\"MaterialName\" Type=\"Edm.String\" /><Property Name" +
-                "=\"SuppportMaterial\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Printe" +
-                "rTypeId\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"MaterialSpoolQuanti" +
-                "ty\" Type=\"Edm.Int64\" Nullable=\"false\" /><NavigationProperty Name=\"PrinterType\" R" +
-                "elationship=\"MakerFarm.Models.MakerFarm_Models_Material_PrinterType_MakerFarm_Mo" +
-                "dels_PrinterType_PrinterTypePartner\" ToRole=\"PrinterType\" FromRole=\"PrinterTypeP" +
-                "artner\" /></EntityType><EntityType Name=\"PrinterType\"><Key><PropertyRef Name=\"Pr" +
-                "interTypeId\" /></Key><Property Name=\"PrinterTypeId\" Type=\"Edm.Int32\" Nullable=\"f" +
-                "alse\" /><Property Name=\"TypeName\" Type=\"Edm.String\" /><Property Name=\"SupportedN" +
-                "umberMaterials\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"MaterialUseU" +
-                "nit\" Type=\"Edm.String\" /><Property Name=\"PrinterIcon\" Type=\"Edm.String\" /><Prope" +
-                "rty Name=\"MaxNumberUserAttempts\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property N" +
-                "ame=\"SupportedFileTypes\" Type=\"Edm.String\" /><Property Name=\"CommentField\" Type=" +
-                "\"Edm.String\" /><Property Name=\"AboutPrinter\" Type=\"Edm.String\" /><Property Name=" +
-                "\"HyperLink\" Type=\"Edm.String\" /><Property Name=\"MaximumNumberOfCopies\" Type=\"Edm" +
-                ".Int32\" Nullable=\"false\" /><Property Name=\"BuildLength\" Type=\"Edm.Double\" Nullab" +
-                "le=\"false\" /><Property Name=\"BuildWidth\" Type=\"Edm.Double\" Nullable=\"false\" /><P" +
-                "roperty Name=\"BuildHeight\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"" +
-                "OffersBreakawaySupport\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Of" +
-                "fersNonBreakAwaySupport\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"B" +
-                "uildSupportUsesMaterialSlot\" Type=\"Edm.Boolean\" Nullable=\"f";
+                ".String\" /><Property Name=\"Print_Send\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Pr" +
+                "operty Name=\"Print_Cancel\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=" +
+                "\"Print_Pause\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"Print_Resume" +
+                "\" Type=\"Edm.Boolean\" Nullable=\"false\" /></ComplexType><EntityType Name=\"ClientPe" +
+                "rmission\"><Key><PropertyRef Name=\"ClientPermissionId\" /></Key><Property Name=\"Cl" +
+                "ientPermissionId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"GetInforma" +
+                "tion\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"SetInformation\" Type" +
+                "=\"Edm.Boolean\" Nullable=\"false\" /><NavigationProperty Name=\"Client\" Relationship" +
+                "=\"MakerFarm.Models.MakerFarm_Models_ClientPermission_Client_MakerFarm_Models_Cli" +
+                "ent_ClientPartner\" ToRole=\"Client\" FromRole=\"ClientPartner\" /><NavigationPropert" +
+                "y Name=\"Machine\" Relationship=\"MakerFarm.Models.MakerFarm_Models_ClientPermissio" +
+                "n_Machine_MakerFarm_Models_Machine_MachinePartner\" ToRole=\"Machine\" FromRole=\"Ma" +
+                "chinePartner\" /></EntityType><EntityType Name=\"Machine\"><Key><PropertyRef Name=\"" +
+                "MachineId\" /></Key><Property Name=\"MachineId\" Type=\"Edm.Int64\" Nullable=\"false\" " +
+                "/><Property Name=\"MachineName\" Type=\"Edm.String\" /><Property Name=\"PrinterId\" Ty" +
+                "pe=\"Edm.Int64\" /><Property Name=\"Status\" Type=\"Edm.String\" /><Property Name=\"idl" +
+                "e\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"LastUpdated\" Type=\"Edm." +
+                "DateTime\" Nullable=\"false\" /><Property Name=\"ClientJobSupport\" Type=\"Edm.Boolean" +
+                "\" Nullable=\"false\" /><Property Name=\"Enabled\" Type=\"Edm.Boolean\" Nullable=\"false" +
+                "\" /><Property Name=\"PoisonJobs\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property " +
+                "Name=\"CurrentTaskProgress\" Type=\"Edm.Double\" /><Property Name=\"PauseMachine\" Typ" +
+                "e=\"Edm.String\" Nullable=\"false\" /><Property Name=\"Print_Send\" Type=\"Edm.Boolean\"" +
+                " Nullable=\"false\" /><Property Name=\"Print_Cancel\" Type=\"Edm.Boolean\" Nullable=\"f" +
+                "alse\" /><Property Name=\"Print_Pause\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Prop" +
+                "erty Name=\"Print_Resume\" Type=\"Edm.Boolean\" Nullable=\"false\" /><NavigationProper" +
+                "ty Name=\"AffiliatedPrinter\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Mach" +
+                "ine_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner\" ToRole=" +
+                "\"AffiliatedPrinter\" FromRole=\"AffiliatedPrinterPartner\" /><NavigationProperty Na" +
+                "me=\"AssignedJob\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Machine_Assigne" +
+                "dJob_MakerFarm_Models_Job_AssignedJobPartner\" ToRole=\"AssignedJob\" FromRole=\"Ass" +
+                "ignedJobPartner\" /></EntityType><EntityType Name=\"Printer\"><Key><PropertyRef Nam" +
+                "e=\"PrinterId\" /></Key><Property Name=\"PrinterId\" Type=\"Edm.Int64\" Nullable=\"fals" +
+                "e\" /><Property Name=\"PrinterName\" Type=\"Edm.String\" /><Property Name=\"InternalNa" +
+                "me\" Type=\"Edm.String\" /><Property Name=\"PrinterTypeId\" Type=\"Edm.Int32\" Nullable" +
+                "=\"false\" /><Property Name=\"PapercutPrintServer\" Type=\"Edm.String\" /><Property Na" +
+                "me=\"PapercutPrintQueue\" Type=\"Edm.String\" /><NavigationProperty Name=\"MaterialsI" +
+                "nUse\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Printer_MaterialsInUse_Mak" +
+                "erFarm_Models_MaterialCheckout_MaterialsInUsePartner\" ToRole=\"MaterialsInUse\" Fr" +
+                "omRole=\"MaterialsInUsePartner\" /><NavigationProperty Name=\"PrinterType\" Relation" +
+                "ship=\"MakerFarm.Models.MakerFarm_Models_Printer_PrinterType_MakerFarm_Models_Pri" +
+                "nterType_PrinterTypePartner\" ToRole=\"PrinterType\" FromRole=\"PrinterTypePartner\" " +
+                "/></EntityType><EntityType Name=\"MaterialCheckout\"><Key><PropertyRef Name=\"Mater" +
+                "ialCheckoutId\" /></Key><Property Name=\"MaterialCheckoutId\" Type=\"Edm.Int64\" Null" +
+                "able=\"false\" /><Property Name=\"PrinterId\" Type=\"Edm.Int64\" Nullable=\"false\" /><P" +
+                "roperty Name=\"MaterialId\" Type=\"Edm.Int64\" Nullable=\"false\" /><NavigationPropert" +
+                "y Name=\"Printer\" Relationship=\"MakerFarm.Models.MakerFarm_Models_MaterialCheckou" +
+                "t_Printer_MakerFarm_Models_Printer_PrinterPartner\" ToRole=\"Printer\" FromRole=\"Pr" +
+                "interPartner\" /><NavigationProperty Name=\"Material\" Relationship=\"MakerFarm.Mode" +
+                "ls.MakerFarm_Models_MaterialCheckout_Material_MakerFarm_Models_Material_Material" +
+                "Partner\" ToRole=\"Material\" FromRole=\"MaterialPartner\" /></EntityType><EntityType" +
+                " Name=\"Material\"><Key><PropertyRef Name=\"MaterialId\" /></Key><Property Name=\"Mat" +
+                "erialId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"MaterialName\" Type=" +
+                "\"Edm.String\" /><Property Name=\"SuppportMaterial\" Type=\"Edm.Boolean\" Nullable=\"fa" +
+                "lse\" /><Property Name=\"PrinterTypeId\" Type=\"Edm.Int32\" Nullable=\"false\" /><Prope" +
+                "rty Name=\"MaterialSpoolQuantity\" Type=\"Edm.Int64\" Nullable=\"false\" /><Navigation" +
+                "Property Name=\"PrinterType\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Mate" +
+                "rial_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner\" ToRole=\"Printe" +
+                "rType\" FromRole=\"PrinterTypePartner\" /></EntityType><EntityType Name=\"PrinterTyp" +
+                "e\"><Key><PropertyRef Name=\"PrinterTypeId\" /></Key><Property Name=\"PrinterTypeId\"" +
+                " Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"TypeName\" Type=\"Edm.String\"" +
+                " /><Property Name=\"SupportedNumberMaterials\" Type=\"Edm.Int32\" Nullable=\"false\" /" +
+                "><Property Name=\"MaterialUseUnit\" Type=\"Edm.String\" /><Property Name=\"PrinterIco" +
+                "n\" Type=\"Edm.String\" /><Property Name=\"MaxNumberUserAttempts\" Type=\"Edm.Int32\" N" +
+                "ullable=\"false\" /><Property Name=\"SupportedFileTypes\" Type=\"Edm.String\" /><Prope" +
+                "rty Name=\"CommentField\" Type=\"Edm.String\" /><Property Name=\"AboutPrinter\" Type=\"" +
+                "Edm.String\" /><Property Name=\"HyperLink\" Type=\"Edm.String\" /><Property Name=\"Max" +
+                "imumNumberOfCopies\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"BuildLen" +
+                "gth\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"BuildWidth\" Type=\"Edm." +
+                "Double\" Nullable=\"false\" /><Property Name=\"BuildHeight\" Typ";
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-            private const string ModelPart1 = "alse\" /><Property Name=\"OffersFullColorPrinting\" Type=\"Edm.Boolean\" Nullable=\"fal" +
-                "se\" /><Property Name=\"FunctionalModelSupport\" Type=\"Edm.Boolean\" Nullable=\"false" +
-                "\" /><Property Name=\"QueueVisible\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Propert" +
-                "y Name=\"SubmissionEnabled\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=" +
-                "\"InternalCostPerUnit\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"Exter" +
-                "nalCostPerUnit\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"InternalIni" +
-                "tialCost\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"ExternalInitialCo" +
-                "st\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"EnhancedGcodeViewerEnab" +
-                "led\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"GCodePlasticDiameter\"" +
-                " Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"PlasticType\" Type=\"Edm.Str" +
-                "ing\" Nullable=\"false\" /><Property Name=\"NozzleSize\" Type=\"Edm.Double\" Nullable=\"" +
-                "false\" /></EntityType><EntityType Name=\"Job\"><Key><PropertyRef Name=\"JobId\" /></" +
-                "Key><Property Name=\"JobId\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"S" +
-                "tatus\" Type=\"Edm.String\" /><Property Name=\"started\" Type=\"Edm.Boolean\" Nullable=" +
-                "\"false\" /><Property Name=\"complete\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Prope" +
-                "rty Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable=\"false\" /><NavigationPropert" +
-                "y Name=\"AffiliatedPrint\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Job_Aff" +
-                "iliatedPrint_MakerFarm_Models_Print_AffiliatedPrintPartner\" ToRole=\"AffiliatedPr" +
-                "int\" FromRole=\"AffiliatedPrintPartner\" /><NavigationProperty Name=\"AffiliatedPri" +
-                "nter\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Job_AffiliatedPrinter_Make" +
-                "rFarm_Models_Printer_AffiliatedPrinterPartner\" ToRole=\"AffiliatedPrinter\" FromRo" +
-                "le=\"AffiliatedPrinterPartner\" /></EntityType><EntityType Name=\"Print\"><Key><Prop" +
-                "ertyRef Name=\"PrintId\" /></Key><Property Name=\"PrintId\" Type=\"Edm.Int64\" Nullabl" +
-                "e=\"false\" /><Property Name=\"FileName\" Type=\"Edm.String\" /><Property Name=\"UserNa" +
-                "me\" Type=\"Edm.String\" /><Property Name=\"MaterialIds\" Type=\"Edm.String\" /><Proper" +
-                "ty Name=\"EstMaterialUse\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"Su" +
-                "bmissionTime\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"EstToolpath" +
-                "Time\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"AuthorizedAttempts\" Ty" +
-                "pe=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"PrinterTypeId\" Type=\"Edm.Int32" +
-                "\" Nullable=\"false\" /><Property Name=\"StaffAssistedPrint\" Type=\"Edm.Boolean\" Null" +
-                "able=\"false\" /><Property Name=\"ProcessingCharge\" Type=\"Edm.Double\" Nullable=\"fal" +
-                "se\" /><Property Name=\"Comment\" Type=\"Edm.String\" /><Property Name=\"FlaggedPrint\"" +
-                " Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"FlaggedComment\" Type=\"Edm" +
-                ".String\" /><Property Name=\"TermsAndConditionsAgreement\" Type=\"Edm.DateTime\" /><P" +
-                "roperty Name=\"FullColorPrint\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Na" +
-                "me=\"InternalUser\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"BilledUs" +
-                "er\" Type=\"Edm.Boolean\" Nullable=\"false\" /><NavigationProperty Name=\"PrinterType\"" +
-                " Relationship=\"MakerFarm.Models.MakerFarm_Models_Print_PrinterType_MakerFarm_Mod" +
-                "els_PrinterType_PrinterTypePartner\" ToRole=\"PrinterType\" FromRole=\"PrinterTypePa" +
-                "rtner\" /><NavigationProperty Name=\"PrintEvents\" Relationship=\"MakerFarm.Models.M" +
-                "akerFarm_Models_Print_PrintEvents_MakerFarm_Models_PrintEvent_PrintEventsPartner" +
-                "\" ToRole=\"PrintEvents\" FromRole=\"PrintEventsPartner\" /></EntityType><EntityType " +
-                "Name=\"PrintEvent\"><Key><PropertyRef Name=\"PrintEventId\" /></Key><Property Name=\"" +
-                "PrintEventId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"EventType\" Typ" +
-                "e=\"Edm.String\" Nullable=\"false\" /><Property Name=\"EventTimeStamp\" Type=\"Edm.Date" +
-                "Time\" Nullable=\"false\" /><Property Name=\"MaterialUsed\" Type=\"Edm.Double\" Nullabl" +
-                "e=\"false\" /><Property Name=\"PrinterId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Prop" +
-                "erty Name=\"UserName\" Type=\"Edm.String\" /><Property Name=\"PrintId\" Type=\"Edm.Int6" +
-                "4\" Nullable=\"false\" /><Property Name=\"PrintErrorTypeId\" Type=\"Edm.Int64\" /><Prop" +
-                "erty Name=\"Comment\" Type=\"Edm.String\" /><NavigationProperty Name=\"Print\" Relatio" +
-                "nship=\"MakerFarm.Models.MakerFarm_Models_PrintEvent_Print_MakerFarm_Models_Print" +
-                "_PrintPartner\" ToRole=\"Print\" FromRole=\"PrintPartner\" /><NavigationProperty Name" +
-                "=\"Printer\" Relationship=\"MakerFarm.Models.MakerFarm_Models_PrintEvent_Printer_Ma" +
-                "kerFarm_Models_Printer_PrinterPartner\" ToRole=\"Printer\" FromRole=\"PrinterPartner" +
-                "\" /></EntityType><Association Name=\"MakerFarm_Models_Client_ClientPermissions_Ma" +
-                "kerFarm_Models_ClientPermission_ClientPermissionsPartner\"><End Type=\"MakerFarm.M" +
-                "odels.ClientPermission\" Role=\"ClientPermissions\" Multiplicity=\"*\" /><End Type=\"M" +
-                "akerFarm.Models.Client\" Role=\"ClientPermissionsPartner\" Multiplicity=\"0..1\" /></" +
-                "Association><Association Name=\"MakerFarm_Models_ClientPermission_Client_MakerFar" +
-                "m_Models_Client_ClientPartner\"><End Type=\"MakerFarm.Models.Client\" Role=\"Client\"" +
-                " Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.ClientPermission\" Role=\"Clien" +
-                "tPartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Model" +
-                "s_ClientPermission_Machine_MakerFarm_Models_Machine_MachinePartner\"><End Type=\"M" +
-                "akerFarm.Models.Machine\" Role=\"Machine\" Multiplicity=\"0..1\" /><End Type=\"MakerFa" +
-                "rm.Models.ClientPermission\" Role=\"MachinePartner\" Multiplicity=\"0..1\" /></Associ" +
-                "ation><Association Name=\"MakerFarm_Models_Machine_AffiliatedPrinter_MakerFarm_Mo" +
-                "dels_Printer_AffiliatedPrinterPartner\"><End Type=\"MakerFarm.Models.Printer\" Role" +
-                "=\"AffiliatedPrinter\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Machine\" " +
-                "Role=\"AffiliatedPrinterPartner\" Multiplicity=\"0..1\" /></Association><Association" +
-                " Name=\"MakerFarm_Models_Machine_AssignedJob_MakerFarm_Models_Job_AssignedJobPart" +
-                "ner\"><End Type=\"MakerFarm.Models.Job\" Role=\"AssignedJob\" Multiplicity=\"0..1\" /><" +
-                "End Type=\"MakerFarm.Models.Machine\" Role=\"AssignedJobPartner\" Multiplicity=\"0..1" +
-                "\" /></Association><Association Name=\"MakerFarm_Models_Printer_MaterialsInUse_Mak" +
-                "erFarm_Models_MaterialCheckout_MaterialsInUsePartner\"><End Type=\"MakerFarm.Model" +
-                "s.MaterialCheckout\" Role=\"MaterialsInUse\" Multiplicity=\"*\" /><End Type=\"MakerFar" +
-                "m.Models.Printer\" Role=\"MaterialsInUsePartner\" Multiplicity=\"0..1\" /></Associati" +
-                "on><Association Name=\"MakerFarm_Models_Printer_PrinterType_MakerFarm_Models_Prin" +
-                "terType_PrinterTypePartner\"><End Type=\"MakerFarm.Models.PrinterType\" Role=\"Print" +
-                "erType\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Printer\" Role=\"Printer" +
-                "TypePartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Mo" +
-                "dels_MaterialCheckout_Printer_MakerFarm_Models_Printer_PrinterPartner\"><End Type" +
-                "=\"MakerFarm.Models.Printer\" Role=\"Printer\" Multiplicity=\"0..1\" /><End Type=\"Make" +
-                "rFarm.Models.MaterialCheckout\" Role=\"PrinterPartner\" Multiplicity=\"0..1\" /></Ass" +
-                "ociation><Association Name=\"MakerFarm_Models_MaterialCheckout_Material_MakerFarm" +
-                "_Models_Material_MaterialPartner\"><End Type=\"MakerFarm.Models.Material\" Role=\"Ma" +
-                "terial\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.MaterialCheckout\" Role" +
-                "=\"MaterialPartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerF" +
-                "arm_Models_Material_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner\"" +
-                "><End Type=\"MakerFarm.Models.PrinterType\" Role=\"PrinterType\" Multiplicity=\"0..1\"" +
-                " /><End Type=\"MakerFarm.Models.Material\" Role=\"PrinterTypePartner\" Multiplicity=" +
-                "\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Job_AffiliatedPrint_M" +
-                "akerFarm_Models_Print_AffiliatedPrintPartner\"><End Type=\"MakerFarm.Models.Print\"" +
-                " Role=\"AffiliatedPrint\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Job\" R" +
-                "ole=\"AffiliatedPrintPartner\" Multiplicity=\"0..1\" /></Associ";
+            private const string ModelPart1 = "e=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"OffersBreakawaySupport\" Type=\"E" +
+                "dm.Boolean\" Nullable=\"false\" /><Property Name=\"OffersNonBreakAwaySupport\" Type=\"" +
+                "Edm.Boolean\" Nullable=\"false\" /><Property Name=\"BuildSupportUsesMaterialSlot\" Ty" +
+                "pe=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"OffersFullColorPrinting\" Typ" +
+                "e=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"FunctionalModelSupport\" Type=" +
+                "\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"QueueVisible\" Type=\"Edm.Boolean" +
+                "\" Nullable=\"false\" /><Property Name=\"SubmissionEnabled\" Type=\"Edm.Boolean\" Nulla" +
+                "ble=\"false\" /><Property Name=\"InternalCostPerUnit\" Type=\"Edm.Double\" Nullable=\"f" +
+                "alse\" /><Property Name=\"ExternalCostPerUnit\" Type=\"Edm.Double\" Nullable=\"false\" " +
+                "/><Property Name=\"InternalInitialCost\" Type=\"Edm.Double\" Nullable=\"false\" /><Pro" +
+                "perty Name=\"ExternalInitialCost\" Type=\"Edm.Double\" Nullable=\"false\" /><Property " +
+                "Name=\"EnhancedGcodeViewerEnabled\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Propert" +
+                "y Name=\"GCodePlasticDiameter\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Nam" +
+                "e=\"PlasticType\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"NozzleSize\"" +
+                " Type=\"Edm.Double\" Nullable=\"false\" /></EntityType><EntityType Name=\"Job\"><Key><" +
+                "PropertyRef Name=\"JobId\" /></Key><Property Name=\"JobId\" Type=\"Edm.Int32\" Nullabl" +
+                "e=\"false\" /><Property Name=\"Status\" Type=\"Edm.String\" /><Property Name=\"started\"" +
+                " Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"complete\" Type=\"Edm.Boole" +
+                "an\" Nullable=\"false\" /><Property Name=\"LastUpdated\" Type=\"Edm.DateTime\" Nullable" +
+                "=\"false\" /><NavigationProperty Name=\"AffiliatedPrint\" Relationship=\"MakerFarm.Mo" +
+                "dels.MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Print_AffiliatedPrint" +
+                "Partner\" ToRole=\"AffiliatedPrint\" FromRole=\"AffiliatedPrintPartner\" /><Navigatio" +
+                "nProperty Name=\"AffiliatedPrinter\" Relationship=\"MakerFarm.Models.MakerFarm_Mode" +
+                "ls_Job_AffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner\" ToRo" +
+                "le=\"AffiliatedPrinter\" FromRole=\"AffiliatedPrinterPartner\" /></EntityType><Entit" +
+                "yType Name=\"Print\"><Key><PropertyRef Name=\"PrintId\" /></Key><Property Name=\"Prin" +
+                "tId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"FileName\" Type=\"Edm.Str" +
+                "ing\" /><Property Name=\"UserName\" Type=\"Edm.String\" /><Property Name=\"MaterialIds" +
+                "\" Type=\"Edm.String\" /><Property Name=\"EstMaterialUse\" Type=\"Edm.Double\" Nullable" +
+                "=\"false\" /><Property Name=\"SubmissionTime\" Type=\"Edm.DateTime\" Nullable=\"false\" " +
+                "/><Property Name=\"EstToolpathTime\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property" +
+                " Name=\"AuthorizedAttempts\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"P" +
+                "rinterTypeId\" Type=\"Edm.Int32\" Nullable=\"false\" /><Property Name=\"StaffAssistedP" +
+                "rint\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Name=\"ProcessingCharge\" Ty" +
+                "pe=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"Comment\" Type=\"Edm.String\" />" +
+                "<Property Name=\"FlaggedPrint\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Property Na" +
+                "me=\"FlaggedComment\" Type=\"Edm.String\" /><Property Name=\"TermsAndConditionsAgreem" +
+                "ent\" Type=\"Edm.DateTime\" /><Property Name=\"FullColorPrint\" Type=\"Edm.Boolean\" Nu" +
+                "llable=\"false\" /><Property Name=\"InternalUser\" Type=\"Edm.Boolean\" Nullable=\"fals" +
+                "e\" /><Property Name=\"BilledUser\" Type=\"Edm.Boolean\" Nullable=\"false\" /><Navigati" +
+                "onProperty Name=\"PrinterType\" Relationship=\"MakerFarm.Models.MakerFarm_Models_Pr" +
+                "int_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner\" ToRole=\"Printer" +
+                "Type\" FromRole=\"PrinterTypePartner\" /><NavigationProperty Name=\"PrintEvents\" Rel" +
+                "ationship=\"MakerFarm.Models.MakerFarm_Models_Print_PrintEvents_MakerFarm_Models_" +
+                "PrintEvent_PrintEventsPartner\" ToRole=\"PrintEvents\" FromRole=\"PrintEventsPartner" +
+                "\" /></EntityType><EntityType Name=\"PrintEvent\"><Key><PropertyRef Name=\"PrintEven" +
+                "tId\" /></Key><Property Name=\"PrintEventId\" Type=\"Edm.Int64\" Nullable=\"false\" /><" +
+                "Property Name=\"EventType\" Type=\"Edm.String\" Nullable=\"false\" /><Property Name=\"E" +
+                "ventTimeStamp\" Type=\"Edm.DateTime\" Nullable=\"false\" /><Property Name=\"MaterialUs" +
+                "ed\" Type=\"Edm.Double\" Nullable=\"false\" /><Property Name=\"PrinterId\" Type=\"Edm.In" +
+                "t64\" Nullable=\"false\" /><Property Name=\"UserName\" Type=\"Edm.String\" /><Property " +
+                "Name=\"PrintId\" Type=\"Edm.Int64\" Nullable=\"false\" /><Property Name=\"PrintErrorTyp" +
+                "eId\" Type=\"Edm.Int64\" /><Property Name=\"Comment\" Type=\"Edm.String\" /><Navigation" +
+                "Property Name=\"Print\" Relationship=\"MakerFarm.Models.MakerFarm_Models_PrintEvent" +
+                "_Print_MakerFarm_Models_Print_PrintPartner\" ToRole=\"Print\" FromRole=\"PrintPartne" +
+                "r\" /><NavigationProperty Name=\"Printer\" Relationship=\"MakerFarm.Models.MakerFarm" +
+                "_Models_PrintEvent_Printer_MakerFarm_Models_Printer_PrinterPartner\" ToRole=\"Prin" +
+                "ter\" FromRole=\"PrinterPartner\" /></EntityType><Association Name=\"MakerFarm_Model" +
+                "s_Client_ClientPermissions_MakerFarm_Models_ClientPermission_ClientPermissionsPa" +
+                "rtner\"><End Type=\"MakerFarm.Models.ClientPermission\" Role=\"ClientPermissions\" Mu" +
+                "ltiplicity=\"*\" /><End Type=\"MakerFarm.Models.Client\" Role=\"ClientPermissionsPart" +
+                "ner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Cli" +
+                "entPermission_Client_MakerFarm_Models_Client_ClientPartner\"><End Type=\"MakerFarm" +
+                ".Models.Client\" Role=\"Client\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models." +
+                "ClientPermission\" Role=\"ClientPartner\" Multiplicity=\"0..1\" /></Association><Asso" +
+                "ciation Name=\"MakerFarm_Models_ClientPermission_Machine_MakerFarm_Models_Machine" +
+                "_MachinePartner\"><End Type=\"MakerFarm.Models.Machine\" Role=\"Machine\" Multiplicit" +
+                "y=\"0..1\" /><End Type=\"MakerFarm.Models.ClientPermission\" Role=\"MachinePartner\" M" +
+                "ultiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Machine_A" +
+                "ffiliatedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner\"><End Type=\"M" +
+                "akerFarm.Models.Printer\" Role=\"AffiliatedPrinter\" Multiplicity=\"0..1\" /><End Typ" +
+                "e=\"MakerFarm.Models.Machine\" Role=\"AffiliatedPrinterPartner\" Multiplicity=\"0..1\"" +
+                " /></Association><Association Name=\"MakerFarm_Models_Machine_AssignedJob_MakerFa" +
+                "rm_Models_Job_AssignedJobPartner\"><End Type=\"MakerFarm.Models.Job\" Role=\"Assigne" +
+                "dJob\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Machine\" Role=\"AssignedJ" +
+                "obPartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Mode" +
+                "ls_Printer_MaterialsInUse_MakerFarm_Models_MaterialCheckout_MaterialsInUsePartne" +
+                "r\"><End Type=\"MakerFarm.Models.MaterialCheckout\" Role=\"MaterialsInUse\" Multiplic" +
+                "ity=\"*\" /><End Type=\"MakerFarm.Models.Printer\" Role=\"MaterialsInUsePartner\" Mult" +
+                "iplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Printer_Prin" +
+                "terType_MakerFarm_Models_PrinterType_PrinterTypePartner\"><End Type=\"MakerFarm.Mo" +
+                "dels.PrinterType\" Role=\"PrinterType\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm." +
+                "Models.Printer\" Role=\"PrinterTypePartner\" Multiplicity=\"0..1\" /></Association><A" +
+                "ssociation Name=\"MakerFarm_Models_MaterialCheckout_Printer_MakerFarm_Models_Prin" +
+                "ter_PrinterPartner\"><End Type=\"MakerFarm.Models.Printer\" Role=\"Printer\" Multipli" +
+                "city=\"0..1\" /><End Type=\"MakerFarm.Models.MaterialCheckout\" Role=\"PrinterPartner" +
+                "\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Materi" +
+                "alCheckout_Material_MakerFarm_Models_Material_MaterialPartner\"><End Type=\"MakerF" +
+                "arm.Models.Material\" Role=\"Material\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm." +
+                "Models.MaterialCheckout\" Role=\"MaterialPartner\" Multiplicity=\"0..1\" /></Associat" +
+                "ion><Association Name=\"MakerFarm_Models_Material_PrinterType_MakerFarm_Models_Pr" +
+                "interType_PrinterTypePartner\"><End Type=\"MakerFarm.Models.PrinterType\" Role=\"Pri" +
+                "nterType\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Material\" Role=\"Prin" +
+                "terTypePartner\" Multiplicity=\"0..1\" /></Association><Associ";
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
-            private const string ModelPart2 = "ation><Association Name=\"MakerFarm_Models_Job_AffiliatedPrinter_MakerFarm_Models_" +
-                "Printer_AffiliatedPrinterPartner\"><End Type=\"MakerFarm.Models.Printer\" Role=\"Aff" +
-                "iliatedPrinter\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Job\" Role=\"Aff" +
-                "iliatedPrinterPartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"Ma" +
-                "kerFarm_Models_Print_PrinterType_MakerFarm_Models_PrinterType_PrinterTypePartner" +
-                "\"><End Type=\"MakerFarm.Models.PrinterType\" Role=\"PrinterType\" Multiplicity=\"0..1" +
-                "\" /><End Type=\"MakerFarm.Models.Print\" Role=\"PrinterTypePartner\" Multiplicity=\"0" +
-                "..1\" /></Association><Association Name=\"MakerFarm_Models_Print_PrintEvents_Maker" +
-                "Farm_Models_PrintEvent_PrintEventsPartner\"><End Type=\"MakerFarm.Models.PrintEven" +
-                "t\" Role=\"PrintEvents\" Multiplicity=\"*\" /><End Type=\"MakerFarm.Models.Print\" Role" +
-                "=\"PrintEventsPartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"Mak" +
-                "erFarm_Models_PrintEvent_Print_MakerFarm_Models_Print_PrintPartner\"><End Type=\"M" +
-                "akerFarm.Models.Print\" Role=\"Print\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.M" +
-                "odels.PrintEvent\" Role=\"PrintPartner\" Multiplicity=\"0..1\" /></Association><Assoc" +
-                "iation Name=\"MakerFarm_Models_PrintEvent_Printer_MakerFarm_Models_Printer_Printe" +
-                "rPartner\"><End Type=\"MakerFarm.Models.Printer\" Role=\"Printer\" Multiplicity=\"0..1" +
-                "\" /><End Type=\"MakerFarm.Models.PrintEvent\" Role=\"PrinterPartner\" Multiplicity=\"" +
-                "0..1\" /></Association></Schema><Schema Namespace=\"Default\" xmlns=\"http://schemas" +
-                ".microsoft.com/ado/2009/11/edm\"><EntityContainer Name=\"Container\" m:IsDefaultEnt" +
-                "ityContainer=\"true\"><EntitySet Name=\"ClientsAPI\" EntityType=\"MakerFarm.Models.Cl" +
-                "ient\" /><FunctionImport Name=\"ISpy\" IsBindable=\"true\" m:IsAlwaysBindable=\"true\">" +
-                "<Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client\" /><Parameter N" +
-                "ame=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" /><Para" +
-                "meter Name=\"Machines\" Type=\"Collection(Edm.String)\" Nullable=\"false\" FixedLength" +
-                "=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"DoTell\" Return" +
-                "Type=\"Collection(MakerFarm.Models.MachineInterest)\" IsBindable=\"true\" m:IsAlways" +
-                "Bindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client" +
-                "\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode" +
-                "=\"false\" /></FunctionImport><FunctionImport Name=\"ISay\" IsBindable=\"true\" m:IsAl" +
-                "waysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Cl" +
-                "ient\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Uni" +
-                "code=\"false\" /><Parameter Name=\"MachineUpdate\" Type=\"MakerFarm.Models.MachineSta" +
-                "tusUpdate\" /><Parameter Name=\"JobUpdate\" Type=\"MakerFarm.Models.JobStatusUpdate\"" +
-                " /></FunctionImport><FunctionImport Name=\"TakeThis\" IsBindable=\"true\" m:IsAlways" +
-                "Bindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client" +
-                "\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode" +
-                "=\"false\" /><Parameter Name=\"MachineName\" Type=\"Edm.String\" FixedLength=\"false\" U" +
-                "nicode=\"false\" /><Parameter Name=\"JobId\" Type=\"Edm.Int32\" Nullable=\"false\" /></F" +
-                "unctionImport><FunctionImport Name=\"CanDo\" IsBindable=\"true\" m:IsAlwaysBindable=" +
-                "\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm.Models.Client\" /><Para" +
-                "meter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"false\" Unicode=\"false\" " +
-                "/><Parameter Name=\"Machines\" Type=\"Collection(MakerFarm.Models.RancherCommandGlo" +
-                "ssary)\" Nullable=\"false\" /></FunctionImport></EntityContainer></Schema></edmx:Da" +
-                "taServices></edmx:Edmx>";
+            private const string ModelPart2 = "ation Name=\"MakerFarm_Models_Job_AffiliatedPrint_MakerFarm_Models_Print_Affiliate" +
+                "dPrintPartner\"><End Type=\"MakerFarm.Models.Print\" Role=\"AffiliatedPrint\" Multipl" +
+                "icity=\"0..1\" /><End Type=\"MakerFarm.Models.Job\" Role=\"AffiliatedPrintPartner\" Mu" +
+                "ltiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_Models_Job_Affili" +
+                "atedPrinter_MakerFarm_Models_Printer_AffiliatedPrinterPartner\"><End Type=\"MakerF" +
+                "arm.Models.Printer\" Role=\"AffiliatedPrinter\" Multiplicity=\"0..1\" /><End Type=\"Ma" +
+                "kerFarm.Models.Job\" Role=\"AffiliatedPrinterPartner\" Multiplicity=\"0..1\" /></Asso" +
+                "ciation><Association Name=\"MakerFarm_Models_Print_PrinterType_MakerFarm_Models_P" +
+                "rinterType_PrinterTypePartner\"><End Type=\"MakerFarm.Models.PrinterType\" Role=\"Pr" +
+                "interType\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.Print\" Role=\"Printe" +
+                "rTypePartner\" Multiplicity=\"0..1\" /></Association><Association Name=\"MakerFarm_M" +
+                "odels_Print_PrintEvents_MakerFarm_Models_PrintEvent_PrintEventsPartner\"><End Typ" +
+                "e=\"MakerFarm.Models.PrintEvent\" Role=\"PrintEvents\" Multiplicity=\"*\" /><End Type=" +
+                "\"MakerFarm.Models.Print\" Role=\"PrintEventsPartner\" Multiplicity=\"0..1\" /></Assoc" +
+                "iation><Association Name=\"MakerFarm_Models_PrintEvent_Print_MakerFarm_Models_Pri" +
+                "nt_PrintPartner\"><End Type=\"MakerFarm.Models.Print\" Role=\"Print\" Multiplicity=\"0" +
+                "..1\" /><End Type=\"MakerFarm.Models.PrintEvent\" Role=\"PrintPartner\" Multiplicity=" +
+                "\"0..1\" /></Association><Association Name=\"MakerFarm_Models_PrintEvent_Printer_Ma" +
+                "kerFarm_Models_Printer_PrinterPartner\"><End Type=\"MakerFarm.Models.Printer\" Role" +
+                "=\"Printer\" Multiplicity=\"0..1\" /><End Type=\"MakerFarm.Models.PrintEvent\" Role=\"P" +
+                "rinterPartner\" Multiplicity=\"0..1\" /></Association></Schema><Schema Namespace=\"D" +
+                "efault\" xmlns=\"http://schemas.microsoft.com/ado/2009/11/edm\"><EntityContainer Na" +
+                "me=\"Container\" m:IsDefaultEntityContainer=\"true\"><EntitySet Name=\"ClientsAPI\" En" +
+                "tityType=\"MakerFarm.Models.Client\" /><FunctionImport Name=\"ISpy\" IsBindable=\"tru" +
+                "e\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"MakerFarm." +
+                "Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLength=\"f" +
+                "alse\" Unicode=\"false\" /><Parameter Name=\"Machines\" Type=\"Collection(Edm.String)\"" +
+                " Nullable=\"false\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><Functi" +
+                "onImport Name=\"DoTell\" ReturnType=\"Collection(MakerFarm.Models.MachineInterest)\"" +
+                " IsBindable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" " +
+                "Type=\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String" +
+                "\" FixedLength=\"false\" Unicode=\"false\" /></FunctionImport><FunctionImport Name=\"I" +
+                "Say\" IsBindable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParamet" +
+                "er\" Type=\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.St" +
+                "ring\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"MachineUpdate\" Type" +
+                "=\"MakerFarm.Models.MachineStatusUpdate\" /><Parameter Name=\"JobUpdate\" Type=\"Make" +
+                "rFarm.Models.JobStatusUpdate\" /></FunctionImport><FunctionImport Name=\"TakeThis\"" +
+                " IsBindable=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" " +
+                "Type=\"MakerFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String" +
+                "\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"MachineName\" Type=\"Edm." +
+                "String\" FixedLength=\"false\" Unicode=\"false\" /><Parameter Name=\"JobId\" Type=\"Edm." +
+                "Int32\" Nullable=\"false\" /></FunctionImport><FunctionImport Name=\"CanDo\" IsBindab" +
+                "le=\"true\" m:IsAlwaysBindable=\"true\"><Parameter Name=\"bindingParameter\" Type=\"Mak" +
+                "erFarm.Models.Client\" /><Parameter Name=\"ClientAPIKey\" Type=\"Edm.String\" FixedLe" +
+                "ngth=\"false\" Unicode=\"false\" /><Parameter Name=\"Machines\" Type=\"Collection(Maker" +
+                "Farm.Models.RancherCommandGlossary)\" Nullable=\"false\" /></FunctionImport></Entit" +
+                "yContainer></Schema></edmx:DataServices></edmx:Edmx>";
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
             private static string GetConcatenatedEdmxString()
             {
@@ -925,6 +928,23 @@ namespace RepRancher.MakerFarmService
     public partial class RancherCommandGlossary : global::System.ComponentModel.INotifyPropertyChanged
     {
         /// <summary>
+        /// Create a new RancherCommandGlossary object.
+        /// </summary>
+        /// <param name="print_Send">Initial value of Print_Send.</param>
+        /// <param name="print_Cancel">Initial value of Print_Cancel.</param>
+        /// <param name="print_Pause">Initial value of Print_Pause.</param>
+        /// <param name="print_Resume">Initial value of Print_Resume.</param>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public static RancherCommandGlossary CreateRancherCommandGlossary(bool print_Send, bool print_Cancel, bool print_Pause, bool print_Resume)
+        {
+            RancherCommandGlossary rancherCommandGlossary = new RancherCommandGlossary();
+            rancherCommandGlossary.Print_Send = print_Send;
+            rancherCommandGlossary.Print_Cancel = print_Cancel;
+            rancherCommandGlossary.Print_Pause = print_Pause;
+            rancherCommandGlossary.Print_Resume = print_Resume;
+            return rancherCommandGlossary;
+        }
+        /// <summary>
         /// There are no comments for Property MachineName in the schema.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
@@ -946,6 +966,94 @@ namespace RepRancher.MakerFarmService
         private string _MachineName;
         partial void OnMachineNameChanging(string value);
         partial void OnMachineNameChanged();
+        /// <summary>
+        /// There are no comments for Property Print_Send in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public bool Print_Send
+        {
+            get
+            {
+                return this._Print_Send;
+            }
+            set
+            {
+                this.OnPrint_SendChanging(value);
+                this._Print_Send = value;
+                this.OnPrint_SendChanged();
+                this.OnPropertyChanged("Print_Send");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private bool _Print_Send;
+        partial void OnPrint_SendChanging(bool value);
+        partial void OnPrint_SendChanged();
+        /// <summary>
+        /// There are no comments for Property Print_Cancel in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public bool Print_Cancel
+        {
+            get
+            {
+                return this._Print_Cancel;
+            }
+            set
+            {
+                this.OnPrint_CancelChanging(value);
+                this._Print_Cancel = value;
+                this.OnPrint_CancelChanged();
+                this.OnPropertyChanged("Print_Cancel");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private bool _Print_Cancel;
+        partial void OnPrint_CancelChanging(bool value);
+        partial void OnPrint_CancelChanged();
+        /// <summary>
+        /// There are no comments for Property Print_Pause in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public bool Print_Pause
+        {
+            get
+            {
+                return this._Print_Pause;
+            }
+            set
+            {
+                this.OnPrint_PauseChanging(value);
+                this._Print_Pause = value;
+                this.OnPrint_PauseChanged();
+                this.OnPropertyChanged("Print_Pause");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private bool _Print_Pause;
+        partial void OnPrint_PauseChanging(bool value);
+        partial void OnPrint_PauseChanged();
+        /// <summary>
+        /// There are no comments for Property Print_Resume in the schema.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        public bool Print_Resume
+        {
+            get
+            {
+                return this._Print_Resume;
+            }
+            set
+            {
+                this.OnPrint_ResumeChanging(value);
+                this._Print_Resume = value;
+                this.OnPrint_ResumeChanged();
+                this.OnPropertyChanged("Print_Resume");
+            }
+        }
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
+        private bool _Print_Resume;
+        partial void OnPrint_ResumeChanging(bool value);
+        partial void OnPrint_ResumeChanged();
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]
         public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Services.Design", "1.0.0")]

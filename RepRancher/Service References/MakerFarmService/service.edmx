@@ -34,6 +34,10 @@
       </ComplexType>
       <ComplexType Name="RancherCommandGlossary">
         <Property Name="MachineName" Type="Edm.String" />
+        <Property Name="Print_Send" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Cancel" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Pause" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="Print_Resume" Type="Edm.Boolean" Nullable="false" />
       </ComplexType>
       <EntityType Name="ClientPermission">
         <Key>

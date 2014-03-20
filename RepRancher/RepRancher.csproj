@@ -107,6 +107,7 @@
       <DependentUpon>Reference.datasvcmap</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="2.4.1\SharedResources.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

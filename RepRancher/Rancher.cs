@@ -8,10 +8,10 @@ using RepRancher.MakerFarmService;
 namespace RepRancher
 {
     //This is a Generic Encapsulation for various printer types and versions. The Foreman will oversee many different kind of ranchers.
-    interface Rancher
+    public interface Rancher
     {
         //This returns a Command Glossary that can be used to see what Commands the printer supports.
-        RancherCommandGlossary GetRancherCommandGlossary();
+        RancherCommandGlossary[] GetRancherCommandGlossary(MachineInterest[] ReportOn);
 
         //This returns an array of Makerfarm Updates that can be sent to MakerFarm.
         MakerFarmUpdate[] GetMakerFarmUpdates(MachineInterest[] ReportOn);

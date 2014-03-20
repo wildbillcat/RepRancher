@@ -31,6 +31,4 @@ namespace RepRancher
         public string AdvancedConfigurationString { get; set; }
     }
 
- 
-
 }
