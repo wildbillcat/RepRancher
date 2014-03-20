@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="2.4.1\ConveyorListenerService.cs" />
+    <Compile Include="2.4.1\ConveyorRancher.cs" />
     <Compile Include="2.4.1\ConveyorService.cs" />
     <Compile Include="RanchForeman.cs" />
     <Compile Include="MakerFarmUpdate.cs" />

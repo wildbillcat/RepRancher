@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RepRancher.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="NoisyClient" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ErrorFile" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Windows\Temp\RepRancher\Error.txt</Value>
+    </Setting>
+    <Setting Name="MakerFarmAPIUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://lothar.architecture.yale.edu:50614/odata</Value>
+    </Setting>
+    <Setting Name="MakerFarmClientAPIKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">S3cretKeyP4ssword</Value>
+    </Setting>
+    <Setting Name="MakerFarmClientID" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MakerFarmClientEnable" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MakerFarmTime" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ErrorTimer" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="RancherBrands" Type="RepRancher.RancherBrandCollection" Scope="Application">
+      <Value Profile="(Default)">trueConveyor2_4_1C:\Windows\Temp\5127.0.0.19999Invalid</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
