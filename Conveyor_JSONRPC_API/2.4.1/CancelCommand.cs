@@ -14,7 +14,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         {
             rpcid = RpcId;
             jobid = JobId;
-            Sent = false;
             Recieved = false;
             Reply = null;
         }

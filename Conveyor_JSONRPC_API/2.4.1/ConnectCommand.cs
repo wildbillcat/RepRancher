@@ -22,7 +22,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             persistent = Persistent;
             port_name = Port_Name;
             profile_name = Profile_Name;
-            Sent = false;
             Recieved = false;
             Reply = null;
         }

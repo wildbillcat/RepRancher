@@ -49,12 +49,12 @@ namespace RepRancher._2._4._1
         ////////////////////////////////////////////////////////////////////////////////////////
 
         /*
-         * This TCP Client is the connection to the Conveyor Service that is being Monitored
+         * This is the TCP Client used to connect to the Conveyor Service
          */
         System.Net.Sockets.TcpClient tcpClient;
 
         /*
-         * This is the TCP connection that the listener reads and Parses
+         * This is the Data Stream where data is written to and read from Conveyor
          */
         System.IO.Stream dataStream;
 
@@ -63,9 +63,24 @@ namespace RepRancher._2._4._1
          */
         ConcurrentRPCID rpcid;
 
-        public SharedResources()
-        {
+        /*
+         * Write to Conveyor Mutex
+         */
+        System.Threading.Mutex WriteToConveyorLock;
 
+        public SharedResources(System.Net.IPAddress ConveyorIP, int ConveyorPort)
+        {
+            tcpClient = new System.Net.Sockets.TcpClient();
+            tcpClient.Connect(new System.Net.IPEndPoint(ConveyorIP, ConveyorPort));
+            dataStream = tcpClient.GetStream();
+            WriteToConveyorLock = new System.Threading.Mutex();
+            CommandHistory = new ConcurrentDictionary<int,Command>();
+            CurrentPorts = new ConcurrentDictionary<string,ConveyorPort>();
+            CurrentPrinters = new ConcurrentDictionary<string, ConveyorPrinter>();
+            CurrentJobs = new ConcurrentDictionary<int, ConveyorJob>();
+            MakerWareToConveyorJobIds = new ConcurrentDictionary<int, int>();
+            RPCIDtoMakerFarmJobIds = new ConcurrentDictionary<int, int>();
+            rpcid = new ConcurrentRPCID();
         }
 
         public void IssueCommand(string Command)

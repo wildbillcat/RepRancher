@@ -27,7 +27,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             material_name = Material_Name;
             slicer_name = Slicer_Name;
             slicer_settings = Slicer_Settings;
-            Sent = false;
             Recieved = false;
             Reply = null;
         }

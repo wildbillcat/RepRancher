@@ -11,8 +11,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
     {
         //RPC ID of the Command
         public int rpcid { get; set; }
-        //Denotes if the command has been sent
-        public bool Sent { get; set; }
         //Denotes if the command reply has been recieved
         public bool Recieved { get; set; }
         //This is a string containing whatever reply conveyor recieved if Rancher deems it might be important in the future.

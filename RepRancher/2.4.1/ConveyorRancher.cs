@@ -12,16 +12,6 @@ namespace RepRancher._2._4._1
         private RepRancher.MakerFarmService.RancherCommandGlossary DefaultAvailableCommands { get; set; }
 
         /*
-         * This is the TCP Client used to connect to the Conveyor Service
-         */
-        System.Net.Sockets.TcpClient tcpClient { get; set; }
-
-        /*
-         * This is the Data Stream where data is written to and read from Conveyor
-         */
-        System.IO.Stream dataStream { get; set; }
-
-        /*
          * This is where the print files sent to the client are stored temporarily.
          */
         string PrintTemporaryFileStoragePath { get; set; }
@@ -48,6 +38,11 @@ namespace RepRancher._2._4._1
          */
         int ConveyorReplyTimeout { get; set; }
 
+        /*
+         * This is an object wrapper around several shared objects which allow for the threads to communicate.
+         */
+        SharedResources SharedResources { get; set; }
+
         public ConveyorRancher(RancherBrand Brand)
         {
             /*
@@ -70,8 +65,7 @@ namespace RepRancher._2._4._1
             ConveyorReplyTimeout = Brand.PrinterReplyTimeout;
 
             //This is the TCP Client used to connect to the Conveyor Service
-            tcpClient = new System.Net.Sockets.TcpClient();
-            tcpClient.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber));
+            SharedResources = new SharedResources(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber);
 
             //This 
         }

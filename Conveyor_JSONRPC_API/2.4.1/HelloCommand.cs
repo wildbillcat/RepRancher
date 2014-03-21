@@ -11,7 +11,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         public HelloCommand(int RpcId)
         {
             rpcid = RpcId;
-            Sent = false;
             Recieved = false;
             Reply = null;
         }
