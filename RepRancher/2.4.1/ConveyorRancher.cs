@@ -14,39 +14,39 @@ namespace RepRancher._2._4._1
         /*
          * This is the TCP Client used to connect to the Conveyor Service
          */
-        System.Net.Sockets.TcpClient tcpClient;
+        System.Net.Sockets.TcpClient tcpClient { get; set; }
 
         /*
          * This is the Data Stream where data is written to and read from Conveyor
          */
-        System.IO.Stream dataStream;
+        System.IO.Stream dataStream { get; set; }
 
         /*
          * This is where the print files sent to the client are stored temporarily.
          */
-        string PrintTemporaryFileStoragePath;
+        string PrintTemporaryFileStoragePath { get; set; }
 
         /*
          * This is how many seconds we expect to .
          */
-        int PrinterReplyTimeout;
+        int PrinterReplyTimeout { get; set; }
 
         /*
          * This thread is assigned to listen to the incoming stream from conveyor and to jot down 
          * everything it recieves. 
          */
-        System.Threading.Thread ConveyorListenerStreamThread;
+        System.Threading.Thread ConveyorListenerStreamThread { get; set; }
 
         /*
          * This thread is assigned to parse and make sense of all the information recieved by the 
          * ConveyorListenerStreamThread from Conveyor.  
          */
-        System.Threading.Thread ConveyorListenerParserThread;
+        System.Threading.Thread ConveyorListenerParserThread { get; set; }
 
         /*
          * This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
          */
-        int ConveyorReplyTimeout;
+        int ConveyorReplyTimeout { get; set; }
 
         public ConveyorRancher(RancherBrand Brand)
         {
@@ -73,6 +73,7 @@ namespace RepRancher._2._4._1
             tcpClient = new System.Net.Sockets.TcpClient();
             tcpClient.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber));
 
+            //This 
         }
 
         public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)

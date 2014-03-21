@@ -21,7 +21,7 @@ using RepRancher.MakerFarmService;
 
 namespace RepRancher._2._4._1
 {
-    public class ConveyorService
+    public class _oldConveyorService
     {
 
         public bool EnableMakerFarmClient;
@@ -51,7 +51,7 @@ namespace RepRancher._2._4._1
         /*
          * This Class runs on two threads, one of which continually listens to Conveyor looking for input and the other parses and processes the Data Recieved.
          */
-        ConveyorListenerService ConveyorListenerServer;
+        _oldConveyorListenerService ConveyorListenerServer;
 
         /*
          * This Class runs on a thread to process commands recieved from the user and from MakerFarm.
@@ -161,7 +161,7 @@ namespace RepRancher._2._4._1
         Uri ISayUri;
         Uri TakeThis;
 
-        public ConveyorService(string IPaddress, int PortNumber)
+        public _oldConveyorService(string IPaddress, int PortNumber)
         {
             NoisyClient = bool.Parse(ConfigurationManager.AppSettings["NoisyClient"]);
             CurrentPorts = new ConcurrentDictionary<string, ConveyorPort>();
@@ -235,7 +235,7 @@ namespace RepRancher._2._4._1
             tcpClient = new TcpClient(); 
             tcpClient.Connect(ipEndPoint);
             dataStream = tcpClient.GetStream();
-            ConveyorListenerServer = new ConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved, MakerWareToConveyorJobIds, RPCIDtoMakerFarmJobIds, this);
+            ConveyorListenerServer = new _oldConveyorListenerService(tcpClient, dataStream, methodHistory, CurrentPorts, CurrentPrinters, CurrentJobs, methodReplyRecieved, MakerWareToConveyorJobIds, RPCIDtoMakerFarmJobIds, this);
             ConveyorCommandServer = new ConveyorCommandService(tcpClient, dataStream, commandQueue, methodHistory, rpcid);
             t1 = new Thread(new ThreadStart(ConveyorListenerServer.ListenerThreadRun));
             t2 = new Thread(new ThreadStart(ConveyorListenerServer.ProcessorThreadRun));

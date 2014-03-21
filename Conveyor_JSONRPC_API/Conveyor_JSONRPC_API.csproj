@@ -43,7 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="2.4.1\Command.cs" />
+    <Compile Include="2.4.1\ConnectCommand.cs" />
     <Compile Include="2.4.1\Conveyor_JSONRPC_API.cs" />
+    <Compile Include="2.4.1\GetJobsCommand.cs" />
+    <Compile Include="2.4.1\GetPortsCommand.cs" />
+    <Compile Include="2.4.1\GetPrintersCommand.cs" />
+    <Compile Include="2.4.1\HelloCommand.cs" />
+    <Compile Include="2.4.1\PrintCommand.cs" />
     <Compile Include="3.0.0\ClientAPI.cs" />
     <Compile Include="3.0.0\ConveyorException.cs" />
     <Compile Include="3.0.0\ConveyorFailure.cs" />
@@ -57,6 +64,7 @@
     <Compile Include="3.0.0\JsonReplyType.cs" />
     <Compile Include="3.0.0\PhysicalPrinterName.cs" />
     <Compile Include="3.0.0\ServerAPI.cs" />
+    <Compile Include="2.4.1\CancelCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

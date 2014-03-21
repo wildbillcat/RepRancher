@@ -313,7 +313,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         {
             return BuildRPCString(rpcid, "hello");
         }
-
         /*
          * print
          * This method creates and starts a print job.
@@ -360,58 +359,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             Params.Add(new JProperty("slicer_settings", Slicer));
             return BuildRPCString(rpcid, "print", Params);
         }
-
-        /*
-         * printtofile
-         * This method creates and starts a print-to-file job.
-         * The "printername" field name and type should be changed to "profilename" and (profile-name).
-         * params
-         * { "profilename":     (profile-name)            
-         * , "inputpath":       (absolute-file-path)            
-         * , "outputpath":      (absolute-file-path)            
-         * , "preprocessor":    (preprocessors)            
-         * , "skip_start_end":  (bool)            
-         * , "archive_lvl":     (archive-level)            
-         * , "archive_dir:"     (absolute-directory-path)            
-         * , "slicer_settings": (slicer-settings)            
-         * , "material":        (material-name)            
-         * }
-         * result
-         * (job)
-         */
-        public static string PrintToFile(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "printtofile");
-        }
-
-        /*
-         * slice
-         * This method creates and starts a slice job.
-         * params
-         * { "profilename":     (profile-name)            
-         * , "inputpath":       (absolute-file-path)            
-         * , "outputpath":      (absolute-file-path)            
-         * , "preprocessor":    (preprocessors)            
-         * , "skip_start_end":  (bool)            
-         * , "archive_lvl":     (archive-level)            
-         * , "archive_dir:"     (absolute-directory-path)            
-         * , "slicer_settings": (slicer-settings)            
-         * , "material":        (material-name)            
-         * }
-         *  result
-         *  (job)
-         */
-        public static string Slice(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "slice");
-        }
-
         /*
          * canceljob
          * This method schedules a job for cancellation.        
@@ -429,7 +376,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             Params.Add(new JProperty("id", jobid));
             return BuildRPCString(rpcid, "canceljob", Params);
         }
-
         /*
          * getprinter
          * This method returns the details for a printer.
@@ -445,7 +391,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             Params.Add(new JProperty("uniquename", uniquename));
             return BuildRPCString(rpcid, "getprinter", Params);
         }
-
         /*
          * getprinters
          * This method returns the list of printers.
@@ -461,24 +406,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         {
             return BuildRPCString(rpcid, "getprinters");
         }
-
-        /*
-         * getjob
-         * This method returns the details for a job.
-         * params
-         * { "rpcid": (job-rpcid)            
-         * }
-         * result
-         * (job)
-         */
-        public static string GetJob(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "print");
-        }
-
         /*
          * getjobs
          * 
@@ -499,7 +426,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         {
             return BuildRPCString(rpcid, "getjobs");
         }
-
         /*
          * getports
          * 
@@ -520,7 +446,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
         {
             return BuildRPCString(rpcid, "getports");
         }
-
         /*
         * "method":"connect",
         * "params":{
@@ -539,39 +464,6 @@ namespace Conveyor_JSONRPC_API._2._4._1
             Params.Add(new JProperty("port_name", port_name));
             Params.Add(new JProperty("profile_name", profile_name));
             return BuildRPCString(rpcid, "connect", Params);
-        }
-
-        /*
-         * dir
-         */
-        public static string Dir(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "print");
-        }
-
-        /*
-         * printer\_query
-         */
-        public static string Printer_Query(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "print");
-        }
-
-        /*
-         * printer\_scan
-         */
-        public static string Printer_Scan(int rpcid)
-        {
-            throw new NotImplementedException();
-            List<string> Params = new List<string>();
-            //Params.Add();
-            return BuildRPCString(rpcid, "print");
         }
 
         private static string BuildRPCString(int rpcid, string MethodName)

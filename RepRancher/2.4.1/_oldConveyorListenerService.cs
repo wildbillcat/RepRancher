@@ -15,7 +15,7 @@ using Conveyor_JSONRPC_API._2._4._1.Types;
 
 namespace RepRancher._2._4._1
 {
-    class ConveyorListenerService
+    class _oldConveyorListenerService
     {
         /*
          * This semaphore is used to control read access to the dispose variable, used to trigger the end of the threads
@@ -96,9 +96,9 @@ namespace RepRancher._2._4._1
         /*
          * This is the Conveyor Connection Service, which allows for writing back to the Conveyor Service.
          */
-        ConveyorService ConveyorSvc;
+        _oldConveyorService ConveyorSvc;
 
-        public ConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, ConveyorPort> currentPorts, ConcurrentDictionary<string, ConveyorPrinter> currentPrinters, ConcurrentDictionary<int, ConveyorJob> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds, ConveyorService ConveyorService)
+        public _oldConveyorListenerService(TcpClient TcpClient, Stream DataStream, ConcurrentDictionary<int, string[]> MethodHistory, ConcurrentDictionary<string, ConveyorPort> currentPorts, ConcurrentDictionary<string, ConveyorPrinter> currentPrinters, ConcurrentDictionary<int, ConveyorJob> currentJobs, ConcurrentDictionary<int, bool> MethodReplyRecieved, ConcurrentDictionary<int, int> makerWareToConveyorJobIds, ConcurrentDictionary<int, int> rPCIDtoMakerFarmJobIds, _oldConveyorService ConveyorService)
         {
             tcpClient = TcpClient;
             dataStream = DataStream;
@@ -133,7 +133,7 @@ namespace RepRancher._2._4._1
                 if (Dispose)
                 {
                     Running.Release();
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Listener thread returning"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Listener thread returning"); }
                     return;
                 }
                 Running.Release();
@@ -175,7 +175,7 @@ namespace RepRancher._2._4._1
                 if (Dispose)
                 {
                     Running.Release();
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor thread returning"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Processor thread returning"); }
                     return;
                 }
                 Running.Release();
@@ -183,12 +183,12 @@ namespace RepRancher._2._4._1
                 {
                     ProcessStalls = 0;
                     contentAvailable = true;
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
                     ConveyorReplyMutex.WaitOne();
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Processor Waiting to review Replies"); }
                     //Check to see if there is a command
                     //System.Console.WriteLine("Processor determining if there is a Complete JSON object");
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("Processor determining if there is a Complete JSON object"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Processor determining if there is a Complete JSON object"); }
                     string[] command = ContainsCompleteJSONObject(repliesFromConveyor);
                     repliesFromConveyor = command[0];
 
@@ -204,7 +204,7 @@ namespace RepRancher._2._4._1
                         {
                             if (ProcessJSONMessage(command[1]))
                             {
-                                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Successfully Processed Object"); }
+                                if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Successfully Processed Object"); }
                             }
                             else
                             {
@@ -327,7 +327,7 @@ namespace RepRancher._2._4._1
             if (Reply == JsonReplyType.Method)
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
-                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Detected Method : " + MethodName); }
+                if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Detected Method : " + MethodName); }
                 Console.Error.WriteLine("Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
@@ -419,7 +419,7 @@ namespace RepRancher._2._4._1
             {
                 //Fetch methodID in order to figure out what kind of reply to expect
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
-                if (ConveyorService.NoisyClient) { System.Console.WriteLine("Recieved Response to Command : " + MethodID); }
+                if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Recieved Response to Command : " + MethodID); }
                 string[] method;
                 if (methodHistory.TryGetValue(MethodID, out method))
                 {
@@ -529,7 +529,7 @@ namespace RepRancher._2._4._1
                         });
                         if (!methodReplyRecieved[MethodID])
                         {
-                            if (ConveyorService.NoisyClient) { System.Console.WriteLine("Did not yet mark a return for Print method. Update the Makerware to JobID Dictionary "); }
+                            if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Did not yet mark a return for Print method. Update the Makerware to JobID Dictionary "); }
                             int MakerFarmJobId = 0;
                             if (RPCIDtoMakerFarmJobIds.TryGetValue(MethodID, out MakerFarmJobId))
                             {
@@ -543,13 +543,13 @@ namespace RepRancher._2._4._1
                     }
                     else
                     {
-                        if (ConveyorService.NoisyClient) { System.Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]); }
+                        if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Do not yet have a means to process the return for method : " + method[0]); }
                     }
                     methodReplyRecieved.TryUpdate(MethodID, true, false);
                 }
                 else
                 {
-                    if (ConveyorService.NoisyClient) { System.Console.WriteLine("RepRancher did not issue a method with this RPC id!"); }
+                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("RepRancher did not issue a method with this RPC id!"); }
                 }
             }
             else if (Reply == JsonReplyType.Error)
