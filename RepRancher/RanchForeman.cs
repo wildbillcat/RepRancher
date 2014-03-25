@@ -51,5 +51,7 @@ namespace RepRancher
          * This Timer is used to flush errors to the text file in a timely manner, to make sure that a crash doesnt get missed.
          */
         System.Timers.Timer ErrorFlush;
+
+        
     }
 }

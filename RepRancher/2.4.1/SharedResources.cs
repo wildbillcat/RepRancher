@@ -39,12 +39,12 @@ namespace RepRancher._2._4._1
         /*
          * This is a list of Conveyor JobIDs indexed by MakerFarm Jobs
          */
-        public ConcurrentDictionary<int, int> MakerWareToConveyorJobIds { set; get; }
+        public ConcurrentDictionary<int, int> MakerFarmToConveyorJobIds { set; get; }
 
         /*
          * This is a list of MakerFarm JobIDs indexed by RPCIDs
          */
-        public ConcurrentDictionary<int, int> RPCIDtoMakerFarmJobIds { get; set; }
+        //public ConcurrentDictionary<int, int> RPCIDtoMakerFarmJobIds { get; set; }
 
         ////////////////////////////////////////////////////////////////////////////////////////
 

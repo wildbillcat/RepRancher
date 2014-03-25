@@ -11,5 +11,11 @@ namespace RepRancher
     {
         MachineStatusUpdate MachineUpdate { set; get; }
         JobStatusUpdate JobUpdate { set; get; }
+
+        public MakerFarmUpdate(MachineStatusUpdate MachineStatusUpdate, JobStatusUpdate JobStatusUpdate)
+        {
+            MachineUpdate = MachineStatusUpdate;
+            JobUpdate = JobStatusUpdate;
+        }
     }
 }

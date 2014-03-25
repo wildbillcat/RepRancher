@@ -16,8 +16,9 @@ namespace Conveyor_JSONRPC_API._2._4._1
         string[] material_name;
         string slicer_name;
         slicersettings slicer_settings;
+        int MakerFarmJobId;
 
-        public PrintCommand(int RpcId, string[] Gcode_Processor_Names, bool Has_Start_End, string Input_File, string Machine_Name, string[] Material_Name, string Slicer_Name, slicersettings Slicer_Settings)
+        public PrintCommand(int RpcId, string[] Gcode_Processor_Names, bool Has_Start_End, string Input_File, string Machine_Name, string[] Material_Name, string Slicer_Name, slicersettings Slicer_Settings, int MakerFarmJobID)
         {
             rpcid = RpcId;
             gcode_processor_names = Gcode_Processor_Names;
@@ -27,6 +28,7 @@ namespace Conveyor_JSONRPC_API._2._4._1
             material_name = Material_Name;
             slicer_name = Slicer_Name;
             slicer_settings = Slicer_Settings;
+            MakerFarmJobId = MakerFarmJobID;
             Recieved = false;
             Reply = null;
         }
