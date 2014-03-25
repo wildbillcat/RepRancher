@@ -42,6 +42,16 @@ namespace RepRancher._2._4._1
          * This is an object wrapper around several shared objects which allow for the threads to communicate.
          */
         SharedResources SharedResources { get; set; }
+        
+        /*
+         * This is the listening stream class which is assigned to it's own thread to recieve conveyor's input.
+         */
+        ConveyorListenerStream ConveyorListenerStream;
+
+        /*
+         * This is the parsing class which is assigned to it's own thread to parse conveyor's input.
+         */
+        ConveyorListenerParser ConveyorListenerParser;
 
         public ConveyorRancher(RancherBrand Brand)
         {
@@ -66,7 +76,17 @@ namespace RepRancher._2._4._1
             //This is the TCP Client used to connect to the Conveyor Service
             SharedResources = new SharedResources(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber);
 
-            //This 
+            //This is the Listener Stream used to listen in to conveyor
+            ConveyorListenerStream = new ConveyorListenerStream(SharedResources);
+
+            //This is the Parser for all the input taken from conveyor
+            ConveyorListenerParser =  new ConveyorListenerParser(SharedResources);
+
+            ConveyorListenerStreamThread = new System.Threading.Thread(new System.Threading.ThreadStart(ConveyorListenerStream.ListenerStreamThreadRun));
+            ConveyorListenerStreamThread.Start();
+
+            ConveyorListenerParserThread = new System.Threading.Thread(new System.Threading.ThreadStart(ConveyorListenerParser.ListenerParserThreadRun));
+            ConveyorListenerParserThread.Start();
         }
 
         public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)

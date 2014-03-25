@@ -39,7 +39,7 @@ namespace RepRancher._2._4._1
                     SharedResources.ConveyorReplyMutex.WaitOne();
                     //Check to see if there is a command
                     //System.Console.WriteLine("Processor determining if there is a Complete JSON object");
-                    if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Processor determining if there is a Complete JSON object"); }
+                    //Processor determining if there is a Complete JSON object
                     string[] command = ContainsCompleteJSONObject(SharedResources.repliesFromConveyor);
                     SharedResources.repliesFromConveyor = command[0];
 
@@ -55,11 +55,13 @@ namespace RepRancher._2._4._1
                         {
                             if (ProcessJSONMessage(command[1]))
                             {
-                                if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Successfully Processed Object"); }
+                                //Successfully Processed Object
                             }
                             else
                             {
-                                System.Console.Error.WriteLine("Something went Wrong, Please check log");
+                                System.Console.Error.WriteLine("Something went Wrong and the JSON object could not be processed");
+                                System.Console.Error.WriteLine(command[1]);
+                                System.Console.Error.WriteLine();
                             }
                         }
                         catch (Exception e)
@@ -271,7 +273,7 @@ namespace RepRancher._2._4._1
             {
                 //Fetch methodID in order to figure out what kind of reply to expect
                 int MethodID = ConveyorJsonReplyParser.GetResultID(JSON);
-                if (_oldConveyorService.NoisyClient) { System.Console.WriteLine("Recieved Response to Command : " + MethodID); }
+                //Recieved Response to Command
                 Command PreviousCommand;
                 if (SharedResources.CommandHistory.TryGetValue(MethodID, out PreviousCommand))
                 {

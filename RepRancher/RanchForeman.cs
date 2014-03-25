@@ -15,6 +15,7 @@ namespace RepRancher
          * Determines how much output is sent to screen
          */
         public static bool NoisyClient;
+        
         /*
          * This is the APIKey to MakerFarm
          */
