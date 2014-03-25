@@ -8,7 +8,7 @@ namespace Conveyor_JSONRPC_API._2._4._1
 {
     public class CancelCommand : Command
     {
-        int jobid;
+        public int jobid;
 
         public CancelCommand(int RpcId, int JobId)
         {

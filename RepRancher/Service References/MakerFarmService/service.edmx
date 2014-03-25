@@ -15,10 +15,13 @@
       </EntityType>
       <ComplexType Name="MachineInterest">
         <Property Name="MachineName" Type="Edm.String" />
-        <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
         <Property Name="PoisonJobs" Type="Edm.Boolean" Nullable="false" />
         <Property Name="PreviouslyCollected" Type="Edm.Boolean" Nullable="false" />
         <Property Name="PauseMachine" Type="Edm.String" Nullable="false" />
+        <Property Name="CurrentJob" Type="Edm.Int32" Nullable="false" />
+        <Property Name="PrintFileName" Type="Edm.String" />
+        <Property Name="EstToolpathTime" Type="Edm.Int32" Nullable="false" />
+        <Property Name="EstMaterialUse" Type="Edm.Double" Nullable="false" />
       </ComplexType>
       <ComplexType Name="MachineStatusUpdate">
         <Property Name="MachineName" Type="Edm.String" />

@@ -9,14 +9,14 @@ namespace Conveyor_JSONRPC_API._2._4._1
 {
     public class PrintCommand : Command
     {
-        string[] gcode_processor_names;
-        bool has_start_end;
-        string input_file;
-        string machine_name;
-        string[] material_name;
-        string slicer_name;
-        slicersettings slicer_settings;
-        int MakerFarmJobId;
+        public string[] gcode_processor_names;
+        public bool has_start_end;
+        public string input_file;
+        public string machine_name;
+        public string[] material_name;
+        public string slicer_name;
+        public slicersettings slicer_settings;
+        public int MakerFarmJobId;
 
         public PrintCommand(int RpcId, string[] Gcode_Processor_Names, bool Has_Start_End, string Input_File, string Machine_Name, string[] Material_Name, string Slicer_Name, slicersettings Slicer_Settings, int MakerFarmJobID)
         {

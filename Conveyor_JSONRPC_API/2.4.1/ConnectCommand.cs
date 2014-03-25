@@ -8,11 +8,11 @@ namespace Conveyor_JSONRPC_API._2._4._1
 {
     public class ConnectCommand : Command
     {
-        string driver_name;
-        string machine_name;
-        bool persistent;
-        string port_name;
-        string profile_name;
+        public string driver_name;
+        public string machine_name;
+        public bool persistent;
+        public string port_name;
+        public string profile_name;
 
         public ConnectCommand(int RpcId, string Driver_Name, string Machine_Name, bool Persistent, string Port_Name, string Profile_Name)
         {

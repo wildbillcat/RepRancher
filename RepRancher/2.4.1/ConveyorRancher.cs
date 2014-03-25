@@ -55,7 +55,7 @@ namespace RepRancher._2._4._1
          */
         ConveyorListenerParser ConveyorListenerParser;
 
-        public ConveyorRancher(RancherBrand Brand)
+        public ConveyorRancher(RancherBrand Brand, Uri Fetch, string ClientAPIKey)
         {
             /*
              * This configuration should be true of all 2.4.1 Clients
@@ -76,7 +76,7 @@ namespace RepRancher._2._4._1
             ConveyorReplyTimeout = Brand.PrinterReplyTimeout;
 
             //This is the TCP Client used to connect to the Conveyor Service
-            SharedResources = new SharedResources(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber);
+            SharedResources = new SharedResources(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber, Fetch, ClientAPIKey);
 
             //This is the Listener Stream used to listen in to conveyor
             ConveyorListenerStream = new ConveyorListenerStream(SharedResources);
@@ -118,9 +118,12 @@ namespace RepRancher._2._4._1
         public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
         {
             List<MakerFarmUpdate> MakerFarmUpdates = new List<MakerFarmUpdate>();
+            /*
+             * **************************************Begin File Deletion Section************************************************
+             */
             //First lets see if RepRancher is Tracking any jobs that MakerFarm isnt interested in. If so, let's toss them out and delete their files.
             List<int> Abort = new List<int>();
-            foreach (int i in SharedResources.MakerWareToConveyorJobIds.Keys)
+            foreach (int i in SharedResources.MakerFarmToConveyorJobIds.Keys)
             {
                 bool invalid = true;
                 foreach (RepRancher.MakerFarmService.MachineInterest Mi in ReportOn)
@@ -133,7 +136,7 @@ namespace RepRancher._2._4._1
                 }
                 if (invalid)
                 {
-                    Abort.Add(SharedResources.MakerWareToConveyorJobIds[i]);
+                    Abort.Add(SharedResources.MakerFarmToConveyorJobIds[i]);
                 }
             }
             //Now that there is a list of no longer valid jobs, let's toss them
@@ -145,6 +148,10 @@ namespace RepRancher._2._4._1
                     System.IO.File.Delete(FilePath);
                 }
             }
+            /*
+             * **************************************End File Deletion Section************************************************
+             */
+
 
             //Now that RepRancher knows what Makerfarm is interested in hearing about, act on that information!
             //Report all the information Makerfarm in intersted in hearing about
@@ -164,7 +171,7 @@ namespace RepRancher._2._4._1
                     }//Now Done with poisoning Jobs, lets report on what is going on
 
                     //Lets Build a Machine Status!
-                    MachineStatusUpdate MUpdate = new MachineStatusUpdate();
+                    RepRancher.MakerFarmService.MachineStatusUpdate MUpdate = new RepRancher.MakerFarmService.MachineStatusUpdate();
                     MUpdate.MachineName = P.name;
                     MUpdate.CurrentTaskProgress = null;
                     MUpdate.MachineStatus = P.state + "\n" +
@@ -178,7 +185,7 @@ namespace RepRancher._2._4._1
                         }
                         if (P.temperature.heated_platforms != null && P.hasHeatedPlatform)
                         {
-                            int[] BedTemp = JsonConvert.DeserializeObject<int[]>(P.temperature.heated_platforms.ToString());
+                            int[] BedTemp = Newtonsoft.Json.JsonConvert.DeserializeObject<int[]>(P.temperature.heated_platforms.ToString());
                             foreach (int temp in BedTemp)
                             {
                                 MUpdate.MachineStatus = MUpdate.MachineStatus + "Heated Platform: " + temp + "\n";
@@ -188,10 +195,10 @@ namespace RepRancher._2._4._1
 
 
                     ConveyorJob J;
-                    JobStatusUpdate JUpdate = new JobStatusUpdate();
+                    RepRancher.MakerFarmService.JobStatusUpdate JUpdate = new RepRancher.MakerFarmService.JobStatusUpdate();
                     int ConveyorJobId = 0;
-                    bool MFJobExists = MakerWareToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId);
-                    bool CurrentJobExists = CurrentJobs.TryGetValue(ConveyorJobId, out J);
+                    bool MFJobExists = SharedResources.MakerFarmToConveyorJobIds.TryGetValue(Mi.CurrentJob, out ConveyorJobId);
+                    bool CurrentJobExists = SharedResources.CurrentJobs.TryGetValue(ConveyorJobId, out J);
                     //Check if MakerFarm assigned a job
                     if (Mi.CurrentJob != 0 && CurrentJobExists && MFJobExists)//if Current job isn't equal to 0, the MakerFarmID translates to a Conveyor Job and the Job exists, lets populate!
                     {
@@ -225,7 +232,7 @@ namespace RepRancher._2._4._1
                     {
                         //Makerfarm has assigned a job and RepRancher has not yet sent it!
                         List<ConveyorJob> jobs = new List<ConveyorJob>();
-                        foreach (ConveyorJob jj in CurrentJobs.Values)
+                        foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
                         {
                             if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
                             {
@@ -235,36 +242,51 @@ namespace RepRancher._2._4._1
                         if (jobs.Count() == 0 && P.canPrint)
                         {
                             //Lets fetch the file we need to print.
-                            string PostData = "{\"ClientAPIKey\":\"" + ClientAPIKey + "\",\"MachineName\":\"" + P.name + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
-                            string FilePath = string.Concat(ConfigurationManager.AppSettings["TemporaryFileStorage"], Mi.CurrentJob.ToString(), ".gcode");
-                            using (var client = new WebClient())
+                            string PostData = "{\"ClientAPIKey\":\"" + SharedResources.ClientAPIKey + "\",\"MachineName\":\"" + P.name + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
+                            string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.PrintFileName, ".gcode");
+                            using (var client = new System.Net.WebClient())
                             {
                                 client.Headers.Add("Content-Type", "application/json;odata=verbose");
-                                byte[] result = client.UploadData(TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
-                                File.WriteAllBytes(FilePath, result);
+                                byte[] result = client.UploadData(SharedResources.TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
+                                System.IO.File.WriteAllBytes(FilePath, result);
                             }
 
                             //No job is running on the Printer! Lets send one.
-                            int CommandID = int.Parse(InvokeCommand("print -input_file \"" + FilePath + "\" -machine_name " + P.name));
+                            string[] PrinterMaterials = new string[2] { "PLA", "PLA" };
+                            PrintCommand Print = new PrintCommand(SharedResources.rpcid.FetchRPCID(), null, true, FilePath, P.name, PrinterMaterials, "miraclegrue", new slicersettings(), Mi.CurrentJob);
+                            bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
                             bool MethodReception = false;
                             DateTime CommandSent = DateTime.Now;
                             //Wait for Print
+
                             while (!MethodReception)
                             {
-                                if (NoisyClient) { System.Console.WriteLine("Waiting for print to send"); }
+                                //Waiting for print to send
                                 if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
                                 {
                                     //If recieving a response from conveyor about the print has taken over 5 seconds, abort waiting and carry on.
                                     break;
                                 }
                                 System.Threading.Thread.Sleep(500);
-                                methodReplyRecieved.TryGetValue(CommandID, out MethodReception);
+                                Command MethodReceptionCMD;
                                 //Check if reply recieved
+                                SharedResources.CommandHistory.TryGetValue(Print.rpcid, out MethodReceptionCMD);
+                                MethodReception = MethodReceptionCMD.Recieved;
                             }
-                            JUpdate.JobId = Mi.CurrentJob;
-                            JUpdate.started = true;
-                            JUpdate.complete = false;
-                            JUpdate.Status = "Print Job Queued to Conveyor!";
+                            if (SuccessfullJobSend || MethodReception)
+                            {
+                                JUpdate.JobId = Mi.CurrentJob;
+                                JUpdate.started = true;
+                                JUpdate.complete = false;
+                                JUpdate.Status = "Print Job Queued to Conveyor!";
+                            }
+                            else
+                            {
+                                JUpdate.JobId = Mi.CurrentJob;
+                                JUpdate.started = false;
+                                JUpdate.complete = false;
+                                JUpdate.Status = "Print Job Queued to Conveyor!";
+                            }
                         }
                         else
                         {
@@ -275,7 +297,7 @@ namespace RepRancher._2._4._1
                             JUpdate.Status = "Another activity is presently going on the printer. Client can not start job.";
                             //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                             J = null;
-                            foreach (ConveyorJob JinQ in CurrentJobs.Values)
+                            foreach (ConveyorJob JinQ in SharedResources.CurrentJobs.Values)
                             {
                                 if (JinQ.machine_name.Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
                                 {
@@ -304,7 +326,7 @@ namespace RepRancher._2._4._1
                         JUpdate.Status = null;
                         //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                         J = null;
-                        foreach (ConveyorJob jerb in CurrentJobs.Values)
+                        foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values)
                         {
                             if (jerb.machine_name.Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
                             {

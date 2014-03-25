@@ -381,17 +381,11 @@ namespace RepRancher._2._4._1
                             existingVal.conclusion = j.conclusion;
                             return existingVal;
                         });
+                        PrintCommand PreviousPrintCommand = (PrintCommand)PreviousCommand;
+                        //PreviousPrintCommand.
                         if (!PreviousCommand.Recieved)
                         {
-                            int MakerFarmJobId = 0;
-                            if (SharedResources.RPCIDtoMakerFarmJobIds.TryGetValue(MethodID, out MakerFarmJobId))
-                            {
-                                if (SharedResources.MakerWareToConveyorJobIds.TryUpdate(MakerFarmJobId, j.id, 0))
-                                {
-                                    int temp;
-                                    SharedResources.RPCIDtoMakerFarmJobIds.TryRemove(MakerFarmJobId, out temp);
-                                }
-                            }
+                            SharedResources.MakerFarmToConveyorJobIds.TryUpdate(PreviousPrintCommand.MakerFarmJobId, j.id, 0);
                         }
                     }
                     else

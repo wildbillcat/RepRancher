@@ -88,7 +88,17 @@ namespace RepRancher._2._4._1
          */
         System.Net.IPEndPoint ConveyorIPEndpoint;
 
-        public SharedResources(System.Net.IPAddress ConveyorIP, int ConveyorPort)
+        /*
+         * This URI fetches the file requested from the webserver 
+         */
+        public Uri TakeThis;
+
+        /*
+         * This key is used for File Downloads
+         */
+        public string ClientAPIKey;
+
+        public SharedResources(System.Net.IPAddress ConveyorIP, int ConveyorPort, Uri Takethis, string ClientAPIkey)
         {
             ConveyorIPEndpoint = new System.Net.IPEndPoint(ConveyorIP, ConveyorPort);
             tcpClient = new System.Net.Sockets.TcpClient();
@@ -99,12 +109,13 @@ namespace RepRancher._2._4._1
             CurrentPorts = new ConcurrentDictionary<string,ConveyorPort>();
             CurrentPrinters = new ConcurrentDictionary<string, ConveyorPrinter>();
             CurrentJobs = new ConcurrentDictionary<int, ConveyorJob>();
-            MakerWareToConveyorJobIds = new ConcurrentDictionary<int, int>();
-            RPCIDtoMakerFarmJobIds = new ConcurrentDictionary<int, int>();
+            MakerFarmToConveyorJobIds = new ConcurrentDictionary<int, int>();
             rpcid = new ConcurrentRPCID();
             ConveyorReplyMutex = new System.Threading.Mutex();
             repliesFromConveyor = "";
             contentAvailable = true;
+            TakeThis = Takethis;
+            ClientAPIKey = ClientAPIkey;
         }
 
         public bool ResetConveyorConnection()
