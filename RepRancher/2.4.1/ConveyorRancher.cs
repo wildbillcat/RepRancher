@@ -4,6 +4,8 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Conveyor_JSONRPC_API._2._4._1;
+using Conveyor_JSONRPC_API._2._4._1.Types;
 
 namespace RepRancher._2._4._1
 {
@@ -91,7 +93,21 @@ namespace RepRancher._2._4._1
 
         public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
         {
-            throw new NotImplementedException();
+            List<RepRancher.MakerFarmService.RancherCommandGlossary> PrinterAbilities = new List<RepRancher.MakerFarmService.RancherCommandGlossary>();
+            foreach (RepRancher.MakerFarmService.MachineInterest Interest in ReportOn)
+            {
+                if (SharedResources.CurrentPrinters.ContainsKey(Interest.MachineName))
+                {
+                    RepRancher.MakerFarmService.RancherCommandGlossary Gloss = new RepRancher.MakerFarmService.RancherCommandGlossary();
+                    Gloss.MachineName = Interest.MachineName;
+                    Gloss.Print_Cancel = DefaultAvailableCommands.Print_Cancel;
+                    Gloss.Print_Pause = DefaultAvailableCommands.Print_Pause;
+                    Gloss.Print_Resume = DefaultAvailableCommands.Print_Resume;
+                    Gloss.Print_Send = DefaultAvailableCommands.Print_Send;
+                    PrinterAbilities.Add(Gloss);
+                }                
+            }
+            return PrinterAbilities.ToArray();
         }
 
         public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
