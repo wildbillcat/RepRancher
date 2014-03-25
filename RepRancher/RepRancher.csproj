@@ -87,9 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="2.4.1\CommandLineTerminal.cs" />
+    <Compile Include="2.4.1\ConcurrentRPCID.cs" />
+    <Compile Include="2.4.1\ConveyorListenerParser.cs" />
+    <Compile Include="2.4.1\ConveyorListenerStream.cs" />
     <Compile Include="2.4.1\_oldConveyorListenerService.cs" />
     <Compile Include="2.4.1\ConveyorRancher.cs" />
-    <Compile Include="2.4.1\_oldConveyorService.cs" />
     <Compile Include="RanchForeman.cs" />
     <Compile Include="MakerFarmUpdate.cs" />
     <Compile Include="Program.cs" />

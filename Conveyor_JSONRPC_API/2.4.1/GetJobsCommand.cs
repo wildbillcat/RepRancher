@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Conveyor_JSONRPC_API._2._4._1
 {
-    class GetJobsCommand : Command
+    public class GetJobsCommand : Command
     {
         public GetJobsCommand(int RpcId)
         {

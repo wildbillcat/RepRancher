@@ -59,7 +59,6 @@ namespace RepRancher._2._4._1
              */
             //This defines the storage folder used for this particular client instance
             PrintTemporaryFileStoragePath = Brand.PrintTemporaryFileStoragePath;
-
             
             //This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
             ConveyorReplyTimeout = Brand.PrinterReplyTimeout;

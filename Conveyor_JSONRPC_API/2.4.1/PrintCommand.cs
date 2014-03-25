@@ -7,7 +7,7 @@ using Conveyor_JSONRPC_API._2._4._1.Types;
 
 namespace Conveyor_JSONRPC_API._2._4._1
 {
-    class PrintCommand : Command
+    public class PrintCommand : Command
     {
         string[] gcode_processor_names;
         bool has_start_end;

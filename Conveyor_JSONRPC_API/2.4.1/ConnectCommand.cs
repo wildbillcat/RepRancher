@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Conveyor_JSONRPC_API._2._4._1
 {
-    class ConnectCommand : Command
+    public class ConnectCommand : Command
     {
         string driver_name;
         string machine_name;
