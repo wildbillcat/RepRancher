@@ -242,13 +242,17 @@ namespace RepRancher._2._4._1
                 }
                 if (invalid)
                 {
-                    Abort.Add(SharedResources.MakerFarmToConveyorJobIds[i]);
+                    Abort.Add(i);
                 }
             }
             //Now that there is a list of no longer valid jobs, let's toss them
             foreach (int i in Abort)
             {
-                string FilePath = string.Concat(PrintTemporaryFileStoragePath, i.ToString(), ".gcode");
+                ConveyorJob TempJ;
+                int TempVal;
+                SharedResources.CurrentJobs.TryGetValue(SharedResources.MakerFarmToConveyorJobIds[i], out TempJ);
+                SharedResources.MakerFarmToConveyorJobIds.TryRemove(i, out TempVal);
+                string FilePath = string.Concat(PrintTemporaryFileStoragePath, TempJ.name);
                 if (System.IO.File.Exists(FilePath))
                 {
                     System.IO.File.Delete(FilePath);
@@ -349,7 +353,7 @@ namespace RepRancher._2._4._1
                         {
                             //Lets fetch the file we need to print.
                             string PostData = "{\"ClientAPIKey\":\"" + SharedResources.ClientAPIKey + "\",\"MachineName\":\"" + P.name + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
-                            string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.PrintFileName, ".gcode");
+                            string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.CurrentJob.ToString(), "_", Mi.PrintFileName);
                             using (var client = new System.Net.WebClient())
                             {
                                 client.Headers.Add("Content-Type", "application/json;odata=verbose");
