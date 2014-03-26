@@ -112,9 +112,10 @@ namespace RepRancher._2._4._1
 
             //Saying hello
             HelloCommand Hello = new HelloCommand(SharedResources.rpcid.FetchRPCID());
-            Command MethodReception = Hello;
+            Command MethodReception = (Command)Hello;
+            bool SuccessfullSend = SharedResources.IssueCommand(Hello);
             //Waiting for world
-            while (!MethodReception.Recieved)
+            while (!MethodReception.Recieved && SuccessfullSend)
             {
                 System.Threading.Thread.Sleep(500);
                 SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
@@ -123,34 +124,37 @@ namespace RepRancher._2._4._1
 
             //Request Ports
             GetPortsCommand GetPorts = new GetPortsCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = GetPorts;
+            MethodReception = (Command)GetPorts;
+            SharedResources.IssueCommand(GetPorts);
             //Wait for Ports
             while (!MethodReception.Recieved)
             {
                 System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                SharedResources.CommandHistory.TryGetValue(GetPorts.rpcid, out MethodReception);
                 //Check if reply recieved
             }
 
             //Request Printers
             GetPrintersCommand GetPrinters = new GetPrintersCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = GetPrinters;
+            MethodReception = (Command)GetPrinters;
+            SharedResources.IssueCommand(GetPrinters);
             //Wait for Printers
             while (!MethodReception.Recieved)
             {
                 System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                SharedResources.CommandHistory.TryGetValue(GetPrinters.rpcid, out MethodReception);
                 //Check if reply recieved
             }
 
             //Request Jobs
             GetJobsCommand GetJobs = new GetJobsCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = GetJobs;
+            MethodReception = (Command)GetJobs;
+            SharedResources.IssueCommand(GetJobs);
             //Wait for Jobs
             while (!MethodReception.Recieved)
             {
                 System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                SharedResources.CommandHistory.TryGetValue(GetJobs.rpcid, out MethodReception);
                 //Check if reply recieved
             }
 
@@ -184,7 +188,7 @@ namespace RepRancher._2._4._1
                          while (!MethodReception.Recieved)
                          {
                              System.Threading.Thread.Sleep(500);
-                             SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                             SharedResources.CommandHistory.TryGetValue(Connect.rpcid, out MethodReception);
                              //Check if reply recieved set to true, breaking the loop
                          }
                          //Port Connected

@@ -397,6 +397,7 @@ namespace RepRancher._2._4._1
                         Console.Error.WriteLine(JSON);
                         Console.Error.WriteLine();
                     }
+                    PreviousCommand.Recieved = true;
                     SharedResources.CommandHistory.AddOrUpdate(PreviousCommand.rpcid, PreviousCommand, (key, existingVal) =>
                         {
                             existingVal.Recieved = PreviousCommand.Recieved;
