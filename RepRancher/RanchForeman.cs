@@ -160,10 +160,10 @@ namespace RepRancher
                 Console.Error.WriteLine(DateTime.Now.ToString() + ": Failed to report printers Seen to MakerFarm.");
                 Console.Error.WriteLine();
             }
-
+            RepRancher.MakerFarmService.MachineInterest[] ReportOn = new MakerFarmService.MachineInterest[1];
             try
             {
-                RepRancher.MakerFarmService.MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<RepRancher.MakerFarmService.MachineInterest>(DoTellUri, "POST", false, new System.Data.Services.Client.BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+                ReportOn = MakerFarmServiceContainer.Execute<RepRancher.MakerFarmService.MachineInterest>(DoTellUri, "POST", false, new System.Data.Services.Client.BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
             }
             catch
             {
@@ -171,6 +171,7 @@ namespace RepRancher
                 Console.Error.WriteLine();
             }
             
+            /* It appears a concurrent means of fetching from all the clients and merging simultaneously is harder than first expected. */
             //Fetch Updates from all the clients as to the statuses of the Printers concurrently, prioritising connected over disconnected printers.
             System.Collections.Concurrent.ConcurrentDictionary<string, MakerFarmUpdate> MakerFarmUpdates = new System.Collections.Concurrent.ConcurrentDictionary<string, MakerFarmUpdate>();
             Parallel.ForEach(Ranchers, Rancher =>
@@ -201,20 +202,28 @@ namespace RepRancher
                     Console.Error.WriteLine();
                 }                
             }
-             );           
+             );        
 
             /*Single Threaded Solution
+            List<MakerFarmUpdate> MakerFarmUpdatesTemp = new List<MakerFarmUpdate>();
+            foreach(Rancher R in Ranchers){
+                MakerFarmUpdatesTemp.AddRange(R.GetMakerFarmUpdates(ReportOn));
+            }
             //Now resolve conflicts if multiple clients know of a Printer (Prevent a disconnect reonnect battle)
-            Dictionary<string, MakerFarmUpdate> DistinctUpdates = new Dictionary<string,MakerFarmUpdate>();
-            foreach(MakerFarmUpdate MUpdate in MakerFarmUpdates){
-                if(DistinctUpdates.ContainsKey(MUpdate.MachineUpdate.MachineName)){
+            Dictionary<string, MakerFarmUpdate> MakerFarmUpdates = new Dictionary<string, MakerFarmUpdate>();
+            foreach (MakerFarmUpdate MUpdate in MakerFarmUpdatesTemp)
+            {
+                if (MakerFarmUpdates.ContainsKey(MUpdate.MachineUpdate.MachineName))
+                {
                     //Appears this printer is a duplicate. 
                     if(MUpdate.MachineUpdate.MachineStatus.Equals("DISCONNECTED")){
                         //Duplicate is disconnected, ignore
-                    }else if(DistinctUpdates[MUpdate.MachineUpdate.MachineName].MachineUpdate.MachineStatus.Equals("DISCONNECTED")){
+                    }
+                    else if (MakerFarmUpdates[MUpdate.MachineUpdate.MachineName].MachineUpdate.MachineStatus.Equals("DISCONNECTED"))
+                    {
                         //The original is Disconnected, and the new one is not! Lets use the new update.
-                        DistinctUpdates.Remove(MUpdate.MachineUpdate.MachineName);
-                        DistinctUpdates.Add(MUpdate.MachineUpdate.MachineName, MUpdate);
+                        MakerFarmUpdates.Remove(MUpdate.MachineUpdate.MachineName);
+                        MakerFarmUpdates.Add(MUpdate.MachineUpdate.MachineName, MUpdate);
                     }
                     //Else: Do nothing, both are disconnected and one does not take creedence over another.
                 }
