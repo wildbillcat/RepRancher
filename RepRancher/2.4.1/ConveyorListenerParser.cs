@@ -28,10 +28,10 @@ namespace RepRancher._2._4._1
         public void ListenerParserThreadRun()
         {
             int ProcessStalls = 0;
+            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 ListenerParser");
+            Console.Error.WriteLine();
             while (true)
-            {
-                Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 ListenerParser");
-                Console.Error.WriteLine();
+            {                
                 if (SharedResources.contentAvailable || ProcessStalls > 5)
                 {
                     //Resets the number of Process Stalls
