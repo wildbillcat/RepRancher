@@ -141,11 +141,9 @@ namespace RepRancher._2._4._1
                 {
                     //Connection failed!                
                     ConveyorReplyMutex.ReleaseMutex();
-                    WriteToConveyorLock.ReleaseMutex();
                     return false;
                 }
                 ConveyorReplyMutex.ReleaseMutex();
-                WriteToConveyorLock.ReleaseMutex();
                 return true;
             }
         }
