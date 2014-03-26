@@ -345,7 +345,6 @@ namespace RepRancher._2._4._1
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
                             }
                         }
-
                     }
                     //Built up information about this machine, add it to the list of updates for Makerfarm
                     MakerFarmUpdates.Add(new MakerFarmUpdate(MUpdate, JUpdate));
@@ -357,8 +356,7 @@ namespace RepRancher._2._4._1
                     Console.Error.WriteLine();
                 }
             }
-
-            throw new NotImplementedException();
+            return MakerFarmUpdates.ToArray();
         }
 
         //Private method used by the Rancher, canceled all jobs based on printer name provided

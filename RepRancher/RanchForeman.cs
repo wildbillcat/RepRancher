@@ -10,12 +10,7 @@ namespace RepRancher
      * This is the main class that monitor's everything that is going on. 
      */
     class RanchForeman
-    {
-        /*
-         * Determines how much output is sent to screen
-         */
-        public static bool NoisyClient;
-        
+    {       
         /*
          * This is the APIKey to MakerFarm
          */
@@ -25,11 +20,6 @@ namespace RepRancher
          * This is the ClientID used to access MakerFarm
          */
         int MakerFarmClientID;
-
-        /*
-         * This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
-         */
-        int ConveyorReplyTimeout;
 
         Uri uri;
         Uri ISpyUri;
@@ -53,6 +43,200 @@ namespace RepRancher
          */
         System.Timers.Timer ErrorFlush;
 
-        
+        /*
+        * This is the connection to MakerFarm
+        */
+        RepRancher.MakerFarmService.Container MakerFarmServiceContainer;
+
+        /*
+         * This determines if Makerfarm should be contacted and updated
+         */
+        bool MakerFarmClientEnable;
+
+        /*
+         * This Timer is used to trigger updates to MakerFarm
+         */
+        System.Timers.Timer MakerFarm;
+
+        List<Rancher> Ranchers;
+
+        public RanchForeman()
+        {
+            try
+            {
+                int end = Properties.Settings.Default.ErrorFile.LastIndexOf("\\");
+                if (!System.IO.Directory.Exists(Properties.Settings.Default.ErrorFile.Substring(0, end)))
+                {
+                    System.IO.Directory.CreateDirectory(Properties.Settings.Default.ErrorFile.Substring(0, end));
+                }
+                ostrm = new System.IO.FileStream(Properties.Settings.Default.ErrorFile, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write);
+                errorLog = new System.IO.StreamWriter(ostrm);
+                System.Console.SetError(errorLog);
+                //Opened Connection to Error Log
+                //Opening Test Message for Log
+                errorLog.Flush();
+                int ErrorTimer = 1000 * Properties.Settings.Default.ErrorTimer;
+                ErrorFlush = new System.Timers.Timer(ErrorTimer);
+                ErrorFlush.Elapsed += new System.Timers.ElapsedEventHandler(FlushErrorLogEvent);
+                ErrorFlush.Enabled = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot open ./error.txt for writing! This session will not have any error logs!");
+                Console.WriteLine(e.Message);
+            }
+
+            //Reading MakerFarm Uri
+            uri = new Uri(Properties.Settings.Default.MakerFarmAPIUri);
+            //Creating MakerFarm Service Container
+            MakerFarmServiceContainer = new MakerFarmService.Container(uri);
+            ClientAPIKey = Properties.Settings.Default.MakerFarmClientAPIKey;
+            MakerFarmClientID = Properties.Settings.Default.MakerFarmClientID;
+            ISpyUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISpy");
+            DoTellUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/DoTell");
+            ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
+            TakeThis = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/TakeThis");
+
+            MakerFarmClientEnable = Properties.Settings.Default.MakerFarmClientEnable;
+            if (MakerFarmClientEnable)
+            {
+                MakerFarm = new System.Timers.Timer(Properties.Settings.Default.MakerFarmTime * 1000);
+                MakerFarm.Elapsed += new System.Timers.ElapsedEventHandler(MakerFarmEvent);
+                MakerFarm.Enabled = true;
+            }
+            List<Rancher> Ranchers = new List<Rancher>();
+            RancherBrandCollection RancherBrands = Properties.Settings.Default.RancherBrands;
+            foreach (RancherBrand R in RancherBrands)
+            {
+                if (R.Enabled)
+                {
+                    if (R.Type == RancherType.Conveyor_2_4_1)
+                    {
+                        Ranchers.Add(new _2._4._1.ConveyorRancher(R, TakeThis, ClientAPIKey));
+                    }
+                    else if (R.Type == RancherType.Conveyor_3_0_0)
+                    {
+                        new NotImplementedException();
+                    }
+                    else if (R.Type == RancherType.DimensionSST768)
+                    {
+                        new NotImplementedException();
+                    }
+                    else
+                    {
+                        //Unknown Type of Rancher!
+                        Console.Error.WriteLine("Unknown Type of Client Specified: " + R.Type.ToString());
+                        Console.Error.WriteLine();
+                    }
+                }                
+            }
+        }
+
+        private void FlushErrorLogEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            errorLog.Flush();
+        }
+
+        private void MakerFarmEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            //Time to check on what the printers are doing
+            MakerFarm.Enabled = false;
+            MakerFarm.Stop();
+
+            //Query all of the Clients for their known printers and build a list to report to Makerfarm
+            List<string> PrintersKnown = new List<string>();
+            foreach (Rancher R in Ranchers)
+            {
+                PrintersKnown.AddRange(R.GetKnownPrinters());
+            }
+
+            //Report the List to MakerFarm
+            try
+            {
+                MakerFarmServiceContainer.Execute(ISpyUri, "POST", new System.Data.Services.Client.BodyOperationParameter("ClientAPIKey", ClientAPIKey), new System.Data.Services.Client.BodyOperationParameter("Machines", PrintersKnown.ToArray()));
+            }
+            catch
+            {
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Failed to report printers Seen to MakerFarm.");
+                Console.Error.WriteLine();
+            }
+
+            try
+            {
+                RepRancher.MakerFarmService.MachineInterest[] ReportOn = MakerFarmServiceContainer.Execute<RepRancher.MakerFarmService.MachineInterest>(DoTellUri, "POST", false, new System.Data.Services.Client.BodyOperationParameter("ClientAPIKey", ClientAPIKey)).ToArray();
+            }
+            catch
+            {
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Failed to find out from makerfarm what printers I should report on.");
+                Console.Error.WriteLine();
+            }
+            
+            //Fetch Updates from all the clients as to the statuses of the Printers concurrently, prioritising connected over disconnected printers.
+            System.Collections.Concurrent.ConcurrentDictionary<string, MakerFarmUpdate> MakerFarmUpdates = new System.Collections.Concurrent.ConcurrentDictionary<string, MakerFarmUpdate>();
+            Parallel.ForEach(Ranchers, Rancher =>
+            {
+                try
+                {
+                    foreach (MakerFarmUpdate MakerFUpdate in Rancher.GetMakerFarmUpdates(ReportOn))
+                    {
+                        MakerFarmUpdates.AddOrUpdate(MakerFUpdate.MachineUpdate.MachineName, MakerFUpdate, (key, existingVal) =>
+                        {
+                            if (MakerFUpdate.MachineUpdate.MachineStatus.Equals("DISCONNECTED"))
+                            {
+                                //New update is disconnected, disregard
+                            }
+                            else if (existingVal.MachineUpdate.MachineStatus.Equals("DISCONNECTED"))
+                            {
+                                //The Old MachineUpdate was disconnected! Update it
+                                existingVal.MachineUpdate = MakerFUpdate.MachineUpdate;
+                                existingVal.JobUpdate = MakerFUpdate.JobUpdate;
+                            }
+                            return existingVal;
+                        });
+                    }
+                }
+                catch
+                {
+                    Console.Error.WriteLine(DateTime.Now.ToString() + ": An Error Occurred while Fetching Information from Clients and updating the Update List");
+                    Console.Error.WriteLine();
+                }                
+            }
+             );           
+
+            /*Single Threaded Solution
+            //Now resolve conflicts if multiple clients know of a Printer (Prevent a disconnect reonnect battle)
+            Dictionary<string, MakerFarmUpdate> DistinctUpdates = new Dictionary<string,MakerFarmUpdate>();
+            foreach(MakerFarmUpdate MUpdate in MakerFarmUpdates){
+                if(DistinctUpdates.ContainsKey(MUpdate.MachineUpdate.MachineName)){
+                    //Appears this printer is a duplicate. 
+                    if(MUpdate.MachineUpdate.MachineStatus.Equals("DISCONNECTED")){
+                        //Duplicate is disconnected, ignore
+                    }else if(DistinctUpdates[MUpdate.MachineUpdate.MachineName].MachineUpdate.MachineStatus.Equals("DISCONNECTED")){
+                        //The original is Disconnected, and the new one is not! Lets use the new update.
+                        DistinctUpdates.Remove(MUpdate.MachineUpdate.MachineName);
+                        DistinctUpdates.Add(MUpdate.MachineUpdate.MachineName, MUpdate);
+                    }
+                    //Else: Do nothing, both are disconnected and one does not take creedence over another.
+                }
+            }*/
+            
+            //Now that the MakerFarm Updates have been cleared up, lets send them to MakerFarm
+            Parallel.ForEach(MakerFarmUpdates.Values, MakerUpdate =>
+            {
+                try
+                {
+                    MakerFarmServiceContainer.Execute(ISayUri, "POST", new System.Data.Services.Client.BodyOperationParameter("ClientAPIKey", ClientAPIKey), new System.Data.Services.Client.BodyOperationParameter("MachineUpdate", MakerUpdate.MachineUpdate), new System.Data.Services.Client.BodyOperationParameter("JobUpdate", MakerUpdate.JobUpdate));
+                }
+                catch
+                {
+                    Console.Error.WriteLine(DateTime.Now.ToString() + ": Writing one of the printer updates to makerfarm Failed. Printer: " + MakerUpdate.MachineUpdate.MachineName);
+                    Console.Error.WriteLine();
+                }                
+            }
+             );
+
+            MakerFarm.Enabled = true;
+            MakerFarm.Start();
+        }
     }
 }

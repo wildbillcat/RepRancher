@@ -9,8 +9,8 @@ namespace RepRancher
 {
     public class MakerFarmUpdate
     {
-        MachineStatusUpdate MachineUpdate { set; get; }
-        JobStatusUpdate JobUpdate { set; get; }
+        public MachineStatusUpdate MachineUpdate { set; get; }
+        public JobStatusUpdate JobUpdate { set; get; }
 
         public MakerFarmUpdate(MachineStatusUpdate MachineStatusUpdate, JobStatusUpdate JobStatusUpdate)
         {
