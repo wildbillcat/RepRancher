@@ -105,6 +105,92 @@ namespace RepRancher._2._4._1
 
             ConveyorListenerParserThread = new System.Threading.Thread(new System.Threading.ThreadStart(ConveyorListenerParser.ListenerParserThreadRun));
             ConveyorListenerParserThread.Start();
+
+            /*
+             * Now lets do the Startup routine the Mimics Conveyor
+             */
+
+            //Saying hello
+            HelloCommand Hello = new HelloCommand(SharedResources.rpcid.FetchRPCID());
+            Command MethodReception = Hello;
+            //Waiting for world
+            while (!MethodReception.Recieved)
+            {
+                System.Threading.Thread.Sleep(500);
+                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                //Check if reply recieved
+            }
+
+            //Request Ports
+            GetPortsCommand GetPorts = new GetPortsCommand(SharedResources.rpcid.FetchRPCID());
+            MethodReception = GetPorts;
+            //Wait for Ports
+            while (!MethodReception.Recieved)
+            {
+                System.Threading.Thread.Sleep(500);
+                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                //Check if reply recieved
+            }
+
+            //Request Printers
+            GetPrintersCommand GetPrinters = new GetPrintersCommand(SharedResources.rpcid.FetchRPCID());
+            MethodReception = GetPrinters;
+            //Wait for Printers
+            while (!MethodReception.Recieved)
+            {
+                System.Threading.Thread.Sleep(500);
+                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                //Check if reply recieved
+            }
+
+            //Request Jobs
+            GetJobsCommand GetJobs = new GetJobsCommand(SharedResources.rpcid.FetchRPCID());
+            MethodReception = GetJobs;
+            //Wait for Jobs
+            while (!MethodReception.Recieved)
+            {
+                System.Threading.Thread.Sleep(500);
+                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                //Check if reply recieved
+            }
+
+             //Preparing to Connect
+             foreach (string key in SharedResources.CurrentPorts.Keys)
+             {
+                 ConveyorPort P = null;
+                 if (SharedResources.CurrentPorts.TryGetValue(key, out P))
+                 {
+                     //Port Found, Test if it is attached to printer. if not, connect
+                     bool PortAttached = false;
+                     //Checking if Port is Attached to a Printer
+                     foreach (string pkey in SharedResources.CurrentPrinters.Keys)
+                     {
+                         ConveyorPrinter p = null;
+                         if (SharedResources.CurrentPrinters.TryGetValue(pkey, out p))
+                         {
+                             if (P.name.Equals(p.port_name))
+                             {
+                                 PortAttached = true;
+                                 //Port exists and is attached to a printer
+                             }
+                         }
+                     }
+                     if (!PortAttached)
+                     {
+                         //Port was not attached to a printer, Connecting
+                         ConnectCommand Connect = new ConnectCommand(SharedResources.rpcid.FetchRPCID(), null, null, false, P.name, null);
+                         MethodReception = Connect;
+                         SharedResources.IssueCommand(Connect);
+                         while (!MethodReception.Recieved)
+                         {
+                             System.Threading.Thread.Sleep(500);
+                             SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
+                             //Check if reply recieved set to true, breaking the loop
+                         }
+                         //Port Connected
+                     }
+                 }
+             }////////////
         }
 
         public string[] GetKnownPrinters()
