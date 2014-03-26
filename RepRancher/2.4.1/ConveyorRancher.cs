@@ -57,6 +57,8 @@ namespace RepRancher._2._4._1
 
         public ConveyorRancher(RancherBrand Brand, Uri Fetch, string ClientAPIKey)
         {
+            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 Client");
+            Console.Error.WriteLine();
             /*
              * This configuration should be true of all 2.4.1 Clients
              */

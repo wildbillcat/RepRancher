@@ -30,6 +30,8 @@ namespace RepRancher._2._4._1
             int ProcessStalls = 0;
             while (true)
             {
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 ListenerParser");
+                Console.Error.WriteLine();
                 if (SharedResources.contentAvailable || ProcessStalls > 5)
                 {
                     //Resets the number of Process Stalls
@@ -59,14 +61,14 @@ namespace RepRancher._2._4._1
                             }
                             else
                             {
-                                System.Console.Error.WriteLine("Something went Wrong and the JSON object could not be processed");
+                                System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
                                 System.Console.Error.WriteLine(command[1]);
                                 System.Console.Error.WriteLine();
                             }
                         }
                         catch (Exception e)
                         {
-                            System.Console.Error.WriteLine("It's all gone very wrong! Please check log");
+                            System.Console.Error.WriteLine(DateTime.Now.ToString() + ": It's all gone very wrong! Please check log");
                             System.Console.Error.WriteLine("Error Message:");
                             System.Console.Error.WriteLine(e.Message);
                             System.Console.Error.WriteLine("Stack Trace:");
@@ -181,7 +183,7 @@ namespace RepRancher._2._4._1
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
                 //Detected Method
-                Console.Error.WriteLine("Detected Method : " + MethodName);
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
                     //This should trigger a printer poll
@@ -264,7 +266,7 @@ namespace RepRancher._2._4._1
                 }
                 else
                 {
-                    Console.Error.WriteLine("This Method \"" + MethodName + "\"is not known! Take note!");
+                    Console.Error.WriteLine(DateTime.Now.ToString() + ": This Method \"" + MethodName + "\"is not known! Take note!");
                     Console.Error.WriteLine(JSON);
                     Console.Error.WriteLine();
                 }
@@ -391,7 +393,7 @@ namespace RepRancher._2._4._1
                     else
                     {
                         //Do not yet have a means to process the return for method recieved
-                        Console.Error.WriteLine("This application could not handle the method reply recieved:");
+                        Console.Error.WriteLine(DateTime.Now.ToString() + ": This application could not handle the method reply recieved:");
                         Console.Error.WriteLine(JSON);
                         Console.Error.WriteLine();
                     }
@@ -405,7 +407,7 @@ namespace RepRancher._2._4._1
                 else
                 {
                     //RepRancher did not issue a method with this RPC id!
-                    Console.Error.WriteLine("This application recieved a reply to a command it did not issue:");
+                    Console.Error.WriteLine(DateTime.Now.ToString() + ": This application recieved a reply to a command it did not issue:");
                     Console.Error.WriteLine(JSON);
                     Console.Error.WriteLine();
                 }
@@ -413,7 +415,7 @@ namespace RepRancher._2._4._1
             else if (Reply == JsonReplyType.Error)
             {
                 //RepRancher recieved an error!
-                Console.Error.WriteLine("This application recieved an Error from Conveyor:");
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": This application recieved an Error from Conveyor:");
                 Console.Error.WriteLine(JSON);
                 Console.Error.WriteLine();
                 Console.WriteLine("Error");
@@ -423,7 +425,7 @@ namespace RepRancher._2._4._1
             else if (Reply == JsonReplyType.Invalid)
             {
                 //RepRancher detected an invalid json string!
-                Console.Error.WriteLine("This application Detected an invalid JSON string:");
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": This application Detected an invalid JSON string:");
                 Console.Error.WriteLine(JSON);
                 Console.Error.WriteLine();
                 Console.WriteLine("Invalid JSON Detected:");
@@ -432,7 +434,7 @@ namespace RepRancher._2._4._1
             }
             else
             {
-                Console.Error.WriteLine("An Impossible situation as occured!:");
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": An Impossible situation as occured!:");
                 Console.Error.WriteLine(JSON);
                 Console.Error.WriteLine();
                 //Something went really Wrong

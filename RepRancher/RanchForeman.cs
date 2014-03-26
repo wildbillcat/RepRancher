@@ -73,6 +73,8 @@ namespace RepRancher
                 errorLog = new System.IO.StreamWriter(ostrm);
                 System.Console.SetError(errorLog);
                 //Opened Connection to Error Log
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Error Log Connection Succeessfully opened");
+                Console.Error.WriteLine();
                 //Opening Test Message for Log
                 errorLog.Flush();
                 int ErrorTimer = 1000 * Properties.Settings.Default.ErrorTimer;
@@ -125,7 +127,7 @@ namespace RepRancher
                     else
                     {
                         //Unknown Type of Rancher!
-                        Console.Error.WriteLine("Unknown Type of Client Specified: " + R.Type.ToString());
+                        Console.Error.WriteLine(DateTime.Now.ToString() + ": Unknown Type of Client Specified: " + R.Type.ToString());
                         Console.Error.WriteLine();
                     }
                 }                
