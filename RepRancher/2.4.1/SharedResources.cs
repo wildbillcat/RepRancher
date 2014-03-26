@@ -61,7 +61,7 @@ namespace RepRancher._2._4._1
         /*
          * Write to Conveyor Mutex
          */
-        System.Threading.Mutex WriteToConveyorLock;
+        Object WriteToConveyorLock;
 
         /*
          * This controls access to the input recived string from conveyor between the ConveyorListenerStream and ConveyorListenerParser
@@ -99,7 +99,7 @@ namespace RepRancher._2._4._1
             tcpClient = new System.Net.Sockets.TcpClient();
             tcpClient.Connect(ConveyorIPEndpoint);
             dataStream = tcpClient.GetStream();
-            WriteToConveyorLock = new System.Threading.Mutex();
+            WriteToConveyorLock = new Object();
             CommandHistory = new ConcurrentDictionary<int,Command>();
             CurrentPorts = new ConcurrentDictionary<string,ConveyorPort>();
             CurrentPrinters = new ConcurrentDictionary<string, ConveyorPrinter>();
@@ -116,60 +116,65 @@ namespace RepRancher._2._4._1
         public bool ResetConveyorConnection()
         {
             //Ensure no Commands can be sent to the Conveyor Service
-            WriteToConveyorLock.WaitOne();
-
-            //Ensure other thread doesnt try parsing while the connection is broken.
-            ConveyorReplyMutex.WaitOne();
-
-            //Ensure the parser knows there is no string to parse.
-            contentAvailable = false;
-            try
+            lock (WriteToConveyorLock)
             {
-                //Closes and Disposes of old connection
-                tcpClient.Close();
+                //Ensure other thread doesnt try parsing while the connection is broken.
+                ConveyorReplyMutex.WaitOne();
 
-                //Creates new TCP Client
-                tcpClient = new System.Net.Sockets.TcpClient();
+                //Ensure the parser knows there is no string to parse.
+                contentAvailable = false;
+                try
+                {
+                    //Closes and Disposes of old connection
+                    tcpClient.Close();
 
-                //Attempt Connection to Conveyor
-                tcpClient.Connect(ConveyorIPEndpoint);
+                    //Creates new TCP Client
+                    tcpClient = new System.Net.Sockets.TcpClient();
 
-                //Fetch the new connection stream
-                dataStream = tcpClient.GetStream();                
+                    //Attempt Connection to Conveyor
+                    tcpClient.Connect(ConveyorIPEndpoint);
+
+                    //Fetch the new connection stream
+                    dataStream = tcpClient.GetStream();
+                }
+                catch
+                {
+                    //Connection failed!                
+                    ConveyorReplyMutex.ReleaseMutex();
+                    WriteToConveyorLock.ReleaseMutex();
+                    return false;
+                }
+                ConveyorReplyMutex.ReleaseMutex();
+                WriteToConveyorLock.ReleaseMutex();
+                return true;
             }
-            catch
-            {
-                //Connection failed!
-                return false;
-            }
-            return true;
         }
 
         public bool IssueCommand(Command Command)
         {
-            WriteToConveyorLock.WaitOne();
-            if (CommandHistory.TryAdd(Command.rpcid, Command))
+            lock (WriteToConveyorLock)
             {
-                try
+                if (CommandHistory.TryAdd(Command.rpcid, Command))
                 {
-                    byte[] bytesToWrite = Encoding.ASCII.GetBytes(Command.GetJSONString());
-                    dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
-                    dataStream.Flush();
-                    return true;
+                    try
+                    {
+                        byte[] bytesToWrite = Encoding.ASCII.GetBytes(Command.GetJSONString());
+                        dataStream.Write(bytesToWrite, 0, bytesToWrite.Length);
+                        dataStream.Flush();
+                        return true;
+                    }
+                    catch
+                    {
+                        Console.Error.WriteLine(DateTime.Now + " : Error - Could not communicate with Conveyor Service.");
+                        Console.Error.WriteLine(Command.GetJSONString());
+                        Console.Error.WriteLine();
+                        return false;
+                    }
                 }
-                catch
-                {
-                    Console.Error.WriteLine(DateTime.Now + " : Error - Could not communicate with Conveyor Service.");
-                    Console.Error.WriteLine(Command.GetJSONString());
-                    Console.Error.WriteLine();
-                    WriteToConveyorLock.ReleaseMutex();
-                    return false;
-                }
-            }
-            WriteToConveyorLock.ReleaseMutex();
-            Console.Error.WriteLine(DateTime.Now + " : Error - Could Command could not be added to Command History:");
-            Console.Error.WriteLine();
-            return false;
+                Console.Error.WriteLine(DateTime.Now + " : Error - Could Command could not be added to Command History:");
+                Console.Error.WriteLine();
+                return false;
+            }            
         }
     }
 }
