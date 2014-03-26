@@ -91,6 +91,12 @@
     <Compile Include="2.4.1\ConveyorListenerParser.cs" />
     <Compile Include="2.4.1\ConveyorListenerStream.cs" />
     <Compile Include="2.4.1\ConveyorRancher.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="RanchForeman.cs" />
     <Compile Include="MakerFarmUpdate.cs" />
     <Compile Include="Program.cs" />
@@ -103,6 +109,12 @@
     <Compile Include="Rancher.cs" />
     <Compile Include="RancherBrand.cs" />
     <Compile Include="RancherType.cs" />
+    <Compile Include="RepRancherService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RepRancherService.Designer.cs">
+      <DependentUpon>RepRancherService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Service References\MakerFarmService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -160,6 +172,14 @@
     <ServiceReferenceMetadataStorage Include="Service References\MakerFarmService\">
       <Type>datasvcmap</Type>
     </ServiceReferenceMetadataStorage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RepRancherService.resx">
+      <DependentUpon>RepRancherService.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
