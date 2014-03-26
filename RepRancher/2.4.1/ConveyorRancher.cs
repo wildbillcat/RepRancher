@@ -72,7 +72,21 @@ namespace RepRancher._2._4._1
              * Client Specific Configuration
              */
             //This defines the storage folder used for this particular client instance
-            PrintTemporaryFileStoragePath = Brand.PrintTemporaryFileStoragePath;
+            try
+            {
+                PrintTemporaryFileStoragePath = Brand.PrintTemporaryFileStoragePath;
+                if (!System.IO.Directory.Exists(PrintTemporaryFileStoragePath))
+                {
+                    System.IO.Directory.CreateDirectory(PrintTemporaryFileStoragePath);
+                }
+            }
+            catch
+            {
+                Console.Error.WriteLine(DateTime.Now.ToString() + ": Could not access the Client Temporary File Storage Path");
+                Console.Error.WriteLine();
+                throw new Exception();
+            }
+            
             
             //This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
             ConveyorReplyTimeout = Brand.PrinterReplyTimeout;
