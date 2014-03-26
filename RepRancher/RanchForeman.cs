@@ -161,6 +161,9 @@ namespace RepRancher
             {
                 Console.Error.WriteLine(DateTime.Now.ToString() + ": Failed to report printers Seen to MakerFarm.");
                 Console.Error.WriteLine();
+                MakerFarm.Enabled = true;
+                MakerFarm.Start();
+                return;
             }
             RepRancher.MakerFarmService.MachineInterest[] ReportOn = new MakerFarmService.MachineInterest[1];
             try
@@ -171,6 +174,9 @@ namespace RepRancher
             {
                 Console.Error.WriteLine(DateTime.Now.ToString() + ": Failed to find out from makerfarm what printers I should report on.");
                 Console.Error.WriteLine();
+                MakerFarm.Enabled = true;
+                MakerFarm.Start();
+                return;
             }
             
             /* It appears a concurrent means of fetching from all the clients and merging simultaneously is harder than first expected. */
@@ -202,6 +208,9 @@ namespace RepRancher
                 {
                     Console.Error.WriteLine(DateTime.Now.ToString() + ": An Error Occurred while Fetching Information from Clients and updating the Update List");
                     Console.Error.WriteLine();
+                    MakerFarm.Enabled = true;
+                    MakerFarm.Start();
+                    return;
                 }                
             }
              );        
@@ -242,6 +251,9 @@ namespace RepRancher
                 {
                     Console.Error.WriteLine(DateTime.Now.ToString() + ": Writing one of the printer updates to makerfarm Failed. Printer: " + MakerUpdate.MachineUpdate.MachineName);
                     Console.Error.WriteLine();
+                    MakerFarm.Enabled = true;
+                    MakerFarm.Start();
+                    return;
                 }                
             }
              );
