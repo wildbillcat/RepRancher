@@ -21,7 +21,9 @@ namespace RepRancher
             Console.WriteLine("RepRancher!");
             Console.WriteLine();
             //Test if Parsing the Rancher Works
-            
+            RanchForeman Foreman = new RanchForeman();
+            Console.WriteLine("Hired a Foreman!");
+            Console.WriteLine();
 
             Console.ReadLine();
             

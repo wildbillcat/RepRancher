@@ -104,7 +104,7 @@ namespace RepRancher
                 MakerFarm.Elapsed += new System.Timers.ElapsedEventHandler(MakerFarmEvent);
                 MakerFarm.Enabled = true;
             }
-            List<Rancher> Ranchers = new List<Rancher>();
+            Ranchers = new List<Rancher>();
             RancherBrandCollection RancherBrands = Properties.Settings.Default.RancherBrands;
             foreach (RancherBrand R in RancherBrands)
             {

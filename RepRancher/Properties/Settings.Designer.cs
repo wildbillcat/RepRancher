@@ -102,7 +102,7 @@ namespace RepRancher.Properties {
             xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
             <RancherBrand>
               <Enabled>true</Enabled>
-              <Type>Conveyor2_4_1</Type>
+              <Type>Conveyor_2_4_1</Type>
               <PrintTemporaryFileStoragePath>C:\Windows\Temp\</PrintTemporaryFileStoragePath>
               <PrinterReplyTimeout>5</PrinterReplyTimeout>
               <IPAddress>127.0.0.1</IPAddress>
