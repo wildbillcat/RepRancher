@@ -43,15 +43,6 @@ namespace RepRancher.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://lothar.architecture.yale.edu:50614/odata")]
-        public string MakerFarmAPIUri {
-            get {
-                return ((string)(this["MakerFarmAPIUri"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("S3cretKeyP4ssword")]
         public string MakerFarmClientAPIKey {
             get {
@@ -70,15 +61,6 @@ namespace RepRancher.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool MakerFarmClientEnable {
-            get {
-                return ((bool)(this["MakerFarmClientEnable"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int MakerFarmTime {
             get {
@@ -88,7 +70,25 @@ namespace RepRancher.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://lothar.architecture.yale.edu:50614/odata/")]
+        public string MakerFarmAPIUri {
+            get {
+                return ((string)(this["MakerFarmAPIUri"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MakerFarmClientEnable {
+            get {
+                return ((bool)(this["MakerFarmClientEnable"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int ErrorTimer {
             get {
                 return ((int)(this["ErrorTimer"]));
@@ -97,37 +97,26 @@ namespace RepRancher.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <ArrayOfRancherBrand xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" 
-            xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
-            <RancherBrand>
-              <Enabled>true</Enabled>
-              <Type>Conveyor_2_4_1</Type>
-              <PrintTemporaryFileStoragePath>C:\Windows\Temp\</PrintTemporaryFileStoragePath>
-              <PrinterReplyTimeout>5</PrinterReplyTimeout>
-              <IPAddress>127.0.0.1</IPAddress>
-              <PortNumber>9999</PortNumber>
-              <AdvancedConfigurationString>Invalid</AdvancedConfigurationString>
-            </RancherBrand>
-            <RancherBrand>
-              <Enabled>false</Enabled>
-              <Type>Conveyor_3_0_0</Type>
-              <PrintTemporaryFileStoragePath>C:\Windows\Temp\</PrintTemporaryFileStoragePath>
-              <PrinterReplyTimeout>5</PrinterReplyTimeout>
-              <IPAddress>127.0.0.1</IPAddress>
-              <PortNumber>9999</PortNumber>
-              <AdvancedConfigurationString>Invalid</AdvancedConfigurationString>
-            </RancherBrand>
-            <RancherBrand>
-              <Enabled>false</Enabled>
-              <Type>DimensionSST768</Type>
-              <PrintTemporaryFileStoragePath>C:\Windows\Temp\</PrintTemporaryFileStoragePath>
-              <PrinterReplyTimeout>5</PrinterReplyTimeout>
-              <IPAddress>127.0.0.1</IPAddress>
-              <PortNumber>9999</PortNumber>
-              <AdvancedConfigurationString>Invalid</AdvancedConfigurationString>
-            </RancherBrand>
-          </ArrayOfRancherBrand>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <ArrayOfRancherBrand xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xml" +
+            "ns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n          <RancherBrand>\r\n " +
+            "           <Enabled>true</Enabled>\r\n            <Type>Conveyor_2_4_1</Type>\r\n   " +
+            "         <PrintTemporaryFileStoragePath>C:\\Windows\\Temp\\_2_4_1_Client\\</PrintTem" +
+            "poraryFileStoragePath>\r\n            <PrinterReplyTimeout>5</PrinterReplyTimeout>" +
+            "\r\n            <IPAddress>127.0.0.1</IPAddress>\r\n            <PortNumber>9999</Po" +
+            "rtNumber>\r\n            <AdvancedConfigurationString>test</AdvancedConfigurationS" +
+            "tring>\r\n          </RancherBrand>\r\n          <RancherBrand>\r\n            <Enable" +
+            "d>false</Enabled>\r\n            <Type>Conveyor_3_0_0</Type>\r\n            <PrintTe" +
+            "mporaryFileStoragePath>C:\\Windows\\Temp\\_3_0_0_Client\\</PrintTemporaryFileStorage" +
+            "Path>\r\n            <PrinterReplyTimeout>5</PrinterReplyTimeout>\r\n            <IP" +
+            "Address>127.0.0.1</IPAddress>\r\n            <PortNumber>9999</PortNumber>\r\n      " +
+            "      <AdvancedConfigurationString>Invalid</AdvancedConfigurationString>\r\n      " +
+            "    </RancherBrand>\r\n          <RancherBrand>\r\n            <Enabled>false</Enabl" +
+            "ed>\r\n            <Type>DimensionSST768</Type>\r\n            <PrintTemporaryFileSt" +
+            "oragePath>C:\\Windows\\Temp\\Dimension_Client</PrintTemporaryFileStoragePath>\r\n    " +
+            "        <PrinterReplyTimeout>5</PrinterReplyTimeout>\r\n            <IPAddress>127" +
+            ".0.0.1</IPAddress>\r\n            <PortNumber>5054</PortNumber>\r\n            <Adva" +
+            "ncedConfigurationString>Invalid</AdvancedConfigurationString>\r\n          </Ranch" +
+            "erBrand>\r\n          </ArrayOfRancherBrand>\r\n        ")]
         public global::RepRancher.RancherBrandCollection RancherBrands {
             get {
                 return ((global::RepRancher.RancherBrandCollection)(this["RancherBrands"]));

@@ -114,6 +114,7 @@
                   KeyPath="yes" />
             <ServiceInstall
              Id="ServiceInstaller"
+             Arguments="-service"
              Type="ownProcess"
              Name="RepRancherService"
              DisplayName="RepRancher Service"

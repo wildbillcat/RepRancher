@@ -8,26 +8,56 @@
     <Setting Name="ErrorFile" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Windows\Temp\RepRancher\Error.txt</Value>
     </Setting>
-    <Setting Name="MakerFarmAPIUri" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://lothar.architecture.yale.edu:50614/odata</Value>
-    </Setting>
     <Setting Name="MakerFarmClientAPIKey" Type="System.String" Scope="Application">
       <Value Profile="(Default)">S3cretKeyP4ssword</Value>
     </Setting>
     <Setting Name="MakerFarmClientID" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="MakerFarmClientEnable" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="MakerFarmTime" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="MakerFarmAPIUri" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://lothar.architecture.yale.edu:50614/odata/</Value>
+    </Setting>
+    <Setting Name="MakerFarmClientEnable" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="ErrorTimer" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="RancherBrands" Type="RepRancher.RancherBrandCollection" Scope="Application">
-      <Value Profile="(Default)">trueConveyor2_4_1C:\Windows\Temp\5127.0.0.19999Invalid</Value>
+      <Value Profile="(Default)">
+          &lt;ArrayOfRancherBrand xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+          &lt;RancherBrand&gt;
+            &lt;Enabled&gt;true&lt;/Enabled&gt;
+            &lt;Type&gt;Conveyor_2_4_1&lt;/Type&gt;
+            &lt;PrintTemporaryFileStoragePath&gt;C:\Windows\Temp\_2_4_1_Client\&lt;/PrintTemporaryFileStoragePath&gt;
+            &lt;PrinterReplyTimeout&gt;5&lt;/PrinterReplyTimeout&gt;
+            &lt;IPAddress&gt;127.0.0.1&lt;/IPAddress&gt;
+            &lt;PortNumber&gt;9999&lt;/PortNumber&gt;
+            &lt;AdvancedConfigurationString&gt;test&lt;/AdvancedConfigurationString&gt;
+          &lt;/RancherBrand&gt;
+          &lt;RancherBrand&gt;
+            &lt;Enabled&gt;false&lt;/Enabled&gt;
+            &lt;Type&gt;Conveyor_3_0_0&lt;/Type&gt;
+            &lt;PrintTemporaryFileStoragePath&gt;C:\Windows\Temp\_3_0_0_Client\&lt;/PrintTemporaryFileStoragePath&gt;
+            &lt;PrinterReplyTimeout&gt;5&lt;/PrinterReplyTimeout&gt;
+            &lt;IPAddress&gt;127.0.0.1&lt;/IPAddress&gt;
+            &lt;PortNumber&gt;9999&lt;/PortNumber&gt;
+            &lt;AdvancedConfigurationString&gt;Invalid&lt;/AdvancedConfigurationString&gt;
+          &lt;/RancherBrand&gt;
+          &lt;RancherBrand&gt;
+            &lt;Enabled&gt;false&lt;/Enabled&gt;
+            &lt;Type&gt;DimensionSST768&lt;/Type&gt;
+            &lt;PrintTemporaryFileStoragePath&gt;C:\Windows\Temp\Dimension_Client&lt;/PrintTemporaryFileStoragePath&gt;
+            &lt;PrinterReplyTimeout&gt;5&lt;/PrinterReplyTimeout&gt;
+            &lt;IPAddress&gt;127.0.0.1&lt;/IPAddress&gt;
+            &lt;PortNumber&gt;5054&lt;/PortNumber&gt;
+            &lt;AdvancedConfigurationString&gt;Invalid&lt;/AdvancedConfigurationString&gt;
+          &lt;/RancherBrand&gt;
+          &lt;/ArrayOfRancherBrand&gt;
+        </Value>
     </Setting>
   </Settings>
 </SettingsFile>

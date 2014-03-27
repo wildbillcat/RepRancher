@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.ServiceProcess;
 
 
 namespace RepRancher
@@ -18,6 +19,17 @@ namespace RepRancher
 
         static void Main(string[] args)
         {
+            foreach (string arg in args)
+            {
+                //Run as a service if our argument is there
+                if (arg.ToLower() == "-service")
+                {
+                    ServiceBase[] servicesToRun = new ServiceBase[] { new RepRancherService() };
+                    ServiceBase.Run(servicesToRun);
+                    return;
+                }
+            }
+
             Console.WriteLine("RepRancher!");
             Console.WriteLine();
             //Test if Parsing the Rancher Works
