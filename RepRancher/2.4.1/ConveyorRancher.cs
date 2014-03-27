@@ -200,7 +200,6 @@ namespace RepRancher._2._4._1
         public string[] GetKnownPrinters()
         {
             return SharedResources.CurrentPrinters.Values.Where(P => P.canPrint == true).Select(T => T.name).ToArray();
-            //return SharedResources.CurrentPrinters.Keys.ToArray();
         }
 
         public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
@@ -354,7 +353,7 @@ namespace RepRancher._2._4._1
                         {
                             //Lets fetch the file we need to print.
                             string PostData = "{\"ClientAPIKey\":\"" + SharedResources.ClientAPIKey + "\",\"MachineName\":\"" + P.name + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
-                            string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.CurrentJob.ToString(), "_", Mi.PrintFileName);
+                            string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.PrintFileName);
                             using (var client = new System.Net.WebClient())
                             {
                                 client.Headers.Add("Content-Type", "application/json;odata=verbose");
