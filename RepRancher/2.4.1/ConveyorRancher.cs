@@ -199,7 +199,8 @@ namespace RepRancher._2._4._1
 
         public string[] GetKnownPrinters()
         {
-            return SharedResources.CurrentPrinters.Keys.ToArray();
+            return SharedResources.CurrentPrinters.Values.Where(P => P.canPrint == true).Select(T => T.name).ToArray();
+            //return SharedResources.CurrentPrinters.Keys.ToArray();
         }
 
         public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
