@@ -387,7 +387,11 @@ namespace RepRancher._2._4._1
                         //PreviousPrintCommand.
                         if (!PreviousCommand.Recieved)
                         {
-                            SharedResources.MakerFarmToConveyorJobIds.TryUpdate(PreviousPrintCommand.MakerFarmJobId, j.id, 0);
+                            SharedResources.MakerFarmToConveyorJobIds.AddOrUpdate(PreviousPrintCommand.MakerFarmJobId, j.id, (key, existingVal) =>
+                            {
+                                existingVal = j.id;
+                                return existingVal;
+                            });
                         }
                     }
                     else
