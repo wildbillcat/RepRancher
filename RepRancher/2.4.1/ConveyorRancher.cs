@@ -252,7 +252,7 @@ namespace RepRancher._2._4._1
                 int TempVal;
                 SharedResources.CurrentJobs.TryGetValue(SharedResources.MakerFarmToConveyorJobIds[i], out TempJ);
                 SharedResources.MakerFarmToConveyorJobIds.TryRemove(i, out TempVal);
-                string FilePath = string.Concat(PrintTemporaryFileStoragePath, TempJ.name);
+                string FilePath = string.Concat(PrintTemporaryFileStoragePath, TempJ.name, ".gcode");
                 if (System.IO.File.Exists(FilePath))
                 {
                     System.IO.File.Delete(FilePath);
