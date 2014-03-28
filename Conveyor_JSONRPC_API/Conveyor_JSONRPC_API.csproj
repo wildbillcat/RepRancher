@@ -99,6 +99,7 @@
     <Content Include="3.0.0\JSON Example Replies\Client\machine_temperature_changed.js" />
     <Content Include="3.0.0\JSON Example Replies\Client\port_attached.js" />
     <Content Include="3.0.0\JSON Example Replies\Client\port_detached.js" />
+    <Content Include="3.0.0\JSON Example Replies\Gen5Chatter.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\connect_to_machine.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\getjobs.js" />
     <Content Include="3.0.0\JSON Example Replies\Server\getports.js" />
