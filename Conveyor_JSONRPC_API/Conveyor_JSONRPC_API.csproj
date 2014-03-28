@@ -52,6 +52,7 @@
     <Compile Include="2.4.1\HelloCommand.cs" />
     <Compile Include="2.4.1\PrintCommand.cs" />
     <Compile Include="3.0.0\ClientAPI.cs" />
+    <Compile Include="3.0.0\Command.cs" />
     <Compile Include="3.0.0\ConveyorException.cs" />
     <Compile Include="3.0.0\ConveyorFailure.cs" />
     <Compile Include="3.0.0\ConveyorJobMetadata.cs" />
@@ -61,10 +62,13 @@
     <Compile Include="3.0.0\ConveyorPrinter.cs" />
     <Compile Include="3.0.0\ConveyorJob.cs" />
     <Compile Include="3.0.0\ConveyorSlicerSettings.cs" />
+    <Compile Include="3.0.0\HelloCommand.cs" />
     <Compile Include="3.0.0\JsonReplyType.cs" />
     <Compile Include="3.0.0\PhysicalPrinterName.cs" />
+    <Compile Include="3.0.0\PrintCommand.cs" />
     <Compile Include="3.0.0\ServerAPI.cs" />
     <Compile Include="2.4.1\CancelCommand.cs" />
+    <Compile Include="3.0.0\SliceCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
