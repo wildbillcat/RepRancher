@@ -31,7 +31,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
 
         public ConveyorSlicerSettings(string model)
         {
-            if (model.Equals("Replicator 2X"))
+            if (model.Equals("The Replicator Dual"))
             {
                 default_raft_extruder = 0;
                 default_support_extruder = 0;
@@ -43,6 +43,82 @@ namespace Conveyor_JSONRPC_API._3._0._0
                 infill = .1;
                 layer_height = .2;
                 materials = new string[2] { "ABS", "PLA" };
+                path = null;
+                platform_temperature = 110;
+                print_speed = 90;
+                raft = true;
+                shells = 2;
+                slicer = "MIRACLEGRUE";
+                support = false;
+                travel_speed = 150;
+                throw new NotImplementedException();
+            }
+            else if (model.Equals("The Replicator Single")) //This is a Makerbot Replicator (5th Generation)
+            {
+                throw new NotImplementedException();
+            }
+            else if (model.Equals("Thing-O-Matic Single, Stepstruder Mk6 or Mk7")) //This is a Makerbot Replicator (5th Generation)
+            {
+                throw new NotImplementedException();
+            }
+            else if (model.Equals("Moose")) //This is a Makerbot Replicator (5th Generation)
+            {
+                throw new NotImplementedException();
+            }
+            else if (model.Equals("Platypus")) //This is a Makerbot Replicator (5th Generation)
+            {
+                default_raft_extruder = 0;
+                default_support_extruder = 0;
+                do_auto_raft = false;
+                do_auto_support = false;
+                extruder = "0";
+                extruder_temperatures = new int[2] { 230, 230 };
+                heat_platform = false;
+                infill = .150;
+                layer_height = .10;
+                materials = new string[2] { "PLA", "PLA" };
+                path = null;
+                platform_temperature = 110;
+                print_speed = 90;
+                raft = false;
+                shells = 2;
+                slicer = "MIRACLEGRUE";
+                support = false;
+                travel_speed = 150;
+            }
+            else if (model.Equals("The Replicator 2X")) //This is a Makerbot Replicator (5th Generation)
+            {
+                default_raft_extruder = 0;
+                default_support_extruder = 0;
+                do_auto_raft = true;
+                do_auto_support = false;
+                extruder = "0";
+                extruder_temperatures = new int[2] { 230, 230 };
+                heat_platform = true;
+                infill = .1;
+                layer_height = .2;
+                materials = new string[2] { "ABS", "PLA" };
+                path = null;
+                platform_temperature = 110;
+                print_speed = 90;
+                raft = true;
+                shells = 2;
+                slicer = "MIRACLEGRUE";
+                support = false;
+                travel_speed = 150;
+            }
+            else if (model.Equals("The Replicator 2")) //This is a Makerbot Replicator 2
+            {
+                default_raft_extruder = 0;
+                default_support_extruder = 0;
+                do_auto_raft = true;
+                do_auto_support = false;
+                extruder = "0";
+                extruder_temperatures = new int[2] { 230, 230 };
+                heat_platform = true;
+                infill = .1;
+                layer_height = .2;
+                materials = new string[2] { "PLA", "PLA" };
                 path = null;
                 platform_temperature = 110;
                 print_speed = 90;

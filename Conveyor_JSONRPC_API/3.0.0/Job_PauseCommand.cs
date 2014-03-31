@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Conveyor_JSONRPC_API._3._0._0
 {
-    class Job_PauseCommand : Command
+    public class Job_PauseCommand : Command
     {
         int jobid;
 

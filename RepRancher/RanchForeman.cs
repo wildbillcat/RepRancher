@@ -118,7 +118,7 @@ namespace RepRancher
                     }
                     else if (R.Type == RancherType.Conveyor_3_0_0)
                     {
-                        new NotImplementedException();
+                        Ranchers.Add(new _3._0._0.ConveyorRancher(R, TakeThis, ClientAPIKey));
                     }
                     else if (R.Type == RancherType.DimensionSST768)
                     {

@@ -70,6 +70,7 @@
     <Compile Include="3.0.0\Job_CancelCommand.cs" />
     <Compile Include="3.0.0\Job_PauseCommand.cs" />
     <Compile Include="3.0.0\Job_ResumeCommand.cs" />
+    <Content Include="3.0.0\JSON Example Replies\Server\print-Replicator5Gen.js" />
     <Compile Include="3.0.0\JsonReplyType.cs" />
     <Compile Include="3.0.0\PhysicalPrinterName.cs" />
     <Compile Include="3.0.0\PrintCommand.cs" />

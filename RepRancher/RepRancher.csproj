@@ -91,6 +91,11 @@
     <Compile Include="2.4.1\ConveyorListenerParser.cs" />
     <Compile Include="2.4.1\ConveyorListenerStream.cs" />
     <Compile Include="2.4.1\ConveyorRancher.cs" />
+    <Compile Include="3.0.0\ConcurrentRPCID.cs" />
+    <Compile Include="3.0.0\ConveyorListenerParser.cs" />
+    <Compile Include="3.0.0\ConveyorListenerStream.cs" />
+    <Compile Include="3.0.0\ConveyorRancher.cs" />
+    <Compile Include="3.0.0\SharedResources.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -181,6 +186,7 @@
       <DependentUpon>RepRancherService.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -14,7 +14,8 @@
             "extrusion_distance_a_mm":2360.680,
             "extrusion_mass_a_grams":7.20270},
         "machine_name":"23C1:B015:7523733353635171E0D1",
-        "metadata":null,"slicer_name":"miraclegrue",
+        "metadata":null,
+        "slicer_name":"miraclegrue",
         "slicer_settings":{
             "default_raft_extruder":0,
             "default_support_extruder":0,

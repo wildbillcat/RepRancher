@@ -16,6 +16,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
         string slicer_name; 
         ConveyorSlicerSettings slicer_settings;
         string thumbnail_dir;
+        public int MakerFarmJobId;
 
         public PrintCommand(int RpcId, bool Has_start_end, string Input_file, ConveyorPrintJobMetadata Job_metadata,
             string Machine_name, string[] Material_name, string Slicer_name, ConveyorSlicerSettings Slicer_settings,
