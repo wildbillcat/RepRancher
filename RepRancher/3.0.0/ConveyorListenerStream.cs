@@ -17,7 +17,7 @@ namespace RepRancher._3._0._0
 
         public void ListenerStreamThreadRun()
         {
-            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 ListenerStream");
+            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 3.0.0 ListenerStream");
             Console.Error.WriteLine();
             while (true)
             {

@@ -27,7 +27,7 @@ namespace RepRancher._3._0._0
         public void ListenerParserThreadRun()
         {
             int ProcessStalls = 0;
-            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 2.4.1 ListenerParser");
+            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 3.0.0 ListenerParser");
             Console.Error.WriteLine();
             while (true)
             {                
