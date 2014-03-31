@@ -182,7 +182,6 @@ namespace RepRancher._3._0._0
             {
                 string MethodName = ConveyorJsonReplyParser.GetMethodName(JSON);
                 //Detected Method
-                Console.Error.WriteLine(DateTime.Now.ToString() + ": Detected Method : " + MethodName);
                 if (MethodName.Equals(ClientAPI.jobadded))
                 {
                     //This should trigger a printer poll
@@ -213,7 +212,8 @@ namespace RepRancher._3._0._0
                 }
                 else if (MethodName.Equals(ClientAPI.machine_state_changed))
                 {
-                    ConveyorPhysicalPrinter ChangedPrinter = ClientAPI.GetParams<ConveyorPhysicalPrinter>(JSON);
+                    ConveyorPrinter PysP = ServerAPI.GetResult<ConveyorPrinter>(JSON);
+                    ConveyorPhysicalPrinter ChangedPrinter = new ConveyorPhysicalPrinter(PysP);
                     SharedResources.CurrentPrinters.AddOrUpdate(ChangedPrinter.name.GetMachine_Hash(), ChangedPrinter, (key, existingVal) =>
                     {
                         // The only updatable fields are the temerature array and lastQueryDate.
@@ -227,7 +227,8 @@ namespace RepRancher._3._0._0
                 }
                 else if (MethodName.Equals(ClientAPI.machine_temperature_changed))
                 {
-                    ConveyorPhysicalPrinter ChangedPrinter = ClientAPI.GetParams<ConveyorPhysicalPrinter>(JSON);
+                    ConveyorPrinter PysP = ServerAPI.GetResult<ConveyorPrinter>(JSON);
+                    ConveyorPhysicalPrinter ChangedPrinter = new ConveyorPhysicalPrinter(PysP);
                     SharedResources.CurrentPrinters.AddOrUpdate(ChangedPrinter.name.GetMachine_Hash(), ChangedPrinter, (key, existingVal) =>
                     {
                         existingVal.state = ChangedPrinter.state;
@@ -282,8 +283,9 @@ namespace RepRancher._3._0._0
                     if (PreviousCommand is GetPrintersCommand)//method[0].Equals("getprinters"))
                     {
                         ConveyorPrinter[] printers = ServerAPI.GetResult<ConveyorPrinter[]>(JSON);
-                        foreach (ConveyorPhysicalPrinter p in printers)
+                        foreach (ConveyorPrinter physicalP in printers.Where(p=>p.can_print))
                         {
+                            ConveyorPhysicalPrinter p = new ConveyorPhysicalPrinter(physicalP);
                             SharedResources.CurrentPrinters.AddOrUpdate(p.name.GetMachine_Hash(), p, (key, existingVal) =>
                             {
                                 existingVal.display_name = p.display_name;
@@ -336,7 +338,8 @@ namespace RepRancher._3._0._0
                     }
                     else if (PreviousCommand is ConnectCommand)//method[0].Equals("connect"))
                     {
-                        ConveyorPhysicalPrinter p = ServerAPI.GetResult<ConveyorPhysicalPrinter>(JSON);
+                        ConveyorPrinter PysP = ServerAPI.GetResult<ConveyorPrinter>(JSON);
+                        ConveyorPhysicalPrinter p = new ConveyorPhysicalPrinter(PysP);
                         SharedResources.CurrentPrinters.AddOrUpdate(p.name.GetMachine_Hash(), p, (key, existingVal) =>
                         {
                             existingVal.name = p.name;

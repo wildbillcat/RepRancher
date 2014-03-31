@@ -99,13 +99,6 @@ namespace RepRancher
             ISayUri = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/ISay");
             TakeThis = new Uri(uri, "ClientsAPI(" + MakerFarmClientID + ")/TakeThis");
 
-            MakerFarmClientEnable = Properties.Settings.Default.MakerFarmClientEnable;
-            if (MakerFarmClientEnable)
-            {
-                MakerFarm = new System.Timers.Timer(Properties.Settings.Default.MakerFarmTime * 1000);
-                MakerFarm.Elapsed += new System.Timers.ElapsedEventHandler(MakerFarmEvent);
-                MakerFarm.Enabled = true;
-            }
             Ranchers = new List<Rancher>();
             RancherBrandCollection RancherBrands = Properties.Settings.Default.RancherBrands;
             foreach (RancherBrand R in RancherBrands)
@@ -131,6 +124,14 @@ namespace RepRancher
                         Console.Error.WriteLine();
                     }
                 }                
+            }
+
+            MakerFarmClientEnable = Properties.Settings.Default.MakerFarmClientEnable;
+            if (MakerFarmClientEnable)
+            {
+                MakerFarm = new System.Timers.Timer(Properties.Settings.Default.MakerFarmTime * 1000);
+                MakerFarm.Elapsed += new System.Timers.ElapsedEventHandler(MakerFarmEvent);
+                MakerFarm.Enabled = true;
             }
         }
 

@@ -29,7 +29,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
     public class ConveyorPhysicalPrinter : ConveyorPrinter
     {
         public new ConveyorPhysicalPrinterName name { get; set; }
-
+        
         public ConveyorPhysicalPrinter(ConveyorPrinter P)
         {
             name = JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(P.name.ToString());
