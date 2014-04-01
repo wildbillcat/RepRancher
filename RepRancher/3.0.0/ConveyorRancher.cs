@@ -453,9 +453,10 @@ namespace RepRancher._3._0._0
                         JUpdate.Status = null;
                         //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                         J = null;
-                        foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values)
+                        foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values.Where(p=>p.type.Equals("PrintJob")))
                         {
-                            if (jerb.machine_name.Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
+                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jerb.name.ToString());
+                            if (JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
                             {
                                 J = jerb;
                             }

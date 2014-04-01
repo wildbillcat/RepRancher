@@ -272,6 +272,10 @@ namespace Conveyor_JSONRPC_API._3._0._0
          */
         public static T GetResult<T>(string JSON)
         {
+            if (JSON[JSON.Length - 1] != '}')
+            {
+                JSON = string.Concat(JSON, "}");
+            }
             JObject JReply = JsonConvert.DeserializeObject<JObject>(JSON);
             JToken jResult = JReply["result"];
             T result = jResult.ToObject<T>();
