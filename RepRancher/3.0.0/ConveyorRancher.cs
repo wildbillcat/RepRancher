@@ -297,7 +297,13 @@ namespace RepRancher._3._0._0
                     MUpdate.CurrentTaskProgress = null;
                     MUpdate.MachineStatus = P.state + "\n" +
                         "Printer Type: " + P.printer_type + "\n" +
-                        "Firmware Version: " + P.firmware_version + "\n";
+                        "Firmware Version: ";
+                    foreach (int i in P.firmware_version)
+                    {
+                        MUpdate.MachineStatus = string.Concat(MUpdate.MachineStatus, i.ToString(), ".");
+                    }
+                    MUpdate.MachineStatus = string.Concat(MUpdate.MachineStatus, "\n");
+
                     if (P.temperature != null)
                     {
                         /* Presently there is no support for head Temperatures in the 3.0 software
@@ -357,7 +363,8 @@ namespace RepRancher._3._0._0
                         List<ConveyorJob> jobs = new List<ConveyorJob>();
                         foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
                         {
-                            if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(Mi.MachineName))
+                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
+                            if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName))
                             {
                                 jobs.Add(jj);
                             }
@@ -380,7 +387,7 @@ namespace RepRancher._3._0._0
                             ConveyorJobData.extrusion_distance_a_mm = Mi.EstMaterialUse;
                             ConveyorJobData.extrusion_mass_a_grams = Mi.EstMaterialUse * 28.3495; //Converts Ounces to Grams
                             ConveyorSlicerSettings SliceSettings = new ConveyorSlicerSettings();
-                            PrintCommand Print = new PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, "miraclegrue", new ConveyorSlicerSettings(P.printer_type), "");
+                            PrintCommand Print = new PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, "miraclegrue", new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
                             bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
                             bool MethodReception = false;
                             DateTime CommandSent = DateTime.Now;
@@ -426,7 +433,8 @@ namespace RepRancher._3._0._0
                             J = null;
                             foreach (ConveyorJob JinQ in SharedResources.CurrentJobs.Values)
                             {
-                                if (JinQ.machine_name.Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
+                                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(JinQ.machine_name.ToString());
+                                if (JerbPrinterName.GetMachine_Hash().Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
                                 {
                                     J = JinQ;
                                 }
@@ -455,7 +463,7 @@ namespace RepRancher._3._0._0
                         J = null;
                         foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values.Where(p=>p.type.Equals("PrintJob")))
                         {
-                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jerb.name.ToString());
+                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jerb.machine_name.ToString());
                             if (JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
                             {
                                 J = jerb;
@@ -496,7 +504,8 @@ namespace RepRancher._3._0._0
             //Check each Job assigned to the printer. If there are any jobs assigned to it that are not presently stopped, add that job to the list of jobs to be canceled.
             foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
             {
-                if (!jj.state.Equals("STOPPED") && jj.machine_name.Equals(MachineName))
+                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
+                if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(MachineName))
                 {
                     jobs.Add(jj);
                 }

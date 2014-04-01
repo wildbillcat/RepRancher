@@ -20,7 +20,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
 
         public PrintCommand(int RpcId, bool Has_start_end, string Input_file, ConveyorPrintJobMetadata Job_metadata,
             string Machine_name, string[] Material_name, string Slicer_name, ConveyorSlicerSettings Slicer_settings,
-            string Thumbnail_dir)
+            string Thumbnail_dir, int MakerFarmJobID)
         {
             rpcid = RpcId;
             Recieved = false;
@@ -33,6 +33,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
             slicer_name = Slicer_name;
             slicer_settings = Slicer_settings;
             thumbnail_dir = Thumbnail_dir;
+            MakerFarmJobId = MakerFarmJobID;
         }
 
         public override string GetJSONString()
