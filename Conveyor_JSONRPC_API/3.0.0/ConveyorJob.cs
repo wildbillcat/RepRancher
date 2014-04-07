@@ -9,7 +9,7 @@ namespace Conveyor_JSONRPC_API._3._0._0
     {
         public object machine_name { get; set; }
         public bool pausable { get; set; }
-        public string failure { get; set; }
+        public object failure { get; set; }
         public string profile_name { get; set; }
         public double extrusion_mass_a_grams { get; set; }
         public int id { get; set; }
