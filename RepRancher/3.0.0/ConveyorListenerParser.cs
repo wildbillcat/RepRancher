@@ -212,7 +212,7 @@ namespace RepRancher._3._0._0
                 }
                 else if (MethodName.Equals(ClientAPI.machine_state_changed))
                 {
-                    ConveyorPrinter PysP = ServerAPI.GetResult<ConveyorPrinter>(JSON);
+                    ConveyorPrinter PysP = ClientAPI.GetParams<ConveyorPrinter>(JSON);
                     ConveyorPhysicalPrinter ChangedPrinter = new ConveyorPhysicalPrinter(PysP);
                     SharedResources.CurrentPrinters.AddOrUpdate(ChangedPrinter.name.GetMachine_Hash(), ChangedPrinter, (key, existingVal) =>
                     {
@@ -227,7 +227,7 @@ namespace RepRancher._3._0._0
                 }
                 else if (MethodName.Equals(ClientAPI.machine_temperature_changed))
                 {
-                    ConveyorPrinter PysP = ServerAPI.GetResult<ConveyorPrinter>(JSON);
+                    ConveyorPrinter PysP = ClientAPI.GetParams<ConveyorPrinter>(JSON);
                     ConveyorPhysicalPrinter ChangedPrinter = new ConveyorPhysicalPrinter(PysP);
                     SharedResources.CurrentPrinters.AddOrUpdate(ChangedPrinter.name.GetMachine_Hash(), ChangedPrinter, (key, existingVal) =>
                     {
