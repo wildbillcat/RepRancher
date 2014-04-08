@@ -363,10 +363,13 @@ namespace RepRancher._3._0._0
                         List<ConveyorJob> jobs = new List<ConveyorJob>();
                         foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
                         {
-                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
-                            if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName))
+                            if (jj.type.Equals("PrintJob"))
                             {
-                                jobs.Add(jj);
+                                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
+                                if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName))
+                                {
+                                    jobs.Add(jj);
+                                }
                             }
                         }
                         if (jobs.Count() == 0 && P.can_print)
