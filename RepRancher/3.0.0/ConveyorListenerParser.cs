@@ -316,7 +316,7 @@ namespace RepRancher._3._0._0
                         ConveyorJob[] jobs = ServerAPI.GetResult<ConveyorJob[]>(JSON);
                         foreach (ConveyorJob j in jobs)
                         {
-                            if (j.type.Equals("PrintJob") && j.id != null)
+                            if (j.type.Equals("PrintJob"))
                             {
                                 SharedResources.CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
                                 {
