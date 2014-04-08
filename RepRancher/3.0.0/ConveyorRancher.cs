@@ -436,12 +436,16 @@ namespace RepRancher._3._0._0
                             J = null;
                             foreach (ConveyorJob JinQ in SharedResources.CurrentJobs.Values)
                             {
-                                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(JinQ.machine_name.ToString());
-                                if (JerbPrinterName.GetMachine_Hash().Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
+                                if (JinQ.type.Equals("PrintJob"))
                                 {
-                                    J = JinQ;
+                                    ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(JinQ.machine_name.ToString());
+                                    if (JerbPrinterName.GetMachine_Hash().Equals(P.name) && string.IsNullOrEmpty(JinQ.conclusion))
+                                    {
+                                        J = JinQ;
+                                    }
                                 }
                             }
+                                
                             if (J != null)
                             {
                                 //Job is no longer null, meaning something has happened on the printer! Lets let users know.
@@ -466,10 +470,13 @@ namespace RepRancher._3._0._0
                         J = null;
                         foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values.Where(p=>p.type.Equals("PrintJob")))
                         {
-                            ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jerb.machine_name.ToString());
-                            if (JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
+                            if (jerb.type.Equals("PrintJob"))
                             {
-                                J = jerb;
+                                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jerb.machine_name.ToString());
+                                if (JerbPrinterName.GetMachine_Hash().Equals(Mi.MachineName) && string.IsNullOrEmpty(jerb.conclusion))
+                                {
+                                    J = jerb;
+                                }
                             }
                         }
                         if (J != null)
@@ -507,11 +514,14 @@ namespace RepRancher._3._0._0
             //Check each Job assigned to the printer. If there are any jobs assigned to it that are not presently stopped, add that job to the list of jobs to be canceled.
             foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
             {
-                ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
-                if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(MachineName))
+                if (jj.type.Equals("PrintJob"))
                 {
-                    jobs.Add(jj);
-                }
+                    ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
+                    if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(MachineName))
+                    {
+                        jobs.Add(jj);
+                    }
+                }                
             }
 
             //Iterate through the list of jobs which need to be canceled.
