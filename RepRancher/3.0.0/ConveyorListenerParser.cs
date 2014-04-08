@@ -187,28 +187,34 @@ namespace RepRancher._3._0._0
                     //This should trigger a printer poll
                     //InvokeCommand("getprinters");
                     ConveyorJob AddedJob = ClientAPI.GetParams<ConveyorJob>(JSON);
-                    SharedResources.CurrentJobs.AddOrUpdate(AddedJob.id, AddedJob, (key, existingVal) =>
+                    if (AddedJob.type.Equals("PrintJob"))
                     {
-                        existingVal.failure = AddedJob.failure;
-                        existingVal.state = AddedJob.state;
-                        existingVal.progress = AddedJob.progress;
-                        existingVal.type = AddedJob.type;
-                        existingVal.conclusion = AddedJob.conclusion;
-                        return existingVal;
-                    });
+                        SharedResources.CurrentJobs.AddOrUpdate(AddedJob.id, AddedJob, (key, existingVal) =>
+                        {
+                            existingVal.failure = AddedJob.failure;
+                            existingVal.state = AddedJob.state;
+                            existingVal.progress = AddedJob.progress;
+                            existingVal.type = AddedJob.type;
+                            existingVal.conclusion = AddedJob.conclusion;
+                            return existingVal;
+                        });
+                    }                    
                 }
                 else if (MethodName.Equals(ClientAPI.jobchanged))
                 {
                     ConveyorJob ChangedJob = ClientAPI.GetParams<ConveyorJob>(JSON);
-                    SharedResources.CurrentJobs.AddOrUpdate(ChangedJob.id, ChangedJob, (key, existingVal) =>
+                    if (ChangedJob.type.Equals("PrintJob"))
                     {
-                        existingVal.failure = ChangedJob.failure;
-                        existingVal.state = ChangedJob.state;
-                        existingVal.progress = ChangedJob.progress;
-                        existingVal.type = ChangedJob.type;
-                        existingVal.conclusion = ChangedJob.conclusion;
-                        return existingVal;
-                    });
+                        SharedResources.CurrentJobs.AddOrUpdate(ChangedJob.id, ChangedJob, (key, existingVal) =>
+                        {
+                            existingVal.failure = ChangedJob.failure;
+                            existingVal.state = ChangedJob.state;
+                            existingVal.progress = ChangedJob.progress;
+                            existingVal.type = ChangedJob.type;
+                            existingVal.conclusion = ChangedJob.conclusion;
+                            return existingVal;
+                        });
+                    }
                 }
                 else if (MethodName.Equals(ClientAPI.machine_state_changed))
                 {
@@ -310,15 +316,18 @@ namespace RepRancher._3._0._0
                         ConveyorJob[] jobs = ServerAPI.GetResult<ConveyorJob[]>(JSON);
                         foreach (ConveyorJob j in jobs)
                         {
-                            SharedResources.CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
+                            if (j.type.Equals("PrintJob"))
                             {
-                                existingVal.failure = j.failure;
-                                existingVal.state = j.state;
-                                existingVal.progress = j.progress;
-                                existingVal.type = j.type;
-                                existingVal.conclusion = j.conclusion;
-                                return existingVal;
-                            });
+                                SharedResources.CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
+                                {
+                                    existingVal.failure = j.failure;
+                                    existingVal.state = j.state;
+                                    existingVal.progress = j.progress;
+                                    existingVal.type = j.type;
+                                    existingVal.conclusion = j.conclusion;
+                                    return existingVal;
+                                });
+                            }
                         }
                     }
                     else if (PreviousCommand is GetPortsCommand)//method[0].Equals("getports"))
