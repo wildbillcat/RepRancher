@@ -30,28 +30,31 @@ namespace RepRancher._3._0._0
             Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 3.0.0 ListenerParser");
             Console.Error.WriteLine();
             while (true)
-            {                
+            {
                 if (SharedResources.contentAvailable || ProcessStalls > 5)
                 {
-                    //Resets the number of Process Stalls
-                    ProcessStalls = 0;
-
-                    //Lock the Conveyor Reply String
-                    SharedResources.ConveyorReplyMutex.WaitOne();
-                    //Check to see if there is a command
-                    //System.Console.WriteLine("Processor determining if there is a Complete JSON object");
-                    //Processor determining if there is a Complete JSON object
-                    string[] command = ContainsCompleteJSONObject(SharedResources.repliesFromConveyor);
-                    SharedResources.repliesFromConveyor = command[0];
-
-                    if (command.Length == 1)
+                    string[] command = new string[1];
+                    lock (SharedResources.ConveyorReplyMutex)
                     {
-                        SharedResources.contentAvailable = false;
-                        SharedResources.ConveyorReplyMutex.ReleaseMutex();
-                    }
-                    else
+                        try
+                        {
+                            command = ContainsCompleteJSONObject(SharedResources.repliesFromConveyor);
+                            SharedResources.repliesFromConveyor = command[0];
+                            if (command.Length == 1)
+                            {
+                                SharedResources.contentAvailable = false;
+                            }
+                        }
+                        catch
+                        {
+                            System.Console.Error.WriteLine(DateTime.Now.ToString() + " : The Listener Parser for Conveyor 3.0 threw an exception when detecting a completed JSON Object!");
+                        }
+                    }//End Lock
+
+                    if (command.Length < 1)
                     {
-                        SharedResources.ConveyorReplyMutex.ReleaseMutex();
+                        //Resets the number of Process Stalls
+                        ProcessStalls = 0;
                         try
                         {
                             if (ProcessJSONMessage(command[1]))
@@ -76,13 +79,13 @@ namespace RepRancher._3._0._0
                             System.Console.Error.WriteLine(command[1]);
                         }
                     }
+                    else
+                    {
+                        //no replies to queue up, lets take a look.
+                        //System.Threading.Thread.Sleep(1000);//Sleep for 1 second
+                        ProcessStalls++;
+                    }
                 }
-                else
-                {
-                    //no replies to queue up, lets take a look.
-                    //System.Threading.Thread.Sleep(1000);//Sleep for 1 second
-                    ProcessStalls++;
-                }                
             }
         }
 

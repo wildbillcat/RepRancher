@@ -30,16 +30,14 @@ namespace RepRancher._3._0._0
                     Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
 
                     //Lock the Replies to append
-                    SharedResources.ConveyorReplyMutex.WaitOne();
+                    lock (SharedResources.ConveyorReplyMutex)
+                    {
+                        //Attach new input to current string
+                        SharedResources.repliesFromConveyor = string.Concat(SharedResources.repliesFromConveyor, Reply);
 
-                    //Attach new input to current string
-                    SharedResources.repliesFromConveyor = string.Concat(SharedResources.repliesFromConveyor, Reply);
-
-                    //Mark content as being available
-                    SharedResources.contentAvailable = true;
-
-                    //Release the Replies
-                    SharedResources.ConveyorReplyMutex.ReleaseMutex();
+                        //Mark content as being available
+                        SharedResources.contentAvailable = true;
+                    }//Release the Replies                    
                 }
                 catch
                 {

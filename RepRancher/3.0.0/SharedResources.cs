@@ -65,7 +65,8 @@ namespace RepRancher._3._0._0
         /*
          * This controls access to the input recived string from conveyor between the ConveyorListenerStream and ConveyorListenerParser
          */
-        public System.Threading.Mutex ConveyorReplyMutex { get; set; }
+        public Object ConveyorReplyMutex { get; set; }
+
 
         /*
          * This string contains the input recived from conveyor and shares it between the ConveyorListenerStream and ConveyorListenerParser
@@ -118,32 +119,31 @@ namespace RepRancher._3._0._0
             lock (WriteToConveyorLock)
             {
                 //Ensure other thread doesnt try parsing while the connection is broken.
-                ConveyorReplyMutex.WaitOne();
-
-                //Ensure the parser knows there is no string to parse.
-                contentAvailable = false;
-                try
+                lock (ConveyorReplyMutex)
                 {
-                    //Closes and Disposes of old connection
-                    tcpClient.Close();
+                    //Ensure the parser knows there is no string to parse.
+                    contentAvailable = false;
+                    try
+                    {
+                        //Closes and Disposes of old connection
+                        tcpClient.Close();
 
-                    //Creates new TCP Client
-                    tcpClient = new System.Net.Sockets.TcpClient();
+                        //Creates new TCP Client
+                        tcpClient = new System.Net.Sockets.TcpClient();
 
-                    //Attempt Connection to Conveyor
-                    tcpClient.Connect(ConveyorIPEndpoint);
+                        //Attempt Connection to Conveyor
+                        tcpClient.Connect(ConveyorIPEndpoint);
 
-                    //Fetch the new connection stream
-                    dataStream = tcpClient.GetStream();
-                }
-                catch
-                {
-                    //Connection failed!                
-                    ConveyorReplyMutex.ReleaseMutex();
-                    return false;
-                }
-                ConveyorReplyMutex.ReleaseMutex();
-                return true;
+                        //Fetch the new connection stream
+                        dataStream = tcpClient.GetStream();
+                    }
+                    catch
+                    {
+                        //Connection failed!              
+                        return false;
+                    }
+                    return true;
+                }                
             }
         }
 
