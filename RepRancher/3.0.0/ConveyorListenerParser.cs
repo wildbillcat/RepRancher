@@ -196,6 +196,7 @@ namespace RepRancher._3._0._0
                             existingVal.progress = AddedJob.progress;
                             existingVal.type = AddedJob.type;
                             existingVal.conclusion = AddedJob.conclusion;
+                            existingVal.pausable = AddedJob.pausable;
                             return existingVal;
                         });
                     }                    
@@ -212,6 +213,7 @@ namespace RepRancher._3._0._0
                             existingVal.progress = ChangedJob.progress;
                             existingVal.type = ChangedJob.type;
                             existingVal.conclusion = ChangedJob.conclusion;
+                            existingVal.pausable = ChangedJob.pausable;
                             return existingVal;
                         });
                     }
