@@ -80,7 +80,7 @@ namespace RepRancher._3._0._0
                 else
                 {
                     //no replies to queue up, lets take a look.
-                    System.Threading.Thread.Sleep(1000);//Sleep for 1 second
+                    //System.Threading.Thread.Sleep(1000);//Sleep for 1 second
                     ProcessStalls++;
                 }                
             }
