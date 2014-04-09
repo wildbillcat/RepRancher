@@ -51,7 +51,7 @@ namespace RepRancher._3._0._0
                         }
                     }//End Lock
 
-                    if (command.Length < 1)
+                    if (command.Length > 1)
                     {
                         //Resets the number of Process Stalls
                         ProcessStalls = 0;
