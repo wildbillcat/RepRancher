@@ -413,6 +413,8 @@ namespace RepRancher._3._0._0
                         //Do not yet have a means to process the return for method recieved
                         Console.Error.WriteLine(DateTime.Now.ToString() + ": This application could not handle the method reply recieved:");
                         Console.Error.WriteLine(JSON);
+                        Console.Error.WriteLine("Issued command JSON:");
+                        Console.Error.WriteLine(PreviousCommand.GetJSONString());
                         Console.Error.WriteLine();
                     }
                     PreviousCommand.Recieved = true;
