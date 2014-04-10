@@ -224,7 +224,7 @@ namespace RepRancher._3._0._0
             return PrinterAbilities.ToArray();
         }
 
-        public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
+        public virtual RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
         {
             List<MakerFarmUpdate> MakerFarmUpdates = new List<MakerFarmUpdate>();
             /*

@@ -12,14 +12,13 @@ namespace Conveyor_JSONRPC_API._3._0._1
         string input_file;
         Conveyor_JSONRPC_API._3._0._0.ConveyorPrintJobMetadata job_metadata;
         string machine_name; 
-        string[] material_name; 
-        string slicer_name;
+        string[] material_name;
         Conveyor_JSONRPC_API._3._0._0.ConveyorSlicerSettings slicer_settings;
         string thumbnail_dir;
         public int MakerFarmJobId;
 
         public PrintCommand(int RpcId, bool Has_start_end, string Input_file, Conveyor_JSONRPC_API._3._0._0.ConveyorPrintJobMetadata Job_metadata,
-            string Machine_name, string[] Material_name, string Slicer_name, Conveyor_JSONRPC_API._3._0._0.ConveyorSlicerSettings Slicer_settings,
+            string Machine_name, string[] Material_name, Conveyor_JSONRPC_API._3._0._0.ConveyorSlicerSettings Slicer_settings,
             string Thumbnail_dir, int MakerFarmJobID)
         {
             rpcid = RpcId;
@@ -30,7 +29,6 @@ namespace Conveyor_JSONRPC_API._3._0._1
             job_metadata = Job_metadata;
             machine_name = Machine_name;
             material_name = Material_name;
-            slicer_name = Slicer_name;
             slicer_settings = Slicer_settings;
             thumbnail_dir = Thumbnail_dir;
             MakerFarmJobId = MakerFarmJobID;
@@ -38,7 +36,7 @@ namespace Conveyor_JSONRPC_API._3._0._1
 
         public override string GetJSONString()
         {
-            return ServerAPI.Print(rpcid, has_start_end, input_file, job_metadata, 
+            return Conveyor_JSONRPC_API._3._0._1.ServerAPI.Print(rpcid, has_start_end, input_file, job_metadata, 
              machine_name, material_name, slicer_settings,
              thumbnail_dir);
         }

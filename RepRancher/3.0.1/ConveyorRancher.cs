@@ -12,7 +12,7 @@ namespace RepRancher._3._0._1
 
         public ConveyorRancher(RancherBrand Brand, Uri Fetch, string ClientAPIKey) : base(Brand, Fetch, ClientAPIKey) { }
 
-        new public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
+        public override RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
         {
             List<MakerFarmUpdate> MakerFarmUpdates = new List<MakerFarmUpdate>();
             /*
@@ -178,7 +178,7 @@ namespace RepRancher._3._0._1
                             ConveyorJobData.extrusion_distance_a_mm = Mi.EstMaterialUse;
                             ConveyorJobData.extrusion_mass_a_grams = Mi.EstMaterialUse * 28.3495; //Converts Ounces to Grams
                             ConveyorSlicerSettings SliceSettings = new ConveyorSlicerSettings();
-                            Conveyor_JSONRPC_API._3._0._1.PrintCommand Print = new Conveyor_JSONRPC_API._3._0._1.PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, "miraclegrue", new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
+                            Conveyor_JSONRPC_API._3._0._1.PrintCommand Print = new Conveyor_JSONRPC_API._3._0._1.PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
                             bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
                             bool MethodReception = false;
                             DateTime CommandSent = DateTime.Now;
