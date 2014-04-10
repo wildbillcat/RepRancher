@@ -113,6 +113,7 @@ namespace RepRancher._3._0._0
             contentAvailable = true;
             TakeThis = Takethis;
             ClientAPIKey = ClientAPIkey;
+            RepliesFromConveyor = new ConcurrentQueue<string>();
         }
 
         public bool ResetConveyorConnection()
