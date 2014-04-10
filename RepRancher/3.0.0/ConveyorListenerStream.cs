@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RepRancher._3._0._0
 {
-    class ConveyorListenerStream
+    public class ConveyorListenerStream
     {
         SharedResources SharedResources;
 

@@ -96,6 +96,7 @@
     <Compile Include="3.0.0\ConveyorListenerStream.cs" />
     <Compile Include="3.0.0\ConveyorRancher.cs" />
     <Compile Include="3.0.0\SharedResources.cs" />
+    <Compile Include="3.0.1\ConveyorRancher.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

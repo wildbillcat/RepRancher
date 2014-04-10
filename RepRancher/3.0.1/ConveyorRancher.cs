@@ -1,230 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Conveyor_JSONRPC_API._3._0._0;
 
-namespace RepRancher._3._0._0
+namespace RepRancher._3._0._1
 {
-    public class ConveyorRancher : RepRancher.Rancher
+    class ConveyorRancher : RepRancher._3._0._0.ConveyorRancher
     {
-        protected RepRancher.MakerFarmService.RancherCommandGlossary DefaultAvailableCommands { get; set; }
 
-        /*
-         * This is where the print files sent to the client are stored temporarily.
-         */
-        protected string PrintTemporaryFileStoragePath { get; set; }
+        public ConveyorRancher(RancherBrand Brand, Uri Fetch, string ClientAPIKey) : base(Brand, Fetch, ClientAPIKey) { }
 
-        /*
-         * This is how many seconds we expect to.
-         */
-        protected int PrinterReplyTimeout { get; set; }
-
-        /*
-         * This thread is assigned to listen to the incoming stream from conveyor and to jot down 
-         * everything it recieves. 
-         */
-        protected System.Threading.Thread ConveyorListenerStreamThread { get; set; }
-
-        /*
-         * This thread is assigned to parse and make sense of all the information recieved by the 
-         * ConveyorListenerStreamThread from Conveyor.  
-         */
-        protected System.Threading.Thread ConveyorListenerParserThread { get; set; }
-
-        /*
-         * This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
-         */
-        protected int ConveyorReplyTimeout { get; set; }
-
-        /*
-         * This is an object wrapper around several shared objects which allow for the threads to communicate.
-         */
-        protected SharedResources SharedResources { get; set; }
-        
-        /*
-         * This is the listening stream class which is assigned to it's own thread to recieve conveyor's input.
-         */
-        protected ConveyorListenerStream ConveyorListenerStream;
-
-        /*
-         * This is the parsing class which is assigned to it's own thread to parse conveyor's input.
-         */
-        protected ConveyorListenerParser ConveyorListenerParser;
-
-        public ConveyorRancher(RancherBrand Brand, Uri Fetch, string ClientAPIKey)
-        {
-            Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 3.0.0 Client");
-            Console.Error.WriteLine();
-            /*
-             * This configuration should be true of all 3.0.0 Clients
-             */
-            DefaultAvailableCommands = new RepRancher.MakerFarmService.RancherCommandGlossary();
-            DefaultAvailableCommands.Print_Send = true;
-            DefaultAvailableCommands.Print_Cancel = true;
-            DefaultAvailableCommands.Print_Pause = true;
-            DefaultAvailableCommands.Print_Resume = true;
-
-            /*
-             * Client Specific Configuration
-             */
-            //This defines the storage folder used for this particular client instance
-            try
-            {
-                PrintTemporaryFileStoragePath = Brand.PrintTemporaryFileStoragePath;
-                if (!System.IO.Directory.Exists(PrintTemporaryFileStoragePath))
-                {
-                    System.IO.Directory.CreateDirectory(PrintTemporaryFileStoragePath);
-                }
-            }
-            catch
-            {
-                Console.Error.WriteLine(DateTime.Now.ToString() + ": Could not access the Client Temporary File Storage Path");
-                Console.Error.WriteLine();
-                throw new Exception();
-            }
-            
-            
-            //This is the number of seconds RepRancher will wait before assuming a response isn't coming from conveyor for blocking commands.
-            ConveyorReplyTimeout = Brand.PrinterReplyTimeout;
-
-            //This is the TCP Client used to connect to the Conveyor Service
-            SharedResources = new SharedResources(System.Net.IPAddress.Parse(Brand.IPAddress), Brand.PortNumber, Fetch, ClientAPIKey);
-
-            //This is the Listener Stream used to listen in to conveyor
-            ConveyorListenerStream = new ConveyorListenerStream(SharedResources);
-
-            //This is the Parser for all the input taken from conveyor
-            ConveyorListenerParser =  new ConveyorListenerParser(SharedResources);
-
-            ConveyorListenerStreamThread = new System.Threading.Thread(new System.Threading.ThreadStart(ConveyorListenerStream.ListenerStreamThreadRun));
-            ConveyorListenerStreamThread.Start();
-
-            ConveyorListenerParserThread = new System.Threading.Thread(new System.Threading.ThreadStart(ConveyorListenerParser.ListenerParserThreadRun));
-            ConveyorListenerParserThread.Start();
-
-            /*
-             * Now lets do the Startup routine the Mimics Conveyor
-             */
-
-            //Saying hello
-            HelloCommand Hello = new HelloCommand(SharedResources.rpcid.FetchRPCID());
-            Command MethodReception = (Command)Hello;
-            bool SuccessfullSend = SharedResources.IssueCommand(Hello);
-            //Waiting for world
-            while (!MethodReception.Recieved && SuccessfullSend)
-            {
-                System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(Hello.rpcid, out MethodReception);
-                //Check if reply recieved
-            }
-
-            //Request Ports
-            GetPortsCommand GetPorts = new GetPortsCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = (Command)GetPorts;
-            SharedResources.IssueCommand(GetPorts);
-            //Wait for Ports
-            while (!MethodReception.Recieved)
-            {
-                System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(GetPorts.rpcid, out MethodReception);
-                //Check if reply recieved
-            }
-
-            //Request Printers
-            GetPrintersCommand GetPrinters = new GetPrintersCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = (Command)GetPrinters;
-            SharedResources.IssueCommand(GetPrinters);
-            //Wait for Printers
-            while (!MethodReception.Recieved)
-            {
-                System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(GetPrinters.rpcid, out MethodReception);
-                //Check if reply recieved
-            }
-
-            //Request Jobs
-            GetJobsCommand GetJobs = new GetJobsCommand(SharedResources.rpcid.FetchRPCID());
-            MethodReception = (Command)GetJobs;
-            SharedResources.IssueCommand(GetJobs);
-            //Wait for Jobs
-            while (!MethodReception.Recieved)
-            {
-                System.Threading.Thread.Sleep(500);
-                SharedResources.CommandHistory.TryGetValue(GetJobs.rpcid, out MethodReception);
-                //Check if reply recieved
-            }
-
-             //Preparing to Connect
-             foreach (string key in SharedResources.CurrentPorts.Keys)
-             {
-                 ConveyorPort P = null;
-                 if (SharedResources.CurrentPorts.TryGetValue(key, out P))
-                 {
-                     //Port Found, Test if it is attached to printer. if not, connect
-                     bool PortAttached = false;
-                     //Checking if Port is Attached to a Printer
-                     foreach (string pkey in SharedResources.CurrentPrinters.Keys)
-                     {
-                         ConveyorPhysicalPrinter p = null;
-                         if (SharedResources.CurrentPrinters.TryGetValue(pkey, out p))
-                         {
-                             if (P.machine_hash.Equals(p.name.GetMachine_Hash()))
-                             {
-                                 PortAttached = true;
-                                 //Port exists and is attached to a printer
-                             }
-                         }
-                     }
-                     if (!PortAttached)
-                     {
-                         //Port was not attached to a printer, Connecting
-                         ConnectCommand Connect = new ConnectCommand(SharedResources.rpcid.FetchRPCID(), P.machine_hash);
-                         MethodReception = Connect;
-                         SharedResources.IssueCommand(Connect);
-                         while (!MethodReception.Recieved)
-                         {
-                             System.Threading.Thread.Sleep(500);
-                             SharedResources.CommandHistory.TryGetValue(Connect.rpcid, out MethodReception);
-                             //Check if reply recieved set to true, breaking the loop
-                         }
-                         //Port Connected
-                     }
-                 }
-             }////////////
-        }
-
-        public string[] GetKnownPrinters()
-        {
-            List<string> NameList = new List<string>();
-            foreach(ConveyorPhysicalPrinterName name in SharedResources.CurrentPrinters.Values.Where(P => P.can_print == true).Select(T => T.name)){
-                NameList.Add(name.GetMachine_Hash());
-            }
-            return NameList.ToArray();
-        }
-
-        public RepRancher.MakerFarmService.RancherCommandGlossary[] GetRancherCommandGlossary(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
-        {
-            List<RepRancher.MakerFarmService.RancherCommandGlossary> PrinterAbilities = new List<RepRancher.MakerFarmService.RancherCommandGlossary>();
-            foreach (RepRancher.MakerFarmService.MachineInterest Interest in ReportOn)
-            {
-                if (SharedResources.CurrentPrinters.ContainsKey(Interest.MachineName))
-                {
-                    RepRancher.MakerFarmService.RancherCommandGlossary Gloss = new RepRancher.MakerFarmService.RancherCommandGlossary();
-                    Gloss.MachineName = Interest.MachineName;
-                    Gloss.Print_Cancel = DefaultAvailableCommands.Print_Cancel;
-                    Gloss.Print_Pause = DefaultAvailableCommands.Print_Pause;
-                    Gloss.Print_Resume = DefaultAvailableCommands.Print_Resume;
-                    Gloss.Print_Send = DefaultAvailableCommands.Print_Send;
-                    PrinterAbilities.Add(Gloss);
-                }                
-            }
-            return PrinterAbilities.ToArray();
-        }
-
-        public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
+        new public RepRancher.MakerFarmUpdate[] GetMakerFarmUpdates(RepRancher.MakerFarmService.MachineInterest[] ReportOn)
         {
             List<MakerFarmUpdate> MakerFarmUpdates = new List<MakerFarmUpdate>();
             /*
@@ -390,7 +178,7 @@ namespace RepRancher._3._0._0
                             ConveyorJobData.extrusion_distance_a_mm = Mi.EstMaterialUse;
                             ConveyorJobData.extrusion_mass_a_grams = Mi.EstMaterialUse * 28.3495; //Converts Ounces to Grams
                             ConveyorSlicerSettings SliceSettings = new ConveyorSlicerSettings();
-                            PrintCommand Print = new PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, "miraclegrue", new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
+                            Conveyor_JSONRPC_API._3._0._1.PrintCommand Print = new Conveyor_JSONRPC_API._3._0._1.PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, "miraclegrue", new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
                             bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
                             bool MethodReception = false;
                             DateTime CommandSent = DateTime.Now;
@@ -445,7 +233,7 @@ namespace RepRancher._3._0._0
                                     }
                                 }
                             }
-                                
+
                             if (J != null)
                             {
                                 //Job is no longer null, meaning something has happened on the printer! Lets let users know.
@@ -468,7 +256,7 @@ namespace RepRancher._3._0._0
                         JUpdate.Status = null;
                         //Potentiallty there is a non-Makerfarm Job Printing. Lets append it's status to the Printer.
                         J = null;
-                        foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values.Where(p=>p.type.Equals("PrintJob")))
+                        foreach (ConveyorJob jerb in SharedResources.CurrentJobs.Values.Where(p => p.type.Equals("PrintJob")))
                         {
                             if (jerb.type.Equals("PrintJob"))
                             {
@@ -504,59 +292,5 @@ namespace RepRancher._3._0._0
             }
             return MakerFarmUpdates.ToArray();
         }
-
-        //Private method used by the Rancher, canceled all jobs based on printer name provided
-        protected void PoisonPrinterPrintJobs(string MachineName)
-        {
-            //This is the list of Jobs to be Canceled
-            List<ConveyorJob> jobs = new List<ConveyorJob>();
-
-            //Check each Job assigned to the printer. If there are any jobs assigned to it that are not presently stopped, add that job to the list of jobs to be canceled.
-            foreach (ConveyorJob jj in SharedResources.CurrentJobs.Values)
-            {
-                if (jj.type.Equals("PrintJob"))
-                {
-                    ConveyorPhysicalPrinterName JerbPrinterName = Newtonsoft.Json.JsonConvert.DeserializeObject<ConveyorPhysicalPrinterName>(jj.machine_name.ToString());
-                    if (!jj.state.Equals("STOPPED") && JerbPrinterName.GetMachine_Hash().Equals(MachineName))
-                    {
-                        jobs.Add(jj);
-                    }
-                }                
-            }
-
-            //Iterate through the list of jobs which need to be canceled.
-            foreach (ConveyorJob ActiveMakerbotJob in jobs)
-            {
-                //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
-                Job_CancelCommand Cancel = new Job_CancelCommand(SharedResources.rpcid.FetchRPCID(), ActiveMakerbotJob.id);
-                
-                //This issues the Cancel Command for the Job. If the Issuing of the Command Fails, it will return false, which will cause the reply loop to skip.
-                bool MethodReception = !SharedResources.IssueCommand(Cancel);
-                //Grabs the sending time so the loop can time out if conveyor isnt responding.
-                DateTime CommandSent = DateTime.Now;
-                //Wait for cancelation confirmation
-                while (!MethodReception)
-                {
-                    //Waiting for job cancelation notice
-                    if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
-                    {
-                        //If recieving a response from conveyor about the print has taken over the timeout, abort waiting and carry on.
-                        break;
-                    }
-                    System.Threading.Thread.Sleep(500);
-                    Command Updated;
-                    //Check to see if the Command has recieved a reply from conveyor
-                    SharedResources.CommandHistory.TryGetValue(Cancel.rpcid, out Updated);
-                    if (Updated.Recieved)
-                    {
-                        //If reply has bee recieved, break loop.
-                        MethodReception = true;
-                    }
-                    //Check if reply recieved
-                }
-            }
-        }
-
-
     }
 }

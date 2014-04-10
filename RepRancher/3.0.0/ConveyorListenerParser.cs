@@ -7,7 +7,7 @@ using Conveyor_JSONRPC_API._3._0._0;
 
 namespace RepRancher._3._0._0
 {
-    class ConveyorListenerParser
+    public class ConveyorListenerParser
     {
         /*
          * Shared Resources Object
