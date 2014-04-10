@@ -36,21 +36,13 @@ namespace RepRancher._3._0._0
                     try
                     {
                         List<Task> tasks = new List<Task>();
+                        string jsonObj;
                         int endobj = 0;
-                        int startobj;
-                        while (endobj > -1)
+                        int startobj = 0;
+                        endobj = reply.IndexOf("}{", endobj);
+                        while (endobj > 0)
                         {
-                            string jsonObj;
-                            startobj = endobj;
-                            endobj = reply.IndexOf("}{", endobj);
-                            if (endobj < 0)
-                            {
-                                jsonObj = reply.Substring(startobj);
-                            }
-                            else
-                            {
-                                jsonObj = reply.Substring(startobj, endobj - startobj);
-                            }
+                            jsonObj = reply.Substring(startobj, endobj - startobj);
                             Task t = Task.Run(() =>
                             {
                                 if (ProcessJSONMessage(jsonObj))
@@ -65,8 +57,24 @@ namespace RepRancher._3._0._0
                                 }
                             });
                             tasks.Add(t);
-                            endobj++;
+                            startobj = endobj + 1;
+                            endobj = reply.IndexOf("}{", endobj);
                         }
+                        jsonObj = reply.Substring(startobj);
+                        Task T = Task.Run(() =>
+                        {
+                            if (ProcessJSONMessage(reply.Substring(startobj)))
+                            {
+                                //Success!
+                            }
+                            else
+                            {
+                                System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
+                                System.Console.Error.WriteLine(jsonObj);
+                                System.Console.Error.WriteLine();
+                            }
+                        });
+                        tasks.Add(T);
                         Task.WaitAll(tasks.ToArray());                        
                     }
                     catch 
