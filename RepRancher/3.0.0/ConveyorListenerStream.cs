@@ -21,23 +21,13 @@ namespace RepRancher._3._0._0
             Console.Error.WriteLine();
             while (true)
             {
-                string Reply = "";
                 try
                 {
 
                     byte[] bytesToRead = new byte[SharedResources.tcpClient.ReceiveBufferSize];
                     int bytesRead = SharedResources.dataStream.Read(bytesToRead, 0, SharedResources.tcpClient.ReceiveBufferSize);
-                    Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-
-                    //Lock the Replies to append
-                    lock (SharedResources.ConveyorReplyMutex)
-                    {
-                        //Attach new input to current string
-                        SharedResources.repliesFromConveyor = string.Concat(SharedResources.repliesFromConveyor, Reply);
-
-                        //Mark content as being available
-                        SharedResources.contentAvailable = true;
-                    }//Release the Replies                    
+                    string Reply = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                    SharedResources.RepliesFromConveyor.Enqueue(Reply);                                   
                 }
                 catch
                 {

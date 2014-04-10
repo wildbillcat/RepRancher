@@ -26,65 +26,27 @@ namespace RepRancher._3._0._0
 
         public void ListenerParserThreadRun()
         {
-            int ProcessStalls = 0;
             Console.Error.WriteLine(DateTime.Now.ToString() + ": Initializing Conveyor 3.0.0 ListenerParser");
             Console.Error.WriteLine();
+            string reply;
             while (true)
             {
-                if (SharedResources.contentAvailable || ProcessStalls > 5)
+                while (SharedResources.RepliesFromConveyor.TryDequeue(out reply))
                 {
-                    string[] command = new string[1];
-                    lock (SharedResources.ConveyorReplyMutex)
+                    try
                     {
-                        try
+                        if (ProcessJSONMessage(reply))
                         {
-                            command = ContainsCompleteJSONObject(SharedResources.repliesFromConveyor);
-                            SharedResources.repliesFromConveyor = command[0];
-                            if (command.Length == 1)
-                            {
-                                SharedResources.contentAvailable = false;
-                            }
+                            //Successfully Processed Object
                         }
-                        catch
+                        else
                         {
-                            System.Console.Error.WriteLine(DateTime.Now.ToString() + " : The Listener Parser for Conveyor 3.0 threw an exception when detecting a completed JSON Object!");
-                        }
-                    }//End Lock
-
-                    if (command.Length > 1)
-                    {
-                        //Resets the number of Process Stalls
-                        ProcessStalls = 0;
-                        try
-                        {
-                            if (ProcessJSONMessage(command[1]))
-                            {
-                                //Successfully Processed Object
-                            }
-                            else
-                            {
-                                System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
-                                System.Console.Error.WriteLine(command[1]);
-                                System.Console.Error.WriteLine();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            System.Console.Error.WriteLine(DateTime.Now.ToString() + ": It's all gone very wrong! Please check log");
-                            System.Console.Error.WriteLine("Error Message:");
-                            System.Console.Error.WriteLine(e.Message);
-                            System.Console.Error.WriteLine("Stack Trace:");
-                            System.Console.Error.WriteLine(e.StackTrace);
-                            System.Console.Error.WriteLine("JSON Object:");
-                            System.Console.Error.WriteLine(command[1]);
+                            System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
+                            System.Console.Error.WriteLine(reply);
+                            System.Console.Error.WriteLine();
                         }
                     }
-                    else
-                    {
-                        //no replies to queue up, lets take a look.
-                        //System.Threading.Thread.Sleep(1000);//Sleep for 1 second
-                        ProcessStalls++;
-                    }
+                    catch { }
                 }
             }
         }

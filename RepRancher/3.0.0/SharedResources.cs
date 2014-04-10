@@ -72,6 +72,8 @@ namespace RepRancher._3._0._0
          * This string contains the input recived from conveyor and shares it between the ConveyorListenerStream and ConveyorListenerParser
          */
         public string repliesFromConveyor { get; set; }
+        public ConcurrentQueue<String> RepliesFromConveyor { get; set; }
+        
 
         /*
          * Mark content as being available
