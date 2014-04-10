@@ -35,108 +35,47 @@ namespace RepRancher._3._0._0
                 {
                     try
                     {
-                        if (ProcessJSONMessage(reply))
+                        List<Task> tasks = new List<Task>();
+                        int endobj = 0;
+                        int startobj;
+                        while (endobj > -1)
                         {
-                            //Successfully Processed Object
-                        }
-                        else
-                        {
-                            System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
-                            System.Console.Error.WriteLine(reply);
-                            System.Console.Error.WriteLine();
-                        }
-                    }
-                    catch { }
-                }
-            }
-        }
-
-        //String[0] = New JSON string
-        //String[1] = JSON Object
-        public string[] ContainsCompleteJSONObject(string JSON)
-        {
-            int Bracket = 0;
-            bool BracketFound = false;
-            for (int i = 0; i < JSON.Length; i++)
-            {
-                if (JSON[i] == '{')
-                {
-                    BracketFound = true;
-                    Bracket = i;
-                    break;
-                }
-            }
-
-            if (BracketFound)
-            {
-                BracketFound = false;
-            }
-            else
-            {
-                //Bracket wasn't found, return
-                return new string[] { JSON };
-            }
-
-            if (Bracket > 0)
-            {
-                JSON = JSON.Substring(Bracket + 1);
-            }
-
-            Bracket = 1;
-            for (int i = 1; i < JSON.Length; i++)
-            {
-                char C = JSON[i];
-                if (C == '{')
-                {
-                    Bracket++;
-                }
-                else if (C == '}')
-                {
-                    Bracket--;
-                }
-                if (Bracket == 0)
-                {
-                    BracketFound = true;
-                    Bracket = i;
-                    break;
-                }
-            }
-
-            if (BracketFound)
-            {
-                previousParseFailure = false;
-                string JSONObject = JSON.Substring(0, Bracket);
-                JSON = JSON.Substring(Bracket + 1);
-                return new string[] { JSON, JSONObject };
-            }
-            else
-            {
-                if (previousParseFailure)
-                {
-                    int NewStart = Bracket + 1;
-                    Bracket = 0;
-                    for (int i = 0; i < JSON.Length; i++)
-                    {
-                        char C = JSON[i];
-                        if (C == '{')
-                        {
-                            Bracket++;
-                            if (Bracket == NewStart)
+                            string jsonObj;
+                            startobj = endobj;
+                            endobj = reply.IndexOf("}{", endobj);
+                            if (endobj < 0)
                             {
-                                JSON = JSON.Substring(i);
-                                break;
+                                jsonObj = reply.Substring(startobj);
                             }
+                            else
+                            {
+                                jsonObj = reply.Substring(startobj, endobj - startobj);
+                            }
+                            Task t = Task.Run(() =>
+                            {
+                                if (ProcessJSONMessage(jsonObj))
+                                {
+                                    //Success!
+                                }
+                                else
+                                {
+                                    System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong and the JSON object could not be processed");
+                                    System.Console.Error.WriteLine(jsonObj);
+                                    System.Console.Error.WriteLine();
+                                }
+                            });
+                            tasks.Add(t);
+                            endobj++;
                         }
+                        Task.WaitAll(tasks.ToArray());                        
+                    }
+                    catch 
+                    {
+                        System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong in the parser and failed to parse");
+                        System.Console.Error.WriteLine();
                     }
                 }
-                else
-                {
-                    previousParseFailure = true;
-                }
-
             }
-            //If execution gets this far, object is incomplete, just return JSON
-            return new string[] { JSON };
         }
 
         public bool ProcessJSONMessage(string JSON)
