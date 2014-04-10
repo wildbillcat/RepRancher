@@ -79,8 +79,8 @@ namespace RepRancher._3._0._0
                     }
                     catch 
                     {
-                        System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong in the parser and failed to parse");
-                        System.Console.Error.WriteLine();
+                        //System.Console.Error.WriteLine(DateTime.Now.ToString() + ": Something went Wrong in the parser and failed to parse");
+                        //System.Console.Error.WriteLine();
                     }
                 }
                 string firstString;
