@@ -8,6 +8,6 @@ namespace RepRancher
 {
     public enum RancherType
     {
-        Conveyor_2_4_1, Conveyor_3_0_0, DimensionSST768
+        Conveyor_2_4_1, Conveyor_3_0_0, Conveyor_3_0_1, DimensionSST768
     }
 }

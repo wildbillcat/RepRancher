@@ -113,6 +113,10 @@ namespace RepRancher
                     {
                         Ranchers.Add(new _3._0._0.ConveyorRancher(R, TakeThis, ClientAPIKey));
                     }
+                    else if (R.Type == RancherType.Conveyor_3_0_1)
+                    {
+                        Ranchers.Add(new _3._0._1.ConveyorRancher(R, TakeThis, ClientAPIKey));
+                    }
                     else if (R.Type == RancherType.DimensionSST768)
                     {
                         new NotImplementedException();
@@ -215,31 +219,6 @@ namespace RepRancher
                 }                
             }
              );        
-
-            /*Single Threaded Solution
-            List<MakerFarmUpdate> MakerFarmUpdatesTemp = new List<MakerFarmUpdate>();
-            foreach(Rancher R in Ranchers){
-                MakerFarmUpdatesTemp.AddRange(R.GetMakerFarmUpdates(ReportOn));
-            }
-            //Now resolve conflicts if multiple clients know of a Printer (Prevent a disconnect reonnect battle)
-            Dictionary<string, MakerFarmUpdate> MakerFarmUpdates = new Dictionary<string, MakerFarmUpdate>();
-            foreach (MakerFarmUpdate MUpdate in MakerFarmUpdatesTemp)
-            {
-                if (MakerFarmUpdates.ContainsKey(MUpdate.MachineUpdate.MachineName))
-                {
-                    //Appears this printer is a duplicate. 
-                    if(MUpdate.MachineUpdate.MachineStatus.Equals("DISCONNECTED")){
-                        //Duplicate is disconnected, ignore
-                    }
-                    else if (MakerFarmUpdates[MUpdate.MachineUpdate.MachineName].MachineUpdate.MachineStatus.Equals("DISCONNECTED"))
-                    {
-                        //The original is Disconnected, and the new one is not! Lets use the new update.
-                        MakerFarmUpdates.Remove(MUpdate.MachineUpdate.MachineName);
-                        MakerFarmUpdates.Add(MUpdate.MachineUpdate.MachineName, MUpdate);
-                    }
-                    //Else: Do nothing, both are disconnected and one does not take creedence over another.
-                }
-            }*/
             
             //Now that the MakerFarm Updates have been cleared up, lets send them to MakerFarm
             Parallel.ForEach(MakerFarmUpdates.Values, MakerUpdate =>
