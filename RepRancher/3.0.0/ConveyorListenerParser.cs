@@ -83,6 +83,16 @@ namespace RepRancher._3._0._0
                         System.Console.Error.WriteLine();
                     }
                 }
+                string firstString;
+                int i = 1;
+                while (!SharedResources.RepliesFromConveyor.TryPeek(out firstString))
+                {
+                    System.Threading.Thread.Sleep(100*i);
+                    if (i < 10)
+                    {
+                        i++;
+                    }
+                }
             }
         }
 
