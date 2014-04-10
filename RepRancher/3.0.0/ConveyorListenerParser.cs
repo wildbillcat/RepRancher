@@ -330,6 +330,37 @@ namespace RepRancher._3._0._0
                             });
                         }
                     }
+                    else if (PreviousCommand is Conveyor_JSONRPC_API._3._0._1.PrintCommand)//method[0].Equals("print"))
+                    {
+                        ConveyorJob j = ServerAPI.GetResult<ConveyorJob>(JSON);
+                        SharedResources.CurrentJobs.AddOrUpdate(j.id, j, (key, existingVal) =>
+                        {
+                            existingVal.machine_name = j.machine_name;
+                            existingVal.failure = j.failure;
+                            existingVal.profile_name = j.profile_name;
+                            existingVal.extrusion_mass_a_grams = j.extrusion_mass_a_grams;
+                            existingVal.name = j.name;
+                            existingVal.can_cancel = j.can_cancel;
+                            existingVal.elapsed_time = j.elapsed_time;
+                            existingVal.state = j.state;
+                            existingVal.driver_name = j.driver_name;
+                            existingVal.progress = j.progress;
+                            existingVal.type = j.type;
+                            existingVal.conclusion = j.conclusion;
+                            return existingVal;
+                        });
+                        Conveyor_JSONRPC_API._3._0._1.PrintCommand PreviousPrintCommand = (Conveyor_JSONRPC_API._3._0._1.PrintCommand)PreviousCommand;
+                        //PreviousPrintCommand.
+                        if (!PreviousCommand.Recieved)
+                        {
+                            //This needs to be fixed. presently it is not updating or addingt he key value pair
+                            SharedResources.MakerFarmToConveyorJobIds.AddOrUpdate(PreviousPrintCommand.MakerFarmJobId, j.id, (key, existingVal) =>
+                            {
+                                existingVal = j.id;
+                                return existingVal;
+                            });
+                        }
+                    }
                     else
                     {
                         //Do not yet have a means to process the return for method recieved
