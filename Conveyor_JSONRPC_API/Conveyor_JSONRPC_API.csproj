@@ -77,7 +77,11 @@
     <Compile Include="3.0.0\ServerAPI.cs" />
     <Compile Include="2.4.1\CancelCommand.cs" />
     <Compile Include="3.0.0\SliceCommand.cs" />
+    <Compile Include="3.0.1\PrintCommand.cs" />
+    <Compile Include="3.0.1\ServerAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="3.0.1\JSON Example Replies\Server\print-2X.js" />
+    <Content Include="3.0.1\JSON Example Replies\Server\slice.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

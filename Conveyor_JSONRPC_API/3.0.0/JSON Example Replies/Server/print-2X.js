@@ -4,7 +4,8 @@
     "id":16,
     "jsonrpc":"2.0",
     "method":"print",
-    "params":{
+    "params":
+    {
         "has_start_end":false,
         "input_file":"C:/Users/Rob/AppData/Local/Temp/MakerWare-l0VAKJ/1 inch cube.gcode",
         "job_metadata":
@@ -16,7 +17,8 @@
         "machine_name":"23C1:B015:7523733353635171A221",
         "metadata":null,
         "slicer_name":"miraclegrue",
-        "slicer_settings":{
+        "slicer_settings":
+        {
             "default_raft_extruder":0,
             "default_support_extruder":0,
             "do_auto_raft":true,
@@ -34,5 +36,8 @@
             "shells":2,
             "slicer":"MIRACLEGRUE",
             "support":false,
-            "travel_speed":150},
-        "thumbnail_dir":""}}
+            "travel_speed":150
+        },
+        "thumbnail_dir":""
+    }
+}
