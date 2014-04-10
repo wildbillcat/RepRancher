@@ -63,23 +63,10 @@ namespace RepRancher._3._0._0
         Object WriteToConveyorLock;
 
         /*
-         * This controls access to the input recived string from conveyor between the ConveyorListenerStream and ConveyorListenerParser
+         * This contains the input recived from conveyor and shares it between the ConveyorListenerStream and ConveyorListenerParser
          */
-        public Object ConveyorReplyMutex { get; set; }
-
-
-        /*
-         * This string contains the input recived from conveyor and shares it between the ConveyorListenerStream and ConveyorListenerParser
-         */
-        public string repliesFromConveyor { get; set; }
         public ConcurrentQueue<String> RepliesFromConveyor { get; set; }
         
-
-        /*
-         * Mark content as being available
-         */
-        public bool contentAvailable;
-
         /*
          * IP Endpoint of Conveyor
          */
@@ -101,19 +88,16 @@ namespace RepRancher._3._0._0
             tcpClient = new System.Net.Sockets.TcpClient();
             tcpClient.Connect(ConveyorIPEndpoint);
             dataStream = tcpClient.GetStream();
-            WriteToConveyorLock = new Object();
             CommandHistory = new ConcurrentDictionary<int,Command>();
             CurrentPorts = new ConcurrentDictionary<string,ConveyorPort>();
             CurrentPrinters = new ConcurrentDictionary<string, ConveyorPhysicalPrinter>();
             CurrentJobs = new ConcurrentDictionary<int, ConveyorJob>();
             MakerFarmToConveyorJobIds = new ConcurrentDictionary<int, int>();
             rpcid = new ConcurrentRPCID();
-            ConveyorReplyMutex = new System.Threading.Mutex();
-            repliesFromConveyor = "";
-            contentAvailable = true;
             TakeThis = Takethis;
             ClientAPIKey = ClientAPIkey;
             RepliesFromConveyor = new ConcurrentQueue<string>();
+            WriteToConveyorLock = new Object();
         }
 
         public bool ResetConveyorConnection()
@@ -121,32 +105,26 @@ namespace RepRancher._3._0._0
             //Ensure no Commands can be sent to the Conveyor Service
             lock (WriteToConveyorLock)
             {
-                //Ensure other thread doesnt try parsing while the connection is broken.
-                lock (ConveyorReplyMutex)
+                try
                 {
-                    //Ensure the parser knows there is no string to parse.
-                    contentAvailable = false;
-                    try
-                    {
-                        //Closes and Disposes of old connection
-                        tcpClient.Close();
+                    //Closes and Disposes of old connection
+                    tcpClient.Close();
 
-                        //Creates new TCP Client
-                        tcpClient = new System.Net.Sockets.TcpClient();
+                    //Creates new TCP Client
+                    tcpClient = new System.Net.Sockets.TcpClient();
 
-                        //Attempt Connection to Conveyor
-                        tcpClient.Connect(ConveyorIPEndpoint);
+                    //Attempt Connection to Conveyor
+                    tcpClient.Connect(ConveyorIPEndpoint);
 
-                        //Fetch the new connection stream
-                        dataStream = tcpClient.GetStream();
-                    }
-                    catch
-                    {
-                        //Connection failed!              
-                        return false;
-                    }
-                    return true;
-                }                
+                    //Fetch the new connection stream
+                    dataStream = tcpClient.GetStream();
+                }
+                catch
+                {
+                    //Connection failed!              
+                    return false;
+                }
+                return true;             
             }
         }
 
