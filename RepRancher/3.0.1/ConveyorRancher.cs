@@ -134,7 +134,7 @@ namespace RepRancher._3._0._1
                         if (J.progress != null)
                         {
                             JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
-                            if (J.progress.name.Equals("print"))
+                            if (J.progress.name.Equals("print") || J.progress.name.Equals("printing"))
                             {
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
                             }
