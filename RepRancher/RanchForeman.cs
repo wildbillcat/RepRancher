@@ -209,9 +209,17 @@ namespace RepRancher
                         });
                     }
                 }
-                catch
+                catch(Exception Err)
                 {
                     Console.Error.WriteLine(DateTime.Now.ToString() + ": An Error Occurred while Fetching Information from Clients and updating the Update List");
+                    Console.Error.WriteLine(Err.Message);
+                    Console.Error.WriteLine(Err.StackTrace);
+                    if (Err.InnerException != null)
+                    {
+                        Console.Error.WriteLine("Inner Exception:");
+                        Console.Error.WriteLine(Err.InnerException.Message);
+                        Console.Error.WriteLine(Err.InnerException.StackTrace);
+                    }
                     Console.Error.WriteLine();
                     MakerFarm.Enabled = true;
                     MakerFarm.Start();

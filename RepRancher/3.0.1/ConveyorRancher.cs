@@ -292,9 +292,9 @@ namespace RepRancher._3._0._1
                 }
                 else
                 {
-                    //This Client does not know about the Requested machine.
-                    Console.Error.WriteLine("ConveyorClient does not know about the following requested Printer: " + Mi.MachineName);
-                    Console.Error.WriteLine();
+                    //This Client does not know about the Requested machine. !Will have to add a control for noisy client
+                    //Console.Error.WriteLine("ConveyorClient does not know about the following requested Printer: " + Mi.MachineName);
+                    //Console.Error.WriteLine();
                 }
             }
             return MakerFarmUpdates.ToArray();
