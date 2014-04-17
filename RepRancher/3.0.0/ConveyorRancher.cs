@@ -298,9 +298,12 @@ namespace RepRancher._3._0._0
                     MUpdate.MachineStatus = P.state + "\n" +
                         "Printer Type: " + P.printer_type + "\n" +
                         "Firmware Version: ";
-                    foreach (int i in P.firmware_version)
+                    if (P.firmware_version != null)
                     {
-                        MUpdate.MachineStatus = string.Concat(MUpdate.MachineStatus, i.ToString(), ".");
+                        foreach (int i in P.firmware_version)
+                        {
+                            MUpdate.MachineStatus = string.Concat(MUpdate.MachineStatus, i.ToString(), ".");
+                        }
                     }
                     MUpdate.MachineStatus = string.Concat(MUpdate.MachineStatus, "\n");
 
