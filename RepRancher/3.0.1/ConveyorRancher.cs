@@ -175,53 +175,64 @@ namespace RepRancher._3._0._1
                             //Lets fetch the file we need to print.
                             string PostData = "{\"ClientAPIKey\":\"" + SharedResources.ClientAPIKey + "\",\"MachineName\":\"" + P.name.GetMachine_Hash() + "\",\"JobId\":" + Mi.CurrentJob.ToString() + "}";
                             string FilePath = string.Concat(PrintTemporaryFileStoragePath, Mi.PrintFileName);
-                            using (var client = new System.Net.WebClient())
+                            try
                             {
-                                client.Headers.Add("Content-Type", "application/json;odata=verbose");
-                                byte[] result = client.UploadData(SharedResources.TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
-                                System.IO.File.WriteAllBytes(FilePath, result);
-                            }
-
-                            //No job is running on the Printer! Lets send one.
-                            ConveyorPrintJobMetadata ConveyorJobData = new ConveyorPrintJobMetadata();
-                            ConveyorJobData.duration_s = Mi.EstToolpathTime * 60; //Converts minutes to seconds
-                            ConveyorJobData.extrusion_distance_a_mm = Mi.EstMaterialUse;
-                            ConveyorJobData.extrusion_mass_a_grams = Mi.EstMaterialUse * 28.3495; //Converts Ounces to Grams
-                            ConveyorSlicerSettings SliceSettings = new ConveyorSlicerSettings();
-                            Conveyor_JSONRPC_API._3._0._1.PrintCommand Print = new Conveyor_JSONRPC_API._3._0._1.PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
-                            bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
-                            bool MethodReception = false;
-                            DateTime CommandSent = DateTime.Now;
-                            //Wait for Print
-
-                            while (!MethodReception)
-                            {
-                                //Waiting for print to send
-                                if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
+                                using (var client = new System.Net.WebClient())
                                 {
-                                    //If recieving a response from conveyor about the print has taken over 5 seconds, abort waiting and carry on.
-                                    break;
+                                    client.Headers.Add("Content-Type", "application/json;odata=verbose");
+                                    byte[] result = client.UploadData(SharedResources.TakeThis, "POST", Encoding.UTF8.GetBytes(PostData));
+                                    System.IO.File.WriteAllBytes(FilePath, result);
                                 }
-                                System.Threading.Thread.Sleep(500);
-                                Command MethodReceptionCMD;
-                                //Check if reply recieved
-                                SharedResources.CommandHistory.TryGetValue(Print.rpcid, out MethodReceptionCMD);
-                                MethodReception = MethodReceptionCMD.Recieved;
+
+                                //No job is running on the Printer! Lets send one.
+                                ConveyorPrintJobMetadata ConveyorJobData = new ConveyorPrintJobMetadata();
+                                ConveyorJobData.duration_s = Mi.EstToolpathTime * 60; //Converts minutes to seconds
+                                ConveyorJobData.extrusion_distance_a_mm = Mi.EstMaterialUse;
+                                ConveyorJobData.extrusion_mass_a_grams = Mi.EstMaterialUse * 28.3495; //Converts Ounces to Grams
+                                ConveyorSlicerSettings SliceSettings = new ConveyorSlicerSettings();
+                                Conveyor_JSONRPC_API._3._0._1.PrintCommand Print = new Conveyor_JSONRPC_API._3._0._1.PrintCommand(SharedResources.rpcid.FetchRPCID(), true, FilePath, ConveyorJobData, P.name.GetMachine_Hash(), SliceSettings.materials, new ConveyorSlicerSettings(P.printer_type), "", Mi.CurrentJob);
+                                bool SuccessfullJobSend = SharedResources.IssueCommand(Print);
+                                bool MethodReception = false;
+                                DateTime CommandSent = DateTime.Now;
+                                //Wait for Print
+
+                                while (!MethodReception)
+                                {
+                                    //Waiting for print to send
+                                    if (DateTime.Now.Subtract(CommandSent) > new TimeSpan(0, 0, ConveyorReplyTimeout))
+                                    {
+                                        //If recieving a response from conveyor about the print has taken over 5 seconds, abort waiting and carry on.
+                                        break;
+                                    }
+                                    System.Threading.Thread.Sleep(500);
+                                    Command MethodReceptionCMD;
+                                    //Check if reply recieved
+                                    SharedResources.CommandHistory.TryGetValue(Print.rpcid, out MethodReceptionCMD);
+                                    MethodReception = MethodReceptionCMD.Recieved;
+                                }
+                                if (SuccessfullJobSend || MethodReception)
+                                {
+                                    JUpdate.JobId = Mi.CurrentJob;
+                                    JUpdate.started = true;
+                                    JUpdate.complete = false;
+                                    JUpdate.Status = "Print Job Queued to Conveyor!";
+                                }
+                                else
+                                {
+                                    JUpdate.JobId = Mi.CurrentJob;
+                                    JUpdate.started = false;
+                                    JUpdate.complete = false;
+                                    JUpdate.Status = "Print Job Queued to Conveyor!";
+                                }
                             }
-                            if (SuccessfullJobSend || MethodReception)
+                            catch
                             {
                                 JUpdate.JobId = Mi.CurrentJob;
                                 JUpdate.started = true;
-                                JUpdate.complete = false;
-                                JUpdate.Status = "Print Job Queued to Conveyor!";
+                                JUpdate.complete = true;
+                                JUpdate.Status = "Print Job File Invalid!";
                             }
-                            else
-                            {
-                                JUpdate.JobId = Mi.CurrentJob;
-                                JUpdate.started = false;
-                                JUpdate.complete = false;
-                                JUpdate.Status = "Print Job Queued to Conveyor!";
-                            }
+                            
                         }
                         else
                         {
