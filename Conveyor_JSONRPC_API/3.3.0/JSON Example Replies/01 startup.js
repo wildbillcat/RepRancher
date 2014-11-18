@@ -1,6 +1,7 @@
 {"id":0,"jsonrpc":"2.0","method":"hello","params":{"username":"Rob"}}
 
 {"jsonrpc": "2.0", "result": "world", "id": 0}
+
 {"params": {"compatible_firmware": false, "has_been_connected_to": false, "platform_temperature": null, "has_heated_platform": false, "toolheads": {"extruder": [{"index": 0, "filament_presence": false, "preheating": false, "tool_present": true, "current_temperature": 26, "tool_id": 4, "target_temperature": 0}]}, "number_of_toolheads": 1, "can_print": true, "printer_type": "Platypus", "firmware_version": [1, 4, 0, 188], "toolhead_temperature": null, "connection_type": "offline", "toolhead_target_temperature": null, "display_name": "Replicator 6", "name": {"iserial": "23C100053C7059002409", "pid": 5, "port_type": "UsbPort", "vid": 9153}, "disabled_errors": ["filament_slip"], "driver_name": "birdwing", "build_volume": [252, 199, 150], "state": "IDLE", "profile_name": "Platypus", "online": false, "api_version": "1.0.0"}, "jsonrpc": "2.0", "method": "machine_state_changed"}
 {"id":1,"jsonrpc":"2.0","method":"getports","params":{}}
 

@@ -79,14 +79,16 @@
     <Compile Include="3.0.0\SliceCommand.cs" />
     <Compile Include="3.0.1\PrintCommand.cs" />
     <Compile Include="3.0.1\ServerAPI.cs" />
+    <Compile Include="3.3.0\HelloCommand.cs" />
+    <Compile Include="3.3.0\ServerAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="3.0.1\JSON Example Replies\Server\print-2X.js" />
     <Content Include="3.0.1\JSON Example Replies\Server\slice.js" />
-    <Content Include="3.3.0\JSON Example Replies\01 startup.txt" />
-    <Content Include="3.3.0\JSON Example Replies\02 camera.txt" />
-    <Content Include="3.3.0\JSON Example Replies\03 process stl for print.txt" />
-    <Content Include="3.3.0\JSON Example Replies\04 print file.txt" />
-    <Content Include="3.3.0\JSON Example Replies\05 print makerbot file.txt" />
+    <Content Include="3.3.0\JSON Example Replies\01 startup.js" />
+    <Content Include="3.3.0\JSON Example Replies\02 camera.js" />
+    <Content Include="3.3.0\JSON Example Replies\03 process stl for print.js" />
+    <Content Include="3.3.0\JSON Example Replies\04 print file.js" />
+    <Content Include="3.3.0\JSON Example Replies\05 print makerbot file.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

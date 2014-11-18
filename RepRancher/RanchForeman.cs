@@ -105,6 +105,10 @@ namespace RepRancher
             {
                 if (R.Enabled)
                 {
+                    if (R.Type == RancherType.Conveyor_Auto)
+                    {
+                        R.Type = RancherType.Conveyor_Auto;
+                    }
                     if (R.Type == RancherType.Conveyor_2_4_1)
                     {
                         Ranchers.Add(new _2._4._1.ConveyorRancher(R, TakeThis, ClientAPIKey));
@@ -116,6 +120,10 @@ namespace RepRancher
                     else if (R.Type == RancherType.Conveyor_3_0_1)
                     {
                         Ranchers.Add(new _3._0._1.ConveyorRancher(R, TakeThis, ClientAPIKey));
+                    }
+                    else if (R.Type == RancherType.Conveyor_3_3_0)
+                    {
+                        new NotImplementedException();//*******************************************************************************************************
                     }
                     else if (R.Type == RancherType.DimensionSST768)
                     {
@@ -248,6 +256,37 @@ namespace RepRancher
 
             MakerFarm.Enabled = true;
             MakerFarm.Start();
+        }
+
+        private RancherType AutoDetectConveyor(string EXEPath){
+            if(!System.IO.File.Exists(EXEPath)){
+                Console.Error.WriteLine("Conveyor EXE Not Found");
+                throw new Exception("Conveyor EXE Not Found");
+            }
+            int Major = System.Diagnostics.FileVersionInfo.GetVersionInfo(EXEPath).FileMajorPart;
+            int Minor = System.Diagnostics.FileVersionInfo.GetVersionInfo(EXEPath).FileMinorPart;
+            int Build = System.Diagnostics.FileVersionInfo.GetVersionInfo(EXEPath).FileBuildPart;
+
+            if (Major == 2 && Minor == 4 && Build == 1)
+            {
+                return RancherType.Conveyor_2_4_1;
+            }
+            else if (Major == 3 && Minor == 0 && Build == 0)
+            {
+                return RancherType.Conveyor_3_0_0;
+            }
+            else if (Major == 3 && Minor == 0 && Build == 1)
+            {
+                return RancherType.Conveyor_3_0_1;
+            }
+            else if (Major == 3 && Minor == 3 && Build == 0)
+            {
+                return RancherType.Conveyor_3_3_0;
+            }
+
+            //If code makes it this far, then the version of conveyor isn't supported
+            Console.Error.WriteLine("Conveyor Version not Supported");
+            throw new Exception("Conveyor Version not Supported");
         }
     }
 }
