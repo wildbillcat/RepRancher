@@ -11,7 +11,7 @@ namespace Conveyor_JSONRPC_API._3._3._0
     /*
      * This Class is a list of static methods to generate RPC commands and return their replies.
      */
-    public class ServerAPI
+    public class ServerAPI : Conveyor_JSONRPC_API
     {
         /*
          * hello
