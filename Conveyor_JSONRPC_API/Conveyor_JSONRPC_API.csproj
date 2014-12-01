@@ -81,6 +81,9 @@
     <Compile Include="3.0.1\ServerAPI.cs" />
     <Compile Include="3.3.0\HelloCommand.cs" />
     <Compile Include="3.3.0\ServerAPI.cs" />
+    <Compile Include="IJob.cs" />
+    <Compile Include="IPort.cs" />
+    <Compile Include="IPrinter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="3.0.1\JSON Example Replies\Server\print-2X.js" />
     <Content Include="3.0.1\JSON Example Replies\Server\slice.js" />
@@ -91,6 +94,7 @@
     <Content Include="3.3.0\JSON Example Replies\05 print makerbot file.js" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Conveyor.cd" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
