@@ -7,6 +7,12 @@ namespace Conveyor_JSONRPC_API
 {
     public interface IJob
     {
+        int MakerFarmID
+        {
+            get;
+            set;
+        }
+    
         void GetAssignedPrinter();
 
         string GetStatus();

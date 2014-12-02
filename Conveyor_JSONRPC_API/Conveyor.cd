@@ -3,22 +3,29 @@
   <Interface Name="Conveyor_JSONRPC_API.IPrinter">
     <Position X="4.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAAABAAAAAgAEAAAAAAAAAAAAAAAEBQA=</HashCode>
       <FileName>IPrinter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Conveyor_JSONRPC_API.IJob">
     <Position X="1.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAEAAAAAIAACAAIAAEAAAAEQAAACAAAAAAAACAAAAA=</HashCode>
+      <HashCode>AAAEAAAAAIAACAAIAAEAAAAEQAAACAAAIAAAACAAAAA=</HashCode>
       <FileName>IJob.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Conveyor_JSONRPC_API.IPort">
     <Position X="6.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IPort.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Conveyor_JSONRPC_API.IConveyorService">
+    <Position X="1.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAEAAAAAAABEAAAAAAIAAAAAACCAAAAAAQAAI=</HashCode>
+      <FileName>IConveyorService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
