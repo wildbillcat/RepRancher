@@ -12,5 +12,19 @@ namespace Conveyor_JSONRPC_API
         string GetStatus();
 
         double GetProgress();
+
+        void CancelJob();
+
+        void PauseJob();
+
+        void CancelJobAsync();
+
+        void PauseJobAsync();
+
+        void ResumeJob();
+
+        void ResumeJobAsync();
+
+        string GetFileName();
     }
 }

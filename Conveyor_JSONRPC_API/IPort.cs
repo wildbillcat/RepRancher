@@ -7,5 +7,8 @@ namespace Conveyor_JSONRPC_API
 {
     public interface IPort
     {
+        string GetPrinterName();
+
+        void Connect();
     }
 }

@@ -497,7 +497,7 @@ namespace RepRancher._2._4._1
                 //For as long as there are jobs assigned to this printer that haven't been canceled, seach for and destroy them.
                 CancelCommand Cancel = new CancelCommand(SharedResources.rpcid.FetchRPCID(), ActiveMakerbotJob.id);
                 
-                //This issues the Cancel Command for the Job. If the Issuing of the Command Fails, it will return false, which will cause the reply loop to skip.
+                //This issues the CancelJob Command for the Job. If the Issuing of the Command Fails, it will return false, which will cause the reply loop to skip.
                 bool MethodReception = !SharedResources.IssueCommand(Cancel);
                 //Grabs the sending time so the loop can time out if conveyor isnt responding.
                 DateTime CommandSent = DateTime.Now;

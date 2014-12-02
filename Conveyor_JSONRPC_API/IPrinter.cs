@@ -8,5 +8,17 @@ namespace Conveyor_JSONRPC_API
     public interface IPrinter
     {
         IJob GetCurrentJob();
+
+        string GetPrinterModel();
+
+        string GetStatus();
+
+        string GetDisplayName();
+
+        string GetName();
+
+        IJob Print();
+
+        IJob PrintAsync();
     }
 }
