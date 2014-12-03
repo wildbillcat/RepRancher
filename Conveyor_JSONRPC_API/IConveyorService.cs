@@ -70,17 +70,25 @@ namespace Conveyor_JSONRPC_API
             set;
         }
 
-        /// <summary>
-        /// LockObject used for protecting the outgoing TCP stream
-        /// </summary>
-        obkect WriteToConveyorLock
+        ConveyorRpcId RPCID
         {
             get;
             set;
         }
 
-        void SendCommand();
+        /// <summary>
+        /// Sends a Command to Conveyor
+        /// </summary>
+        void SendCommand(string MethodName, List<JProperty> Params);
 
+        /// <summary>
+        /// Resets the Connection to Conveyor
+        /// </summary>
         void ResetConveyorConnection();
+
+        /// <summary>
+        /// Builds the RPC String to send to conveyor
+        /// </summary>
+        string BuildRPCString(int rpcid, string MethodName, List<JProperty> Params);
     }
 }

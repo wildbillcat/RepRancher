@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Conveyor_JSONRPC_API.ConveyorRpcId">
+    <Position X="4.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAoAgAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ConveyorRpcId.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Conveyor_JSONRPC_API.IPrinter">
     <Position X="4.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
@@ -24,7 +31,7 @@
   <Interface Name="Conveyor_JSONRPC_API.IConveyorService">
     <Position X="1.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAEAAAAAAABEAAAAAAIAAAAAACGAAAAAAQAAI=</HashCode>
+      <HashCode>AAEAAAAAEAAAAAAABEAAAAAAIAAACAACCAAAAAAwAAI=</HashCode>
       <FileName>IConveyorService.cs</FileName>
     </TypeIdentifier>
   </Interface>

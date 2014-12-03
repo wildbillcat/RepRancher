@@ -81,6 +81,7 @@
     <Compile Include="3.0.1\ServerAPI.cs" />
     <Compile Include="3.3.0\HelloCommand.cs" />
     <Compile Include="3.3.0\ServerAPI.cs" />
+    <Compile Include="ConveyorRpcId.cs" />
     <Compile Include="IConveyorService.cs" />
     <Compile Include="IJob.cs" />
     <Compile Include="IPort.cs" />

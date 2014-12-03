@@ -17,8 +17,8 @@ namespace Conveyor_JSONRPC_API
 
         string GetName();
 
-        IJob Print();
+        IJob Print(string FilePath);
 
-        IJob PrintAsync();
+        IJob PrintAsync(string FilePath);
     }
 }
