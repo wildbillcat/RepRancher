@@ -70,6 +70,15 @@ namespace Conveyor_JSONRPC_API
             set;
         }
 
+        /// <summary>
+        /// LockObject used for protecting the outgoing TCP stream
+        /// </summary>
+        obkect WriteToConveyorLock
+        {
+            get;
+            set;
+        }
+
         void SendCommand();
 
         void ResetConveyorConnection();
