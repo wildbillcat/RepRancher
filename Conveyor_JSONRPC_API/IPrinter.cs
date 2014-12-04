@@ -7,6 +7,30 @@ namespace Conveyor_JSONRPC_API
 {
     public interface IPrinter
     {
+        /// <summary>
+        /// Json: name-&gt;iserial
+        /// </summary>
+        string Name
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Json: display_name
+        /// </summary>
+        string DisplayName
+        {
+            get;
+            set;
+        }
+
+        string State
+        {
+            get;
+            set;
+        }
+    
         IJob GetCurrentJob();
 
         string GetPrinterModel();

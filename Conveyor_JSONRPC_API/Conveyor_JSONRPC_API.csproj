@@ -94,6 +94,8 @@
     <Content Include="3.3.0\JSON Example Replies\03 process stl for print.js" />
     <Content Include="3.3.0\JSON Example Replies\04 print file.js" />
     <Content Include="3.3.0\JSON Example Replies\05 print makerbot file.js" />
+    <Content Include="3.3.0\JSON Example Replies\JobObject.js" />
+    <Content Include="3.3.0\JSON Example Replies\PrinterObject.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Conveyor.cd" />
