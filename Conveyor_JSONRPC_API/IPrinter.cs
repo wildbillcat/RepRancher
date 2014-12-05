@@ -30,6 +30,12 @@ namespace Conveyor_JSONRPC_API
             get;
             set;
         }
+
+        Object PrinterLock
+        {
+            get;
+            set;
+        }
     
         IJob GetCurrentJob();
 
