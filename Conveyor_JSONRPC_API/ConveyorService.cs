@@ -156,10 +156,15 @@ namespace Conveyor_JSONRPC_API
             //Implement some sort of logic for detecting the return?
             bool MethodReturned;
             commandStatus.TryGetValue(CommandRPCID, out MethodReturned);
-            DateTime WaitStart = DateTime.Now;
+            DateTime WaitStart = DateTime.Now;//Note the time
             while(MethodReturned==false){
                 //This loop will cause the method to wait until it's return, or for the call to time out.
-                new NotImplementedException();
+                System.Threading.Thread.Sleep(500); //Sleep 500ms
+                commandStatus.TryGetValue(CommandRPCID, out MethodReturned); //Fetch Method Return Value
+                if (DateTime.Now.Subtract(WaitStart).TotalSeconds > 5) //If 5 Seconds has passed, break and return (Inferred Fail)
+                {
+                    break;
+                }
             }
             return MethodReturned;
         }
