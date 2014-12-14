@@ -177,7 +177,7 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Builds the RPC String to send to conveyor
         /// </summary>
-        string BuildRPCString(int rpcid, string MethodName, List<JProperty> Params)
+        private string BuildRPCString(int rpcid, string MethodName, List<JProperty> Params)
         {
             JObject rpcCall = new JObject();
             rpcCall.Add(new JProperty("id", rpcid));
@@ -207,7 +207,7 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Sends hello command to conveyor for startup
         /// </summary>
-        abstract void Hello();
+        protected abstract void Hello();
 
         /// <summary>
         /// Threat recieves information from Conveyor and queues it for parsing
@@ -302,12 +302,12 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Processes information recieved from conveyor
         /// </summary>
-        abstract private bool ProcessJSONMessage(string JSONReply);
+        abstract protected bool ProcessJSONMessage(string JSONReply);
 
         /// <summary>
         /// Sends getprinters to Conveyor
         /// </summary>
-        private void GetPrinters()
+        protected void GetPrinters()
         {
             List<JProperty> Parameters = new List<JProperty>();
             SendCommand("getprinters", Parameters);
@@ -316,7 +316,7 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Sends getprinters to Conveyor
         /// </summary>
-        private void GetPorts()
+        protected void GetPorts()
         {
             List<JProperty> Parameters = new List<JProperty>();
             SendCommand("getports", Parameters);
@@ -325,7 +325,7 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Sends getjobs to Conveyor
         /// </summary>
-        private void GetJobs()
+        protected void GetJobs()
         {
             List<JProperty> Parameters = new List<JProperty>();
             SendCommand("getjobs", Parameters);
