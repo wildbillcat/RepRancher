@@ -79,7 +79,7 @@
     <Compile Include="3.0.0\SliceCommand.cs" />
     <Compile Include="3.0.1\PrintCommand.cs" />
     <Compile Include="3.0.1\ServerAPI.cs" />
-    <Compile Include="3.3.0\ServerAPI.cs" />
+    <Compile Include="3.3.0\ConveyorService.cs" />
     <Compile Include="ConveyorRpcId.cs" />
     <Compile Include="ConveyorService.cs" />
     <Compile Include="IJob.cs" />

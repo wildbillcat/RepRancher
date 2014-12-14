@@ -99,6 +99,7 @@ namespace Conveyor_JSONRPC_API
             printers = new ConcurrentDictionary<string,IPrinter>();
             ports = new ConcurrentDictionary<string,IPort>();
             commandHistory = new ConcurrentDictionary<int,string>();
+            commandStatus = new ConcurrentDictionary<int, bool>();
             repliesFromConveyor = new ConcurrentQueue<string>();
             RPCID = new ConveyorRpcId();
             ConveyorWriteLock = new Object();
@@ -172,7 +173,11 @@ namespace Conveyor_JSONRPC_API
         /// <summary>
         /// Resets the Connection to Conveyor
         /// </summary>
-        public abstract void ResetConveyorConnection();
+        public void ResetConveyorConnection()
+        {
+            throw new NotImplementedException(); 
+            //Is this nessisary, or is it better just making a new object?
+        }
 
         /// <summary>
         /// Builds the RPC String to send to conveyor
@@ -303,6 +308,11 @@ namespace Conveyor_JSONRPC_API
         /// Processes information recieved from conveyor
         /// </summary>
         abstract protected bool ProcessJSONMessage(string JSONReply);
+
+        /// <summary>
+        /// Parses information out of JSON Object
+        /// </summary>
+        abstract protected bool ParseJSONObject(JObject JSONObject);
 
         /// <summary>
         /// Sends getprinters to Conveyor
