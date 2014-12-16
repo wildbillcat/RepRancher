@@ -61,14 +61,26 @@ namespace Conveyor_JSONRPC_API._3._3._0
                 {
                     /*{"params": {"compatible_firmware": false, "has_been_connected_to": false, "platform_temperature": null, "has_heated_platform": false, "toolheads": {"extruder": [{"index": 0, "filament_presence": false, "preheating": false, "tool_present": true, "current_temperature": 25, "tool_id": 4, "target_temperature": 0}]}, "number_of_toolheads": 1, "can_print": true, "printer_type": "Platypus", "firmware_version": [1, 4, 0, 188], "current_process": null, "toolhead_temperature": null, "connection_type": "offline", "toolhead_target_temperature": null, "display_name": "Replicator 6", "name": {"iserial": "23C100053C7059002409", "pid": 5, "port_type": "UsbPort", "vid": 9153}, "disabled_errors": ["filament_slip"], "driver_name": "birdwing", "build_volume": [252, 199, 150], "state": "IDLE", "profile_name": "Platypus", "online": false, "api_version": "1.0.0"}, "jsonrpc": "2.0", "method": "machine_state_changed"}*/
                     //JSON has a single printer object. Update/Add it
+                    String PrinterState = ""; //state
+                    String PrinterName = ""; //name -> iserial
+                    String PrinterDisplayName = ""; //display_name
                 }//jobadded
                 else if (method.Equals("jobadded"))
                 {
                     /*{"params": {"machine_name": null, "pausable": false, "failure": null, "profile_name": "Platypus", "id": 0, "name": "1 inch cube", "can_cancel": true, "state": "RUNNING", "driver_name": "birdwing", "progress": null, "type": "PrintToFileJob", "conclusion": null}, "jsonrpc": "2.0", "method": "jobadded"}*/
+                    String JobState = ""; //state
+                    String PrinterName = ""; //name -> iserial
+                    String JobsName = ""; //state
+
                 }//jobchanged
                 else if (method.Equals("jobchanged"))
                 {
                     /*{"params": {"machine_name": null, "pausable": false, "failure": null, "profile_name": "Platypus", "id": 0, "name": "1 inch cube", "can_cancel": true, "state": "RUNNING", "driver_name": "birdwing", "progress": {"progress": 0, "name": "slice"}, "type": "PrintToFileJob", "conclusion": null}, "jsonrpc": "2.0", "method": "jobchanged"}*/
+                    String JobState = ""; //state
+                    String PrinterName = ""; //name -> iserial
+                    String JobsName = ""; //state
+                    String Task = ""; //progress -> name
+                    double TaskProgress = 0; //progress -> progress
                 }
 
                 //If Method was found, this is an update from conveyor

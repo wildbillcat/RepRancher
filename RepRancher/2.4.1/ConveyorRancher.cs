@@ -326,7 +326,7 @@ namespace RepRancher._2._4._1
                             "File Name: " + J.name + "\n";
                         if (J.progress != null)
                         {
-                            JUpdate.Status = JUpdate.Status + "Progress: " + J.progress.name + " " + J.progress.progress + "\n";
+                            JUpdate.Status = JUpdate.Status + "TaskProgress: " + J.progress.name + " " + J.progress.progress + "\n";
                             if (J.progress.name.Equals("print"))
                             {
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
@@ -429,7 +429,7 @@ namespace RepRancher._2._4._1
                                 "File Name: " + J.name + "\n";
                                 if (J.progress != null && J.state.Equals("RUNNING"))
                                 {
-                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
+                                    MUpdate.MachineStatus = MUpdate.MachineStatus + "TaskProgress: " + J.progress.name + " " + J.progress.progress + "%\n";
                                     MUpdate.CurrentTaskProgress = J.progress.progress;
                                 }
                             }
@@ -458,7 +458,7 @@ namespace RepRancher._2._4._1
                             "File Name: " + J.name + "\n";
                             if (J.progress != null && J.state.Equals("RUNNING"))
                             {
-                                MUpdate.MachineStatus = MUpdate.MachineStatus + "Progress: " + J.progress.name + " " + J.progress.progress + "%\n";
+                                MUpdate.MachineStatus = MUpdate.MachineStatus + "TaskProgress: " + J.progress.name + " " + J.progress.progress + "%\n";
                                 MUpdate.CurrentTaskProgress = J.progress.progress;
                             }
                         }
