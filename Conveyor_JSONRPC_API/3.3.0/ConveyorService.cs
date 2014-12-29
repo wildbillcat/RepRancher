@@ -8,9 +8,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Conveyor_JSONRPC_API._3._3._0
 {
-    class ConveyorService : Conveyor_JSONRPC_API.ConveyorService
+    public class ConveyorService : Conveyor_JSONRPC_API.ConveyorService
     {
-        ConveyorService(System.Net.IPAddress ConveyorIP, int ConveyorPort) : base(ConveyorIP, ConveyorPort){
+        public ConveyorService(System.Net.IPAddress ConveyorIP, int ConveyorPort) : base(ConveyorIP, ConveyorPort){
             
         }
 
@@ -106,7 +106,6 @@ namespace Conveyor_JSONRPC_API._3._3._0
                         PrinterName = (String)((JObject)Params["machine_name"]).GetValue("iserial"); //name -> iserial
                     }
                 }
-
                 //If Method was found, this is an update from conveyor
             }
 

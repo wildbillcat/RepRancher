@@ -94,6 +94,7 @@
     <Content Include="3.3.0\JSON Example Replies\04 print file.js" />
     <Content Include="3.3.0\JSON Example Replies\05 print makerbot file.js" />
     <Content Include="3.3.0\JSON Example Replies\JobObject.js" />
+    <Content Include="3.3.0\JSON Example Replies\JobwPauseFromMachine.js" />
     <Content Include="3.3.0\JSON Example Replies\PrinterObject.js" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +102,9 @@
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="3.4.1\JSON Example Replies\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="2.4.1\JSON Example Replies\Client\Error.js" />
     <Content Include="2.4.1\JSON Example Replies\Client\JobAdded.js" />
