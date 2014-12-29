@@ -64,24 +64,47 @@ namespace Conveyor_JSONRPC_API._3._3._0
                     //JSON has a single printer object. Update/Add it
                     String PrinterState = (String)Params.GetValue("state"); //state
                     String PrinterName = (String)((JObject)Params["name"]).GetValue("iserial"); //name -> iserial
-                    String PrinterDisplayName = ""; //display_name
+                    String PrinterDisplayName = (String)Params.GetValue("display_name"); ; //display_name
                 }//jobadded
                 else if (method.Equals("jobadded"))
                 {
                     /*{"params": {"machine_name": null, "pausable": false, "failure": null, "profile_name": "Platypus", "id": 0, "name": "1 inch cube", "can_cancel": true, "state": "RUNNING", "driver_name": "birdwing", "progress": null, "type": "PrintToFileJob", "conclusion": null}, "jsonrpc": "2.0", "method": "jobadded"}*/
-                    String JobState = ""; //state
-                    String PrinterName = ""; //name -> iserial
-                    String JobsName = ""; //state
+                    String JobState = (String)Params.GetValue("state"); //state
+                    String JobsName = (String)Params.GetValue("name"); //name
 
+                    String Task = null; //progress -> name
+                    double TaskProgress = 0; //progress -> progress
+                    if (Params["progress"] != null)
+                    {
+                        Task = (String)((JObject)Params["progress"]).GetValue("name"); //progress -> name
+                        TaskProgress = (double)((JObject)Params["progress"]).GetValue("progress"); //progress -> progress
+                    }
+
+                    String PrinterName;
+                    if (Params["machine_name"] != null)
+                    {
+                        PrinterName = (String)((JObject)Params["machine_name"]).GetValue("iserial"); //name -> iserial
+                    }
                 }//jobchanged
                 else if (method.Equals("jobchanged"))
                 {
                     /*{"params": {"machine_name": null, "pausable": false, "failure": null, "profile_name": "Platypus", "id": 0, "name": "1 inch cube", "can_cancel": true, "state": "RUNNING", "driver_name": "birdwing", "progress": {"progress": 0, "name": "slice"}, "type": "PrintToFileJob", "conclusion": null}, "jsonrpc": "2.0", "method": "jobchanged"}*/
-                    String JobState = ""; //state
-                    String PrinterName = ""; //name -> iserial
-                    String JobsName = ""; //state
-                    String Task = ""; //progress -> name
+                    /*{"params": {"machine_name": {"iserial": "23C100053C7059002409", "pid": 5, "port_type": "UsbPort", "vid": 9153}, "pausable": true, "failure": null, "profile_name": "Platypus", "id": 6, "name": "bedcalibration", "can_cancel": true, "state": "RUNNING", "driver_name": "birdwing", "progress": {"progress": 93.6068102610981, "name": "put"}, "type": "PrintFromFileJob", "conclusion": null}, "jsonrpc": "2.0", "method": "jobchanged"}*/
+                    String JobState = (String)Params.GetValue("state"); //state
+                    String JobsName = (String)Params.GetValue("name"); //state
+
+                    String Task = null; //progress -> name
                     double TaskProgress = 0; //progress -> progress
+                    if (Params["progress"] != null)
+                    {
+                        Task = (String)((JObject)Params["progress"]).GetValue("name"); //progress -> name
+                        TaskProgress = (double)((JObject)Params["progress"]).GetValue("progress"); //progress -> progress
+                    }
+
+                    String PrinterName;
+                    if(Params["machine_name"] != null){
+                        PrinterName = (String)((JObject)Params["machine_name"]).GetValue("iserial"); //name -> iserial
+                    }
                 }
 
                 //If Method was found, this is an update from conveyor
