@@ -96,15 +96,24 @@
     <Content Include="3.3.0\JSON Example Replies\JobObject.js" />
     <Content Include="3.3.0\JSON Example Replies\JobwPauseFromMachine.js" />
     <Content Include="3.3.0\JSON Example Replies\PrinterObject.js" />
+    <Content Include="3.4.1\JSON Example Replies\01 - startup.js" />
+    <Content Include="3.4.1\JSON Example Replies\02 - load and preview a makerbot file.js" />
+    <Content Include="3.4.1\JSON Example Replies\03 - start print job.js" />
+    <Content Include="3.4.1\JSON Example Replies\04 - pause and resume from software.js" />
+    <Content Include="3.4.1\JSON Example Replies\05 - pause and resume from control panel.js" />
+    <Content Include="3.4.1\JSON Example Replies\06 - Cancel a print from software.js" />
+    <Content Include="3.4.1\JSON Example Replies\07 - Get device prefs.js" />
+    <Content Include="3.4.1\JSON Example Replies\08 - Update device name.js" />
+    <Content Include="3.4.1\JSON Example Replies\09 - unload filament.js" />
+    <Content Include="3.4.1\JSON Example Replies\10 - Load filament.js" />
+    <Content Include="3.4.1\JSON Example Replies\11 - Upload firmware.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Conveyor.cd" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="3.4.1\JSON Example Replies\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="2.4.1\JSON Example Replies\Client\Error.js" />
     <Content Include="2.4.1\JSON Example Replies\Client\JobAdded.js" />
