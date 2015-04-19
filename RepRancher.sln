@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22609.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepRancher", "RepRancher\RepRancher.csproj", "{86FE883C-D745-4972-881A-D746911C11C6}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -24,6 +24,10 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "RepRancherServiceInstaller"
 		{86FE883C-D745-4972-881A-D746911C11C6} = {86FE883C-D745-4972-881A-D746911C11C6}
 		{5D11FF8E-0209-4F2D-B34A-11803F5C8BB8} = {5D11FF8E-0209-4F2D-B34A-11803F5C8BB8}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConveyorAntlr4", "ConveyorAntlr4\ConveyorAntlr4.csproj", "{B961C120-3FB0-429E-B8C9-69F8A2D22A06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepRancher2", "RepRancher2\RepRancher2.csproj", "{6992A159-D4F0-4212-9C0F-9B12FC4035F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,30 @@ Global
 		{6E23E77D-0556-4CE5-9CF0-7B05900EB611}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6E23E77D-0556-4CE5-9CF0-7B05900EB611}.Release|x86.ActiveCfg = Release|x86
 		{6E23E77D-0556-4CE5-9CF0-7B05900EB611}.Release|x86.Build.0 = Release|x86
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Debug|x86.Build.0 = Debug|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|x86.ActiveCfg = Release|Any CPU
+		{B961C120-3FB0-429E-B8C9-69F8A2D22A06}.Release|x86.Build.0 = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Debug|x86.Build.0 = Debug|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{6992A159-D4F0-4212-9C0F-9B12FC4035F8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
