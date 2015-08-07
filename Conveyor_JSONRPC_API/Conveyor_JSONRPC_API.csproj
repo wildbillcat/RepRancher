@@ -121,6 +121,7 @@
     <Content Include="3.7.0\JSON Example Replies\12 - Verify and write firmware.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="3.7.0\JSON Example Replies\README.md" />
     <None Include="Conveyor.cd" />
     <None Include="packages.config" />
     <None Include="README.md" />
