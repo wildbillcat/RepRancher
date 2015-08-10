@@ -107,18 +107,18 @@
     <Content Include="3.4.1\JSON Example Replies\09 - unload filament.js" />
     <Content Include="3.4.1\JSON Example Replies\10 - Load filament.js" />
     <Content Include="3.4.1\JSON Example Replies\11 - Upload firmware.js" />
-    <Content Include="3.7.0\JSON Example Replies\01 - First Connect with a makerbot.txt" />
-    <Content Include="3.7.0\JSON Example Replies\02 - Restart conveyor service.txt" />
-    <Content Include="3.7.0\JSON Example Replies\03 - Load, preview and export a file.txt" />
-    <Content Include="3.7.0\JSON Example Replies\04 - Print from file.txt" />
-    <Content Include="3.7.0\JSON Example Replies\05 - Pause and resume from software.txt" />
-    <Content Include="3.7.0\JSON Example Replies\06 - Pause and resume from control panel.txt" />
-    <Content Include="3.7.0\JSON Example Replies\07 - Cancel a print from software.txt" />
-    <Content Include="3.7.0\JSON Example Replies\08 - Get device prefs and update device name.txt" />
-    <Content Include="3.7.0\JSON Example Replies\09 - Unload filament.txt" />
-    <Content Include="3.7.0\JSON Example Replies\10 - Load filament.txt" />
-    <Content Include="3.7.0\JSON Example Replies\11 - Upload firmware.txt" />
-    <Content Include="3.7.0\JSON Example Replies\12 - Verify and write firmware.txt" />
+    <Content Include="3.7.0\JSON Example Replies\01 - First Connect with a makerbot copy.js" />
+    <Content Include="3.7.0\JSON Example Replies\02 - Restart conveyor service.js" />
+    <Content Include="3.7.0\JSON Example Replies\03 - Load, preview and export a file.js" />
+    <Content Include="3.7.0\JSON Example Replies\04 - Print from file.js" />
+    <Content Include="3.7.0\JSON Example Replies\05 - Pause and resume from software.js" />
+    <Content Include="3.7.0\JSON Example Replies\06 - Pause and resume from control panel.js" />
+    <Content Include="3.7.0\JSON Example Replies\07 - Cancel a print from software.js" />
+    <Content Include="3.7.0\JSON Example Replies\08 - Get device prefs and update device name.js" />
+    <Content Include="3.7.0\JSON Example Replies\09 - Unload filament.js" />
+    <Content Include="3.7.0\JSON Example Replies\10 - Load filament.js" />
+    <Content Include="3.7.0\JSON Example Replies\11 - Upload firmware.js" />
+    <Content Include="3.7.0\JSON Example Replies\12 - Verify and write firmware.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Conveyor.cd" />
