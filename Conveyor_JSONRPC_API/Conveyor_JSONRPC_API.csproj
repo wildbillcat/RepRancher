@@ -107,7 +107,7 @@
     <Content Include="3.4.1\JSON Example Replies\09 - unload filament.js" />
     <Content Include="3.4.1\JSON Example Replies\10 - Load filament.js" />
     <Content Include="3.4.1\JSON Example Replies\11 - Upload firmware.js" />
-    <Content Include="3.7.0\JSON Example Replies\01 - First Connect with a makerbot copy.js" />
+    <Content Include="3.7.0\JSON Example Replies\01 - First Connect with a makerbot.js" />
     <Content Include="3.7.0\JSON Example Replies\02 - Restart conveyor service.js" />
     <Content Include="3.7.0\JSON Example Replies\03 - Load, preview and export a file.js" />
     <Content Include="3.7.0\JSON Example Replies\04 - Print from file.js" />
